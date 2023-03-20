@@ -27,6 +27,7 @@ Yves: 'View Order/Reorder/Return' on the order history page:
 
 Yves: reorder all items from 'View Order' page
     Wait Until Element Is Visible    ${order_details_reorder_all_button}
+    Sleep    10s
     Click    ${order_details_reorder_all_button}
     Yves: remove flash messages
 

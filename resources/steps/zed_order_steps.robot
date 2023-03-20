@@ -7,11 +7,12 @@ Resource  ../../resources/pages/zed/zed_order_shipment_page.robot
 Resource  ../../resources/pages/zed/zed_order_details_page.robot
 *** Keywords ***
 Zed: Edit order shipment  Hover    ${view_order_last_placed}
-  Zed: click Action Button(without search) in a table for row that contains:    ${lastPlacedOrder}    View 
+  Zed: click Action Button(without search) in a table for row that contains:    ${lastPlacedOrder}    View
+  Click    ${edit_shipment_button} 
   Select From List By Label    ${delivery_address_shipment_page}    New address
    Zed: Enter shipment details for order:
    ...    ||  fname                             |  lname                   |  email                        |  address1            |  address2            |  city    |  zipcode      |  salutation  |  country  |  shipmentmethod  ||
-    ...    ||  ${yves_user_first_name}${random}  |  ${yves_user_last_name}  |  ${yves_user_email}${random}  |  address1+${random}  |  address2+${random}  |  Berlin  |  11${random}  |  Mr          |  Germany  |  DHL - Express   ||      
+    ...    ||  ${yves_user_first_name}${random}  |  ${yves_user_last_name}  |  ${yves_user_email}${random}  |  address1+${random}  |  address2+${random}  |  Berlin  |  11${random}  |  Mr          |  DE  |  ${shippong_dhl_standard}   ||      
   Select From List By Text    ${shipment_method_dropdown}    DHL - Express
   Wait Until Element Is Visible    ${save_button_shipment_page}
   Click    ${save_button_shipment_page}
@@ -20,7 +21,7 @@ Zed: Create a new shipment for order
   Click    ${create_shipment_button}
   Zed: Enter shipment details for order:         
   ...    ||  fname                             |  lname                   |  email                        |  address1            |  address2            |  city    |  zipcode      |  salutation  |  country  |  shipmentmethod  ||
-  ...    ||  ${yves_user_first_name}${random}  |  ${yves_user_last_name}  |  ${yves_user_email}${random}  |  address1+${random}  |  address2+${random}  |  Berlin  |  11${random}  |  Mr          |  Germany  |  DHL - Express   ||  
+  ...    ||  ${yves_user_first_name}${random}  |  ${yves_user_last_name}  |  ${yves_user_email}${random}  |  address1+${random}  |  address2+${random}  |  Berlin  |  11${random}  |  Mr          |  DE  |  ${shippong_dhl_standard}  ||  
   Wait Until Element Is Visible    ${save_button_shipment_page}
   Click    ${save_button_shipment_page}
 Zed: Enter shipment details for order: 
@@ -36,8 +37,8 @@ Zed: Enter shipment details for order:
       IF    '${key}'=='city'    Type Text    ${shipment_address_city}     ${value}
       IF    '${key}'=='zipcode'    Type Text    ${shipment_address_zipcode}     ${value}
       IF    '${key}'=='salutation'    Select From List By Value    ${salutation_shipment_page}    ${value}
-      IF    '${key}'== 'country'        Select From List By Value    ${country_create_new_shipment_page}    ${value}  
-      IF    '${key}'== 'shipmentmethod'        Select From List By Index    ${shipment_method_dropdown_new_shipment_page}    ${value}  
+      IF    '${key}'=='country'    Select From List By Value    ${country_create_new_shipment_page}    ${value}  
+      IF    '${key}'=='shipmentmethod'    Select From List By Index    ${shipment_method_dropdown_new_shipment_page}    ${value}  
       END
  
 

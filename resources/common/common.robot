@@ -16,7 +16,7 @@ Resource                  ../pages/yves/yves_login_page.robot
 *** Variables ***
 # *** SUITE VARIABLES ***
 ${env}                 b2b
-${headless}            true
+${headless}            false
 ${browser}             chromium
 ${browser_timeout}     60 seconds
 ${email_domain}        @spryker.com
@@ -180,7 +180,7 @@ Wait Until Element Is Not Visible
 
 Page Should Contain Link
     [Arguments]    ${url}    ${message}=${EMPTY}
-    ${hrefs}=    Execute JavaScript    Array.from(document.querySelectorAll('a')).map(e => e.getAttribute('href'))
+    ${hrefs}=    Evaluate Javascript    Array.from(document.querySelectorAll('a')).map(e => e.getAttribute('href'))
     Should Contain    ${hrefs}    ${url}
 
 Scroll Element Into View

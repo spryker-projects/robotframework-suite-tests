@@ -57,6 +57,7 @@ Yves: select the following 'Sales Unit' on PDP:
     [Arguments]    ${salesUnit}
     Wait Until Element Is Visible    ${pdp_measurement_sales_unit_selector}
     Select From List By Label    ${pdp_measurement_sales_unit_selector}    ${salesUnit}
+    Sleep    1s
 
 
 Yves: change quantity using '+' or '-' button № times:

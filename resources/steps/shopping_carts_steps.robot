@@ -85,7 +85,7 @@ Yves: shopping cart contains product with unit price:
     [Documentation]    Already contains '€' sign inside
     [Arguments]    ${sku}    ${productName}    ${productPrice}
     IF    '${env}' in ['b2b','mp_b2b']
-        Page Should Contain Element    xpath=//div[contains(@class,'product-card-item__col--description')]//div[contains(.,'SKU: ${sku}')]/ancestor::article//*[contains(@class,'product-card-item__col--description')]/div[1]//*[contains(@class,'money-price__amount')][contains(.,'€${productPrice}')]
+        Page Should Contain Element    xpath=//div[contains(@class,'product-card-item__col--description')]//div[contains(.,'SKU: ${sku}')]/ancestor::article//*[contains(@class,'product-card-item__col--description')]/div[1]//*[contains(@class,'money-price__amount')][contains(.,'${productPrice}')]
     ELSE
         Page Should Contain Element    xpath=//main[@class='page-layout-cart']//article[contains(@data-qa,'component product-card-item')]//a[contains(text(),'${productName}')]/following-sibling::span/span[contains(@class,'money-price__amount') and contains(.,'${productPrice}')]
     END
@@ -159,10 +159,26 @@ Yves: Shopping Cart title should be equal:
 Yves: change quantity of the configurable bundle in the shopping cart on:
     [Documentation]    In case of multiple matches, changes quantity for the first product in the shopping cart
     [Arguments]    ${confBundleTitle}    ${quantity}
-    Type Text    xpath=//main//article[contains(@data-qa,'configured-bundle')][1]//a[text()='${confBundleTitle}']/ancestor::article//input[@data-qa='quantity-input']    ${quantity}
+    Type Text    xpath=//main//article[contains(@data-qa,'configured-bundle')][1]//a[text()='${confBundleTitle}']/ancestor::article//input[contains(@class,'js-quantity-counter__input')]    ${quantity}
     Click    xpath=//main//article[contains(@data-qa,'configured-bundle')][1]//a[text()='${confBundleTitle}']/ancestor::article
-    Sleep    1s
+    Sleep    10s
     Yves: remove flash messages
+
+#Have to move xpath to the global variables
+Yves: change quantity using '+' or '-' button № times of the configurable bundle in the shopping cart on:
+    [Documentation]    In case of multiple matches, changes quantity for the first product in the shopping cart using '+' ot '-'
+    [Arguments]    ${confBundleTitle}    ${action}    ${clicksCount}
+    FOR    ${index}    IN RANGE    0    (${clicksCount}+1)
+        IF    '${action}' == '+'
+            Click    xpath=//main//article[contains(@data-qa,'configured-bundle')][1]//a[text()='${confBundleTitle}']/ancestor::article//button[text()='+']    AND
+            Sleep    10s
+        ELSE IF    '${action}' == '-'
+            Click    xpath=//main//article[contains(@data-qa,'configured-bundle')][1]//a[text()='${confBundleTitle}']/ancestor::article//button[text()='-']    AND
+            Sleep    10s
+        END
+        Sleep    1s
+        Yves: remove flash messages
+    END
 
 Yves: delete all shopping carts
     Yves: create new 'Shopping Cart' with name:    Z
@@ -252,4 +268,10 @@ Yves: assert merchant of product in b2c cart:
     [Documentation]    Method for MP which asserts value in 'Sold by' label of item in cart or list. Requires concrete SKU
     [Arguments]    ${product_name}    ${merchant_name_expected}
     Page Should Contain Element    xpath=//main[contains(@class,'cart')]//article[contains(@data-qa,'component product-card-item')]//*[contains(.,'${product_name}')]/ancestor::article//*[@data-qa='component sold-by-merchant']/a[text()='${merchant_name_expected}']
+
+Yves: add promotional product to cart:
+    [Documentation]    Just adding promotional product to the current shopping card
+    Click    ${shopping_cart_promotional_product_add_to_cart_button}
+    Yves: flash message should be shown:    success    Items added successfully
+    Yves: remove flash messages
 

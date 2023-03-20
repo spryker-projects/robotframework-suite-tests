@@ -9,7 +9,7 @@ Resource    aop_catalog_steps.robot
 *** Keywords ***
 Zed: discontinue the following product:
     [Arguments]    ${productAbstract}    ${productConcrete}
-    Wait Until Element Is Visible    ${zed_log_out_button}
+    Wait Until Element Is Visible    ${zed_user_right_navbar_dropdown}
     Zed: go to second navigation item level:    Catalog    Products
     Zed: perform search by:    ${productAbstract}
     Zed: click Action Button in a table for row that contains:    ${productAbstract}    Edit

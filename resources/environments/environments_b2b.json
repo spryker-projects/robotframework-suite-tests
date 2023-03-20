@@ -2,9 +2,12 @@
     "environment": "b2b", 
 
     "env": {
-            "host": "http://yves.de.spryker.local/",
+            "host1": "http://yves.de.spryker.local/",
+            "host2": "http://cloud:cloud@yves.us.spryker.local/",
+            "host": "https://cloud:cloud@www.us.sc-b2b-stage.demo-spryker.com/",
             "host_at": "http://yves.at.spryker.local/",
-            "zed_url": "http://backoffice.de.spryker.local/"},
+            "zed_url1": "http://backoffice.de.spryker.local/",
+            "zed_url": "https://cloud:cloud@backoffice.us.sc-b2b-stage.demo-spryker.com/"},
 
     "database": {
             "db_host": "127.0.0.1",
@@ -76,17 +79,18 @@
             },
         "products": {
             "one_variant_product_abstract_sku": "M70208",
+            "one_variant_product_abstract_sku1": "M21690",
             "one_variant_product_abstract_name": "EUROKRAFT trolley - with open shovel",
-            "one_variant_product_default_price": "€235.43",
+            "one_variant_product_default_price": "$199.84",
             "one_variant_product_merchant_price": "€188.34",
             "concrete_avaiable_product_sku":"100414",
             "concrete_avaiable_product_name":"Topstar executive chair - black leather - armrests with leather cover",
-            "concrete_avaiable_product_price":"335.13",
+            "concrete_avaiable_product_price":"283.62",
             
 
             "multi_variant_product_abstract_sku": "M58035",
 
-            "multi_color_product_abstract_sku": "M12655",
+            "multi_color_product_abstract_sku": "M58105",
 
             "measurement_unit_product_abstract_sku": "M23723",
 
@@ -105,5 +109,39 @@
             "bundled_product_1_concrete_sku": "104939",
             "bundled_product_2_concrete_sku": "574995",
             "bundled_product_3_concrete_sku": "426581"
-        }
+            },
+        "shipping_methods":{
+            "shippong_dhl_standard": "1",
+            "shippong_dhl_express": "2",
+            "shipping_hermes_standard": "3",
+            "shipping_hermes_same_day": "4",
+            "shipping_hermes_next_day": "5",
+            "shipment_no_shipment": "6",
+            "shipment_usps_standard_ground_delivery": "7",
+            "shipment_fedex_standard_ground_delivery": "8",
+            "shipment_fedex_expedited_two_day_delivery": "9",
+            "shipment_fedex_expedited_one_day_delivery": "10"
+            },
+        "2nd_level_navigation_links":{
+            "office_equipment": "office-equipment",
+            "cables": "cables",
+            "foods": "foods",
+            "stationery": "stationery",
+            "office_furniture": "office-furniture",
+            "transport": "transport",
+            "wolf": "Wolf",
+            "hsm": "HSM",
+            "eurocraft": "EUROCRAFT",
+            "mauser": "Mauser",
+            "quipo": "QUIPO",
+            "verbatim": "Verbatim",
+            "clairefontain": "Clairefontain",
+            "safescan": "Safescan",
+            "brennenstuhl": "Brennenstuhl",
+            "edding": "Edding",
+            "product_bundles": "product-bundles",
+            "product_sets": "product-sets",
+            "demo_landing_page": "demo-landing-page",
+            "configurable_bundle": "template-selection"
+        }    
 }
