@@ -41,8 +41,8 @@ Resource    ../../../resources/steps/order_comments_steps.robot
 Resource    ../../../resources/steps/configurable_product_steps.robot
 
 *** Test Cases ***
-# Guest_User_Access_Restrictions - PASSED
-#     [Documentation]    Checks that guest users are not able to see: Prices, Availability, Quick Order, "My Account" features
+# Guest_User_Access_Restrictions
+#     [Documentation]    Checks that guest users are not able to see: Prices, Availability, Quick Order, "My Account" features - PASSED
 #     Yves: header contains/doesn't contain:    false    ${priceModeSwitcher}    ${currencySwitcher}[${env}]     ${quickOrderIcon}    ${accountIcon}    ${shoppingListIcon}    ${shoppingCartIcon}
 #     Yves: go to PDP of the product with sku:    ${one_variant_product_abstract_sku} 
 #     Yves: PDP contains/doesn't contain:     false    ${pdpPriceLocator}    ${addToCartButton}
@@ -54,8 +54,8 @@ Resource    ../../../resources/steps/configurable_product_steps.robot
 #     Yves: go to company menu item:    Users
 #     Yves: 'Company Users' page is displayed
 
-# Share_Shopping_Lists - PASSED
-#     [Documentation]    Checks that shopping list can be shared
+# Share_Shopping_Lists
+#     [Documentation]    Checks that shopping list can be shared - PASSED
 #     Yves: login on Yves with provided credentials:    ${yves_company_user_shared_permission_owner_email}
 #     Yves: go to 'Shopping Lists' page
 #     Yves: 'Shopping Lists' page is displayed
@@ -81,8 +81,8 @@ Resource    ../../../resources/steps/configurable_product_steps.robot
 #     Yves: assert merchant of product in cart or list:    ${product_with_multiple_offers_concrete_sku}    Computer Experts
 #     [Teardown]    Run Keywords    Close Context    CURRENT    AND    Yves: delete 'Shopping List' with name:    shareShoppingList+${random}
 
-# Share_Shopping_Carts - PASSED
-#     [Documentation]    Checks that cart can be shared and used for checkout
+# Share_Shopping_Carts
+#     [Documentation]    Checks that cart can be shared and used for checkout - PASSED
 #     [Setup]    Run Keywords    
 #     ...    MP: login on MP with provided credentials:    ${merchant_computer_experts_email}
 #     ...    AND    MP: change offer stock:
@@ -130,8 +130,8 @@ Resource    ../../../resources/steps/configurable_product_steps.robot
 #     Yves: 'View Order/Reorder/Return' on the order history page:     View Order    ${lastPlacedOrder}
 #     Yves: 'Order Details' page is displayed
 
-# Quick_Order - PASSED
-#     [Documentation]    Checks Quick Order, checkout and Reorder
+# Quick_Order
+#     [Documentation]    Checks Quick Order, checkout and Reorder - PASSED
 #     [Setup]    Run keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
 #     ...    AND    Yves: delete all shopping carts
 #     ...    AND    Yves: create new 'Shopping Cart' with name:    quickOrderCart+${random}
@@ -186,19 +186,19 @@ Resource    ../../../resources/steps/configurable_product_steps.robot
 #     Yves: assert merchant of product in cart or list:    ${product_with_multiple_offers_concrete_sku}    Computer Experts
 #     [Teardown]    Yves: delete 'Shopping List' with name:    quickOrderList+${random}
 
-Volume_Prices - PASSED
-    [Documentation]    Checks that volume prices are applied in cart
-    [Setup]    Run keywords    Zed: check and restore product availability in Zed:    ${volume_prices_product_abstract_sku}    Available    ${volume_prices_product_concrete_sku}
-    ...    AND    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
-    ...    AND    Yves: delete all shopping carts
-    ...    AND    Yves: create new 'Shopping Cart' with name:    VolumePriceCart+${random}
-    Yves: go to PDP of the product with sku:    ${volume_prices_product_abstract_sku}
-    Yves: try reloading page if element is/not appear:    ${pdp_product_not_available_text}    False
-    Yves: change quantity on PDP:    5
-    Yves: add product to the shopping cart
-    Yves: go to the shopping cart through the header with name:    VolumePriceCart+${random}
-    Yves: shopping cart contains product with unit price:    420685    Post-it stick note Super Sticky Meeting Notes 6445-4SS 4 pieces/pack    4.20
-    [Teardown]    Yves: delete 'Shopping Cart' with name:    VolumePriceCart+${random}
+# Volume_Prices
+#     [Documentation]    Checks that volume prices are applied in cart - PASSED
+#     [Setup]    Run keywords    Zed: check and restore product availability in Zed:    ${volume_prices_product_abstract_sku}    Available    ${volume_prices_product_concrete_sku}
+#     ...    AND    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
+#     ...    AND    Yves: delete all shopping carts
+#     ...    AND    Yves: create new 'Shopping Cart' with name:    VolumePriceCart+${random}
+#     Yves: go to PDP of the product with sku:    ${volume_prices_product_abstract_sku}
+#     Yves: try reloading page if element is/not appear:    ${pdp_product_not_available_text}    False
+#     Yves: change quantity on PDP:    5
+#     Yves: add product to the shopping cart
+#     Yves: go to the shopping cart through the header with name:    VolumePriceCart+${random}
+#     Yves: shopping cart contains product with unit price:    420685    Post-it stick note Super Sticky Meeting Notes 6445-4SS 4 pieces/pack    4.20
+#     [Teardown]    Yves: delete 'Shopping Cart' with name:    VolumePriceCart+${random}
 
 # Discontinued_Alternative_Products - FAILED BUG SLA-3706
 #     [Documentation]    Checks that product can be discontinued in Zed
@@ -211,52 +211,52 @@ Volume_Prices - PASSED
 #     Zed: submit the form
 #     [Teardown]    Zed: undo discontinue the following product:    ${discontinued_product_abstract_sku}    ${discontinued_product_concrete_sku}
 
-Measurement_Units
-    [Documentation]    Checks checkout with Measurement Unit product
-    [Setup]    Run keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_manager_and_buyer_email}
-    ...    AND    Yves: create new 'Shopping Cart' with name:    measurementUnitsCart+${random}
-    Yves: go to PDP of the product with sku:    M23723
-    Yves: select the following 'Sales Unit' on PDP:    Meter
-    Yves: change quantity using '+' or '-' button № times:    +    1
-    Yves: PDP contains/doesn't contain:    true    ${measurementUnitSuggestion}
-    Yves: change quantity using '+' or '-' button № times:    -    1
-    Yves: add product to the shopping cart
-    Yves: go to PDP of the product with sku:    M1006871
-    Yves: add product to the shopping cart
-    Yves: go to the shopping cart through the header with name:  measurementUnitsCart+${random}
-    Yves: 'Shopping Cart' page is displayed
-    Yves: shopping cart contains the following products:    425079
-    Yves: click on the 'Checkout' button in the shopping cart
-    Yves: billing address same as shipping address:    true
-    Yves: select the following existing address on the checkout as 'shipping' address and go next:    ${yves_company_user_manager_and_buyer_address}
-    Yves: select the following shipping method on the checkout and go next:    Express
-    Yves: select the following payment method on the checkout and go next:    Invoice
-    Yves: accept the terms and conditions:    true
-    Yves: 'submit the order' on the summary page
-    Yves: 'Thank you' page is displayed
+# Measurement_Units
+#     [Documentation]    Checks checkout with Measurement Unit product - PASSED
+#     [Setup]    Run keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_manager_and_buyer_email}
+#     ...    AND    Yves: create new 'Shopping Cart' with name:    measurementUnitsCart+${random}
+#     Yves: go to PDP of the product with sku:    M23723
+#     Yves: select the following 'Sales Unit' on PDP:    Meter
+#     Yves: change quantity using '+' or '-' button № times:    +    1
+#     Yves: PDP contains/doesn't contain:    true    ${measurementUnitSuggestion}
+#     Yves: change quantity using '+' or '-' button № times:    -    1
+#     Yves: add product to the shopping cart
+#     Yves: go to PDP of the product with sku:    M1006871
+#     Yves: add product to the shopping cart
+#     Yves: go to the shopping cart through the header with name:  measurementUnitsCart+${random}
+#     Yves: 'Shopping Cart' page is displayed
+#     Yves: shopping cart contains the following products:    425079
+#     Yves: click on the 'Checkout' button in the shopping cart
+#     Yves: billing address same as shipping address:    true
+#     Yves: select the following existing address on the checkout as 'shipping' address and go next:    ${yves_company_user_manager_and_buyer_address}
+#     Yves: select the following shipping method on the checkout and go next:    Express
+#     Yves: select the following payment method on the checkout and go next:    Invoice
+#     Yves: accept the terms and conditions:    true
+#     Yves: 'submit the order' on the summary page
+#     Yves: 'Thank you' page is displayed
 
-Packaging_Units
-    [Documentation]    Checks checkout with Packaging Unit product
-    [Setup]    Run keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_manager_and_buyer_email}
-    ...    AND    Yves: create new 'Shopping Cart' with name:    packagingUnitsCart+${random}
-    Yves: go to PDP of the product with sku:    M21766
-    Yves: change variant of the product on PDP on:    Box
-    Yves: change amount on PDP:    51
-    Yves: PDP contains/doesn't contain:    true    ${packagingUnitSuggestion}
-    Yves: change amount on PDP:    10
-    Yves: add product to the shopping cart
-    Yves: go to PDP of the product with sku:    M1006871
-    Yves: add product to the shopping cart
-    Yves: go to the shopping cart through the header with name:    packagingUnitsCart+${random}
-    Yves: shopping cart contains the following products:    421519_3
-    Yves: click on the 'Checkout' button in the shopping cart
-    Yves: billing address same as shipping address:    true
-    Yves: select the following existing address on the checkout as 'shipping' address and go next:    ${yves_company_user_manager_and_buyer_address}
-    Yves: select the following shipping method on the checkout and go next:    Express
-    Yves: select the following payment method on the checkout and go next:    Invoice
-    Yves: accept the terms and conditions:    true
-    Yves: 'submit the order' on the summary page
-    Yves: 'Thank you' page is displayed
+# Packaging_Units
+#     [Documentation]    Checks checkout with Packaging Unit product
+#     [Setup]    Run keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_manager_and_buyer_email}
+#     ...    AND    Yves: create new 'Shopping Cart' with name:    packagingUnitsCart+${random}
+#     Yves: go to PDP of the product with sku:    M21766
+#     Yves: change variant of the product on PDP on:    Box
+#     Yves: change amount on PDP:    51
+#     Yves: PDP contains/doesn't contain:    true    ${packagingUnitSuggestion}
+#     Yves: change amount on PDP:    10
+#     Yves: add product to the shopping cart
+#     Yves: go to PDP of the product with sku:    M1006871
+#     Yves: add product to the shopping cart
+#     Yves: go to the shopping cart through the header with name:    packagingUnitsCart+${random}
+#     Yves: shopping cart contains the following products:    421519_3
+#     Yves: click on the 'Checkout' button in the shopping cart
+#     Yves: billing address same as shipping address:    true
+#     Yves: select the following existing address on the checkout as 'shipping' address and go next:    ${yves_company_user_manager_and_buyer_address}
+#     Yves: select the following shipping method on the checkout and go next:    Express
+#     Yves: select the following payment method on the checkout and go next:    Invoice
+#     Yves: accept the terms and conditions:    true
+#     Yves: 'submit the order' on the summary page
+#     Yves: 'Thank you' page is displayed
 
 # #### Product Sets feature is not present in marketplace for now ####
 # # Product_Sets
@@ -357,7 +357,7 @@ Packaging_Units
 #     [Teardown]    Yves: delete 'Shopping Cart' with name:    customerPrices+${random}
 
 # Agent_Assist
-#     [Documentation]    Checks Agent creation and that it can login under customer.
+#     [Documentation]    Checks Agent creation and that it can login under customer. - PASSED
 #     Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     Zed: create new Zed user with the following data:    agent+${random}@spryker.com    change123${random}    Agent    Assist    Root group    This user is an agent    en_US
 #     Yves: go to the 'Home' page
@@ -375,7 +375,7 @@ Packaging_Units
 #     ...    AND    Zed: delete Zed user with the following email:    agent+${random}@spryker.com
 
 # Business_on_Behalf
-#     [Documentation]    Check that BoB user has possibility to change the business unit
+#     [Documentation]    Check that BoB user has possibility to change the business unit - PASSED
 #     Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     Zed: go to second navigation item level:    Customers    Company Users
 #     Zed: click Action Button in a table for row that contains:    Donald    Attach to BU
@@ -386,7 +386,7 @@ Packaging_Units
 #     Yves: 'Business Unit' dropdown contains:    Spryker Systems GmbH / Spryker Systems Berlin    Spryker Systems GmbH / Spryker Systems Zurich
 #     [Teardown]    Zed: delete company user xxx withing xxx company business unit:    Donald    Spryker Systems Zurich
 
-# Business_Unit_Address_on_Checkout
+# Business_Unit_Address_on_Checkout - BUG SLA-3706
 #     [Documentation]    Checks that business unit address can be used during checkout
 #     [Setup]    Run keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
 #     ...    AND    Yves: create new 'Shopping Cart' with name:    businessAddressCart+${random}
@@ -563,7 +563,7 @@ Packaging_Units
 
 # Unique_URL
 #     [Tags]    skip-due-to-issue
-#     [Documentation]    Bug: CC-12380.
+#     [Documentation]    - PASSED
 #     Yves: login on Yves with provided credentials:    ${yves_company_user_manager_and_buyer_email}
 #     Yves: create new 'Shopping Cart' with name:    externalCart+${random}
 #     Yves: go to PDP of the product with sku:    M90806
@@ -691,62 +691,62 @@ Packaging_Units
 #     [Teardown]    Run Keywords    Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     ...    AND    Zed: delete Zed user with the following email:    return+agent+${random}@spryker.com
 
-# User_Account
-#     [Documentation]    Checks user account pages work + address management
-#     Yves: login on Yves with provided credentials:    ${yves_user_email}
-#     Yves: go to user menu item in header:    Overview
-#     Yves: 'Overview' page is displayed
-#     Yves: go to user menu item in header:    Order History
-#     Yves: 'Order History' page is displayed
-#     Yves: go to user menu item in header:    Profile
-#     Yves: 'Profile' page is displayed
-#     Yves: go to user menu item in the left bar:    Addresses
-#     Yves: 'Addresses' page is displayed
-#     Yves: go to user menu item in the left bar:    Newsletter
-#     Yves: 'Newsletter' page is displayed
-#     Yves: go to user menu item in the left bar:    Returns
-#     Yves: 'Returns' page is displayed
-#     Yves: create a new customer address in profile:    Ms    ${yves_user_first_name} ${random}    ${yves_user_last_name} ${random}   Kirncher Str. ${random}    7    ${random}    Berlin    Germany
-#     Yves: go to user menu item in the left bar:    Addresses
-#     Yves: 'Addresses' page is displayed
-#     Yves: check that user has address exists/doesn't exist:    true    ${yves_user_first_name} ${random}    ${yves_user_last_name} ${random}    Kirncher Str. ${random}    7    ${random}    Berlin    Germany
-#     Yves: delete user address:    Kirncher Str. ${random}
-#     Yves: go to user menu item in the left bar:    Addresses
-#     Yves: 'Addresses' page is displayed
-#     Yves: check that user has address exists/doesn't exist:    false    ${yves_user_first_name} ${random}    ${yves_user_last_name} ${random}    Kirncher Str. ${random}    7    ${random}    Berlin    Germany
-#     Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     Zed: create a new customer address in profile:
-#     ...    || email              | salutation | first name                  | last name                       | address 1          | address 2           | address 3           | city            | zip code  | country | phone     | company          ||
-#     ...    || ${yves_user_email} | Ms         | ${yves_user_first_name}${random} | ${yves_user_last_name}${random} | address 1${random} | address 2 ${random} | address 3 ${random} | Berlin${random} | ${random} | Austria | 123456789 | Spryker${random} ||
-#     Yves: login on Yves with provided credentials:    ${yves_user_email}
-#     Yves: go to user menu item in header:    Overview
-#     Yves: go to user menu item in the left bar:    Addresses
-#     Yves: check that user has address exists/doesn't exist:    true    ${yves_user_first_name}${random}    ${yves_user_last_name}${random}    address 1${random}    address 2 ${random}    ${random}    Berlin${random}    Austria
-#     [Teardown]    Run Keywords    Yves: login on Yves with provided credentials:    ${yves_user_email}
-#     ...    AND     Yves: delete all user addresses
+User_Account
+    [Documentation]    Checks user account pages work + address management
+    Yves: login on Yves with provided credentials:    ${yves_user_email}
+    Yves: go to user menu item in header:    Overview
+    Yves: 'Overview' page is displayed
+    Yves: go to user menu item in header:    Order History
+    Yves: 'Order History' page is displayed
+    Yves: go to user menu item in header:    Profile
+    Yves: 'Profile' page is displayed
+    Yves: go to user menu item in the left bar:    Addresses
+    Yves: 'Addresses' page is displayed
+    Yves: go to user menu item in the left bar:    Newsletter
+    Yves: 'Newsletter' page is displayed
+    Yves: go to user menu item in the left bar:    Returns
+    Yves: 'Returns' page is displayed
+    Yves: create a new customer address in profile:    Ms    ${yves_user_first_name} ${random}    ${yves_user_last_name} ${random}   Kirncher Str. ${random}    7    ${random}    Berlin    Germany
+    Yves: go to user menu item in the left bar:    Addresses
+    Yves: 'Addresses' page is displayed
+    Yves: check that user has address exists/doesn't exist:    true    ${yves_user_first_name} ${random}    ${yves_user_last_name} ${random}    Kirncher Str. ${random}    7    ${random}    Berlin    Germany
+    Yves: delete user address:    Kirncher Str. ${random}
+    Yves: go to user menu item in the left bar:    Addresses
+    Yves: 'Addresses' page is displayed
+    Yves: check that user has address exists/doesn't exist:    false    ${yves_user_first_name} ${random}    ${yves_user_last_name} ${random}    Kirncher Str. ${random}    7    ${random}    Berlin    Germany
+    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    Zed: create a new customer address in profile:
+    ...    || email              | salutation | first name                  | last name                       | address 1          | address 2           | address 3           | city            | zip code  | country | phone     | company          ||
+    ...    || ${yves_user_email} | Ms         | ${yves_user_first_name}${random} | ${yves_user_last_name}${random} | address 1${random} | address 2 ${random} | address 3 ${random} | Berlin${random} | ${random} | Austria | 123456789 | Spryker${random} ||
+    Yves: login on Yves with provided credentials:    ${yves_user_email}
+    Yves: go to user menu item in header:    Overview
+    Yves: go to user menu item in the left bar:    Addresses
+    Yves: check that user has address exists/doesn't exist:    true    ${yves_user_first_name}${random}    ${yves_user_last_name}${random}    address 1${random}    address 2 ${random}    ${random}    Berlin${random}    Austria
+    [Teardown]    Run Keywords    Yves: login on Yves with provided credentials:    ${yves_user_email}
+    ...    AND     Yves: delete all user addresses
 
-# Product_PDP
-#     [Documentation]    Checks that PDP contains required elements
-#     Yves: go to PDP of the product with sku:    ${multi_variant_product_abstract_sku}
-#     Yves: change variant of the product on PDP on:    500 x 930 x 400
-#     Yves: PDP contains/doesn't contain:    true    ${pdp_limited_warranty_option}     ${pdp_insurance_coverage_option}
-#     Yves: PDP contains/doesn't contain:    false    ${pdpPriceLocator}   ${addToCartButton} 
-#     Yves: login on Yves with provided credentials:    ${yves_user_email}
-#     Yves: go to PDP of the product with sku:    ${multi_variant_product_abstract_sku}
-#     Yves: PDP contains/doesn't contain:    true    ${pdpPriceLocator}    ${pdp_add_to_cart_disabled_button}[${env}]    ${pdp_limited_warranty_option}    ${pdp_insurance_coverage_option}
-#     Yves: change variant of the product on PDP on:    500 x 930 x 400
-#     Yves: PDP contains/doesn't contain:    true    ${pdpPriceLocator}    ${addToCartButton}    ${pdp_limited_warranty_option}     ${pdp_insurance_coverage_option}
+Product_PDP
+    [Documentation]    Checks that PDP contains required elements
+    Yves: go to PDP of the product with sku:    ${multi_variant_product_abstract_sku}
+    Yves: change variant of the product on PDP on:    500 x 930 x 400
+    Yves: PDP contains/doesn't contain:    true    ${pdp_limited_warranty_option}     ${pdp_insurance_coverage_option}
+    Yves: PDP contains/doesn't contain:    false    ${pdpPriceLocator}   ${addToCartButton} 
+    Yves: login on Yves with provided credentials:    ${yves_user_email}
+    Yves: go to PDP of the product with sku:    ${multi_variant_product_abstract_sku}
+    Yves: PDP contains/doesn't contain:    true    ${pdpPriceLocator}    ${pdp_add_to_cart_disabled_button}[${env}]    ${pdp_limited_warranty_option}    ${pdp_insurance_coverage_option}
+    Yves: change variant of the product on PDP on:    500 x 930 x 400
+    Yves: PDP contains/doesn't contain:    true    ${pdpPriceLocator}    ${addToCartButton}    ${pdp_limited_warranty_option}     ${pdp_insurance_coverage_option}
 
-# Product_labels
-#     [Documentation]    Checks that products have labels on PLP and PDP
-#     Yves: go to first navigation item level:    Sale %
-#     Yves: 1st product card in catalog (not)contains:     Sale label    true
-#     Yves: go to the PDP of the first available product on open catalog page
-#     Yves: PDP contains/doesn't contain:    true    ${pdp_sales_label}[${env}]
-#     Yves: go to first navigation item level:    New
-#     Yves: 1st product card in catalog (not)contains:     New label    true
-#     Yves: go to the PDP of the first available product on open catalog page
-#     Yves: PDP contains/doesn't contain:    true    ${pdp_new_label}[${env}] 
+Product_labels
+    [Documentation]    Checks that products have labels on PLP and PDP
+    Yves: go to first navigation item level:    Sale %
+    Yves: 1st product card in catalog (not)contains:     Sale label    true
+    Yves: go to the PDP of the first available product on open catalog page
+    Yves: PDP contains/doesn't contain:    true    ${pdp_sales_label}[${env}]
+    Yves: go to first navigation item level:    New
+    Yves: 1st product card in catalog (not)contains:     New label    true
+    Yves: go to the PDP of the first available product on open catalog page
+    Yves: PDP contains/doesn't contain:    true    ${pdp_new_label}[${env}] 
 
 # Catalog
 #     [Documentation]    Checks that catalog options and search work
@@ -808,31 +808,31 @@ Packaging_Units
 #     ...    AND    Zed: Deactivate Following Discounts From Overview Page:    Voucher Code 5% ${random}    Cart Rule 10% ${random}    Promotional Product 100% ${random}
 #     ...    AND    Zed: activate following discounts from Overview page:    Free chair    Tu & Wed $5 off 5 or more    10% off $100+    Free marker    20% off storage    Free office chair    Free standard delivery    10% off Safescan    5% off white    Tu & Wed €5 off 5 or more    10% off minimum order
 
-# Back_in_Stock_Notification
-#     [Tags]    skip-due-to-issue
-#     [Documentation]    Bug: CC-26192. Back in stock notification is sent and availability check
-#     Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     Zed: go to second navigation item level:    Catalog    Availability
-#     Zed: check if product is/not in stock:    ${stock_product_abstract_sku}    true
-#     Zed: change product stock:    ${stock_product_abstract_sku}    ${stock_product_concrete_sku}    false    0
-#     Zed: go to second navigation item level:    Catalog    Availability
-#     Zed: check if product is/not in stock:    ${stock_product_abstract_sku}    false
-#     Yves: login on Yves with provided credentials:    ${yves_user_email}
-#     Yves: go to PDP of the product with sku:  ${stock_product_abstract_sku}
-#     Yves: try reloading page if element is/not appear:    ${pdp_product_not_available_text}    True
-#     Yves: check if product is available on PDP:    ${stock_product_abstract_sku}    false
-#     Yves: submit back in stock notification request for email:    ${yves_user_email}
-#     Yves: unsubscribe from availability notifications
-#     Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     Zed: go to second navigation item level:    Catalog    Availability
-#     Zed: change product stock:    ${stock_product_abstract_sku}    ${stock_product_concrete_sku}    true    0  
-#     Zed: go to second navigation item level:    Catalog    Availability  
-#     Zed: check if product is/not in stock:    ${stock_product_abstract_sku}    true
-#     Yves: login on Yves with provided credentials:    ${yves_user_email}
-#     Yves: go to PDP of the product with sku:  ${stock_product_abstract_sku}
-#     Yves: try reloading page if element is/not appear:    ${pdp_product_not_available_text}    False
-#     Yves: check if product is available on PDP:    ${stock_product_abstract_sku}    true
-#     [Teardown]    Zed: check and restore product availability in Zed:    ${stock_product_abstract_sku}    Available    ${stock_product_concrete_sku}
+Back_in_Stock_Notification
+    [Tags]    skip-due-to-issue
+    [Documentation]    Bug: CC-26192. Back in stock notification is sent and availability check
+    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    Zed: go to second navigation item level:    Catalog    Availability
+    Zed: check if product is/not in stock:    ${stock_product_abstract_sku}    true
+    Zed: change product stock:    ${stock_product_abstract_sku}    ${stock_product_concrete_sku}    false    0
+    Zed: go to second navigation item level:    Catalog    Availability
+    Zed: check if product is/not in stock:    ${stock_product_abstract_sku}    false
+    Yves: login on Yves with provided credentials:    ${yves_user_email}
+    Yves: go to PDP of the product with sku:  ${stock_product_abstract_sku}
+    Yves: try reloading page if element is/not appear:    ${pdp_product_not_available_text}    True
+    Yves: check if product is available on PDP:    ${stock_product_abstract_sku}    false
+    Yves: submit back in stock notification request for email:    ${yves_user_email}
+    Yves: unsubscribe from availability notifications
+    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    Zed: go to second navigation item level:    Catalog    Availability
+    Zed: change product stock:    ${stock_product_abstract_sku}    ${stock_product_concrete_sku}    true    0  
+    Zed: go to second navigation item level:    Catalog    Availability  
+    Zed: check if product is/not in stock:    ${stock_product_abstract_sku}    true
+    Yves: login on Yves with provided credentials:    ${yves_user_email}
+    Yves: go to PDP of the product with sku:  ${stock_product_abstract_sku}
+    Yves: try reloading page if element is/not appear:    ${pdp_product_not_available_text}    False
+    Yves: check if product is available on PDP:    ${stock_product_abstract_sku}    true
+    [Teardown]    Zed: check and restore product availability in Zed:    ${stock_product_abstract_sku}    Available    ${stock_product_concrete_sku}
 
 # Split_Delivery
 #     [Documentation]    Checks split delivery in checkout with new addresses
@@ -876,22 +876,22 @@ Packaging_Units
 #     [Teardown]    Run Keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
 #     ...    AND    Yves: delete all user addresses
 
-# Content_Management
-#     [Documentation]    Checks cms content can be edited in zed and that correct cms elements are present on homepage   
-#     Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     Zed: go to second navigation item level:    Content    Pages
-#     Zed: create a cms page and publish it:    Test Page${random}    test-page${random}    Page Title    Page text
-#     Yves: go to the 'Home' page
-#     Yves: page contains CMS element:    Homepage Banners
-#     Yves: page contains CMS element:    Product Slider    Top Sellers
-#     Yves: page contains CMS element:    Homepage Inspirational block
-#     Yves: page contains CMS element:    Footer section
-#     Yves: go to newly created page by URL:    en/test-page${random}
-#     Yves: page contains CMS element:    CMS Page Title    Page Title
-#     Yves: page contains CMS element:    CMS Page Content    Page text
-#     [Teardown]    Run Keywords    Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     ...    AND    Zed: go to second navigation item level:    Content    Pages
-#     ...    AND    Zed: click Action Button in a table for row that contains:    Test Page${random}    Deactivate
+Content_Management
+    [Documentation]    Checks cms content can be edited in zed and that correct cms elements are present on homepage - PASSED   
+    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    Zed: go to second navigation item level:    Content    Pages
+    Zed: create a cms page and publish it:    Test Page${random}    test-page${random}    Page Title    Page text
+    Yves: go to the 'Home' page
+    Yves: page contains CMS element:    Homepage Banners
+    Yves: page contains CMS element:    Product Slider    Top Sellers
+    Yves: page contains CMS element:    Homepage Inspirational block
+    Yves: page contains CMS element:    Footer section
+    Yves: go to newly created page by URL:    en/test-page${random}
+    Yves: page contains CMS element:    CMS Page Title    Page Title
+    Yves: page contains CMS element:    CMS Page Content    Page text
+    [Teardown]    Run Keywords    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    ...    AND    Zed: go to second navigation item level:    Content    Pages
+    ...    AND    Zed: click Action Button in a table for row that contains:    Test Page${random}    Deactivate
 
 # Refunds
 #     [Documentation]    Checks that refund can be created for an item and the whole order of merchant
@@ -979,30 +979,30 @@ Packaging_Units
 #     [Teardown]    Run Keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
 #     ...    AND    Yves: delete all user addresses
 
-# Merchant_Profile_Update
-#     [Documentation]    Checks that merchant profile could be updated from merchant portal and that changes will be displayed on Yves
-#     Yves: go to URL:    en/merchant/office-king
-#     Yves: assert merchant profile fields:
-#     ...    || name | email             | phone           | delivery time | data privacy                                          ||
-#     ...    ||      | hi@office-king.nl | +31 123 345 777 | 2-4 days      | Office King values the privacy of your personal data. ||
-#     MP: login on MP with provided credentials:    ${merchant_office_king_email}
-#     MP: open navigation menu tab:    Profile  
-#     MP: open profile tab:    Online Profile
-#     MP: update profile fields with following data:
-#     ...    || email                  | phone           | delivery time | data privacy              | profile url en       | profile url de       ||
-#     ...    || updated@office-king.nl | +11 222 333 444 | 2-4 weeks     | Data privacy updated text | https://spryker.com/ | https://spryker.com/ ||
-#     MP: click submit button
-#     Yves: go to URL:    en/merchant/office-king
-#     Yves: assert merchant profile fields:
-#     ...    || name | email                  | phone           | delivery time | data privacy              ||
-#     ...    ||      | updated@office-king.nl | +11 222 333 444 | 2-4 weeks     | Data privacy updated text ||
-#     [Teardown]    Run Keywords    MP: login on MP with provided credentials:    ${merchant_office_king_email}
-#     ...    AND    MP: open navigation menu tab:    Profile
-#     ...    AND    MP: open profile tab:    Online Profile  
-#     ...    AND    MP: update profile fields with following data:
-#     ...    || email             | phone           | delivery time | data privacy                                          | profile url en       | profile url de       ||
-#     ...    || hi@office-king.nl | +31 123 345 777 | 2-4 days      | Office King values the privacy of your personal data. | https://spryker.com/ | https://spryker.com/ ||
-#     ...    AND    MP: click submit button
+Merchant_Profile_Update
+    [Documentation]    Checks that merchant profile could be updated from merchant portal and that changes will be displayed on Yves
+    Yves: go to URL:    en/merchant/office-king
+    Yves: assert merchant profile fields:
+    ...    || name | email             | phone           | delivery time | data privacy                                          ||
+    ...    ||      | hi@office-king.nl | +31 123 345 777 | 2-4 days      | Office King values the privacy of your personal data. ||
+    MP: login on MP with provided credentials:    ${merchant_office_king_email}
+    MP: open navigation menu tab:    Profile  
+    MP: open profile tab:    Online Profile
+    MP: update profile fields with following data:
+    ...    || email                  | phone           | delivery time | data privacy              | profile url en       | profile url de       ||
+    ...    || updated@office-king.nl | +11 222 333 444 | 2-4 weeks     | Data privacy updated text | https://spryker.com/ | https://spryker.com/ ||
+    MP: click submit button
+    Yves: go to URL:    en/merchant/office-king
+    Yves: assert merchant profile fields:
+    ...    || name | email                  | phone           | delivery time | data privacy              ||
+    ...    ||      | updated@office-king.nl | +11 222 333 444 | 2-4 weeks     | Data privacy updated text ||
+    [Teardown]    Run Keywords    MP: login on MP with provided credentials:    ${merchant_office_king_email}
+    ...    AND    MP: open navigation menu tab:    Profile
+    ...    AND    MP: open profile tab:    Online Profile  
+    ...    AND    MP: update profile fields with following data:
+    ...    || email             | phone           | delivery time | data privacy                                          | profile url en       | profile url de       ||
+    ...    || hi@office-king.nl | +31 123 345 777 | 2-4 days      | Office King values the privacy of your personal data. | https://spryker.com/ | https://spryker.com/ ||
+    ...    AND    MP: click submit button
 
 # Merchant_Profile_Set_to_Offline_from_MP
 #     [Documentation]    Checks that merchant is able to set store offline and then his profile, products and offers won't be displayed on Yves
@@ -1107,7 +1107,7 @@ Packaging_Units
 #     ...    AND    Zed: click Action Button in a table for row that contains:     NewMerchantUpdated${random}     Deactivate
 
 # Manage_Merchant_Users
-#     [Documentation]    Checks that backoffice admin is able to create, activate, edit and delete merchant users
+#     [Documentation]    Checks that backoffice admin is able to create, activate, edit and delete merchant users - PASSED
 #     Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     Zed: go to second navigation item level:    Marketplace    Merchants
 #     Zed: click Action Button in a table for row that contains:     Office King     Edit
@@ -1243,7 +1243,7 @@ Packaging_Units
 #     ...    AND    Zed: click Action Button in a table for row that contains:     SprykerProduct${random}     Deny
 
 # Approve_Offer
-#     [Documentation]    Checks that marketplace operator is able to approve or deny merchant's offer and it will be available or not in store due to this status
+#     [Documentation]    Checks that marketplace operator is able to approve or deny merchant's offer and it will be available or not in store due to this status - PASSED
 #     Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     Zed: go to second navigation item level:    Marketplace    Offers
 #     Zed: select merchant in filter:    Office King
@@ -1933,15 +1933,15 @@ Packaging_Units
 #     [Teardown]    Run Keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
 #     ...    AND    Yves: delete all user addresses
 
-# Zed_navigation_ordering_and_naming
-#     [Documentation]    Verifies each left navigation node can be opened
-#     Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     Zed: verify first navigation root menus
-#     Zed: verify root menu icons
-#     Zed: verify second navigation root menus
+Zed_navigation_ordering_and_naming
+    [Documentation]    Verifies each left navigation node can be opened
+    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    Zed: verify first navigation root menus
+    Zed: verify root menu icons
+    Zed: verify second navigation root menus
 
 # Minimum_Order_Value
-#     [Documentation]    checks that global minimum and maximun order thresholds can be applied
+#     [Documentation]    checks that global minimum and maximun order thresholds can be applied - PASSED
 #     [Setup]    Run Keywords    Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     ...    AND    Zed: deactivate following discounts from Overview page:    Free chair    Tu & Wed $5 off 5 or more    10% off $100+    Free marker    20% off storage    	Free office chair    Free standard delivery    	10% off Safescan    5% off white    Tu & Wed €5 off 5 or more    10% off minimum order
 #     ...    AND    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
@@ -1989,103 +1989,103 @@ Packaging_Units
 #     ...    || store & currency | minimum hard value | minimum hard en message | minimum hard de message | maximun hard value | maximun hard en message                                                                                   | maximun hard de message                                                                                                              | soft threshold | soft threshold value | soft threshold en message | soft threshold de message ||
 #     ...    || DE - Euro [EUR]  | ${SPACE}           | ${SPACE}                | ${SPACE}                | 10000.00           | The cart value cannot be higher than {{threshold}}. Please remove some items to proceed with the order    | Der Warenkorbwert darf nicht höher als {{threshold}} sein. Bitte entfernen Sie einige Artikel, um mit der Bestellung fortzufahren    | None           | ${EMPTY}             | ${EMPTY}                  | ${EMPTY}                  ||
 
-# Order_Cancelation
-#     [Documentation]    Check that customer is able to cancel order
-#     Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
-#     Yves: delete all shopping carts
-#     Yves: delete all user addresses
-#     Yves: create new 'Shopping Cart' with name:    cancelationCart+${random}
-#     Yves: go to PDP of the product with sku:    ${one_variant_product_abstract_sku}
-#     Yves: add product to the shopping cart
-#     Yves: go to the shopping cart through the header with name:    cancelationCart+${random}
-#     Yves: click on the 'Checkout' button in the shopping cart
-#     Yves: billing address same as shipping address:    true
-#     Yves: select the following existing address on the checkout as 'shipping' address and go next:    ${yves_company_user_buyer_address}
-#     Yves: submit form on the checkout
-#     Yves: select the following shipping method for the shipment:    1    Hermes    Next Day
-#     Yves: submit form on the checkout
-#     Yves: select the following payment method on the checkout and go next:    Invoice
-#     Yves: accept the terms and conditions:    true
-#     Yves: 'submit the order' on the summary page
-#     Yves: 'Thank you' page is displayed    
-#     Yves: go to 'Order History' page
-#     Yves: get the last placed order ID by current customer
-#     Yves: cancel the order:    ${lastPlacedOrder}
-#     Yves: get the last placed order ID by current customer
-#     Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     Zed: go to order page:    ${lastPlacedOrder}
-#     Zed: wait for order item to be in state:    403125    canceled
-#     ### NOT FINISHED AS NO REQUIREMENTS FOR MP CASE
-#     # Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
-#     # Yves: create new 'Shopping Cart' with name:    cancelationCart+${random}
-#     # Yves: go to PDP of the product with sku:    ${one_variant_product_abstract_sku}
-#     # Yves: add product to the shopping cart
-#     # Yves: go to PDP of the product with sku:    ${multi_color_product_abstract_sku}
-#     # Yves: add product to the shopping cart
-#     # Yves: go to the shopping cart through the header with name:    cancelationCart+${random}
-#     # Yves: click on the 'Checkout' button in the shopping cart
-#     # Yves: billing address same as shipping address:    true
-#     # Yves: select the following existing address on the checkout as 'shipping' address and go next:    ${yves_company_user_buyer_address}
-#     # Yves: submit form on the checkout
-#     # Yves: select the following shipping method for the shipment:    1    Hermes    Next Day
-#     # Yves: submit form on the checkout
-#     # Yves: select the following payment method on the checkout and go next:    Invoice
-#     # Yves: accept the terms and conditions:    true
-#     # Yves: 'submit the order' on the summary page
-#     # Yves: 'Thank you' page is displayed    
-#     # Yves: go to 'Order History' page
-#     # Yves: get the last placed order ID by current customer
-#     # ### change the order state of one product ###
-#     # Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     # Zed: go to order page:    ${lastPlacedOrder}
-#     # Zed: trigger matching state of order item inside xxx shipment:    403125    Pay
-#     # Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
-#     # Yves: go to 'Order History' page
-#     # Yves: 'View Order/Reorder/Return' on the order history page:    View Order    ${lastPlacedOrder}
-#     # Yves: 'Order Details' page contains the cancel order button:    true
-#     # Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     # Zed: go to order page:    ${lastPlacedOrder}
-#     # Zed: trigger matching state of order item inside xxx shipment:    403125    Skip timeout 
-#     # Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
-#     # Yves: go to 'Order History' page
-#     # Yves: 'View Order/Reorder/Return' on the order history page:    View Order    ${lastPlacedOrder}
-#     # Yves: 'Order Details' page contains the cancel order button:    false
-#     # ### change state of state of all products ###
-#     # Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     # Zed: go to order page:    ${lastPlacedOrder}
-#     # Zed: trigger matching state of order item inside xxx shipment:    107254    Pay
-#     # Zed: trigger matching state of order item inside xxx shipment:    107254    Skip timeout
-#     # Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
-#     # Yves: go to 'Order History' page
-#     # Yves: 'View Order/Reorder/Return' on the order history page:    View Order    ${lastPlacedOrder}
-#     # Yves: 'Order Details' page contains the cancel order button:    false
-#     # ### try to cancel order of another customer ###
-#     # Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
-#     # Yves: delete all shopping carts
-#     # Yves: delete all user addresses
-#     # Yves: create new 'Shopping Cart' with name:    cancelationCart+${random}
-#     # Yves: go to PDP of the product with sku:    ${one_variant_product_abstract_sku}
-#     # Yves: add product to the shopping cart
-#     # Yves: go to the shopping cart through the header with name:    cancelationCart+${random}
-#     # Yves: click on the 'Checkout' button in the shopping cart
-#     # Yves: billing address same as shipping address:    true
-#     # Yves: select the following existing address on the checkout as 'shipping' address and go next:    ${yves_company_user_buyer_address}
-#     # Yves: submit form on the checkout
-#     # Yves: select the following shipping method for the shipment:    1    Hermes    Next Day
-#     # Yves: submit form on the checkout
-#     # Yves: select the following payment method on the checkout and go next:    Invoice
-#     # Yves: accept the terms and conditions:    true
-#     # Yves: 'submit the order' on the summary page
-#     # Yves: 'Thank you' page is displayed    
-#     # Yves: go to 'Order History' page
-#     # Yves: get the last placed order ID by current customer
-#     # Yves: login on Yves with provided credentials:    ${yves_user_email}
-#     # Yves: go to 'Order History' page
-#     # Yves: filter order history by business unit:    Company Orders
-#     # Yves: 'View Order/Reorder/Return' on the order history page:    View Order    ${lastPlacedOrder}
-#     # Yves: 'Order Details' page contains the cancel order button:    false
-#     # [Teardown]    Run keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
-#     # ...    AND    Yves: delete all shopping carts
+Order_Cancelation
+    [Documentation]    Check that customer is able to cancel order
+    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
+    Yves: delete all shopping carts
+    Yves: delete all user addresses
+    Yves: create new 'Shopping Cart' with name:    cancelationCart+${random}
+    Yves: go to PDP of the product with sku:    ${one_variant_product_abstract_sku}
+    Yves: add product to the shopping cart
+    Yves: go to the shopping cart through the header with name:    cancelationCart+${random}
+    Yves: click on the 'Checkout' button in the shopping cart
+    Yves: billing address same as shipping address:    true
+    Yves: select the following existing address on the checkout as 'shipping' address and go next:    ${yves_company_user_buyer_address}
+    Yves: submit form on the checkout
+    Yves: select the following shipping method for the shipment:    1    Hermes    Next Day
+    Yves: submit form on the checkout
+    Yves: select the following payment method on the checkout and go next:    Invoice
+    Yves: accept the terms and conditions:    true
+    Yves: 'submit the order' on the summary page
+    Yves: 'Thank you' page is displayed    
+    Yves: go to 'Order History' page
+    Yves: get the last placed order ID by current customer
+    Yves: cancel the order:    ${lastPlacedOrder}
+    Yves: get the last placed order ID by current customer
+    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    Zed: go to order page:    ${lastPlacedOrder}
+    Zed: wait for order item to be in state:    403125    canceled
+    ## NOT FINISHED AS NO REQUIREMENTS FOR MP CASE
+    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
+    Yves: create new 'Shopping Cart' with name:    cancelationCart+${random}
+    Yves: go to PDP of the product with sku:    ${one_variant_product_abstract_sku}
+    Yves: add product to the shopping cart
+    Yves: go to PDP of the product with sku:    ${multi_color_product_abstract_sku}
+    Yves: add product to the shopping cart
+    Yves: go to the shopping cart through the header with name:    cancelationCart+${random}
+    Yves: click on the 'Checkout' button in the shopping cart
+    Yves: billing address same as shipping address:    true
+    Yves: select the following existing address on the checkout as 'shipping' address and go next:    ${yves_company_user_buyer_address}
+    Yves: submit form on the checkout
+    Yves: select the following shipping method for the shipment:    1    Hermes    Next Day
+    Yves: submit form on the checkout
+    Yves: select the following payment method on the checkout and go next:    Invoice
+    Yves: accept the terms and conditions:    true
+    Yves: 'submit the order' on the summary page
+    Yves: 'Thank you' page is displayed    
+    Yves: go to 'Order History' page
+    Yves: get the last placed order ID by current customer
+    ### change the order state of one product ###
+    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    Zed: go to order page:    ${lastPlacedOrder}
+    Zed: trigger matching state of order item inside xxx shipment:    403125    Pay
+    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
+    Yves: go to 'Order History' page
+    Yves: 'View Order/Reorder/Return' on the order history page:    View Order    ${lastPlacedOrder}
+    Yves: 'Order Details' page contains the cancel order button:    true
+    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    Zed: go to order page:    ${lastPlacedOrder}
+    Zed: trigger matching state of order item inside xxx shipment:    403125    Skip timeout 
+    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
+    Yves: go to 'Order History' page
+    Yves: 'View Order/Reorder/Return' on the order history page:    View Order    ${lastPlacedOrder}
+    Yves: 'Order Details' page contains the cancel order button:    false
+    ### change state of state of all products ###
+    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    Zed: go to order page:    ${lastPlacedOrder}
+    Zed: trigger matching state of order item inside xxx shipment:    107254    Pay
+    Zed: trigger matching state of order item inside xxx shipment:    107254    Skip timeout
+    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
+    Yves: go to 'Order History' page
+    Yves: 'View Order/Reorder/Return' on the order history page:    View Order    ${lastPlacedOrder}
+    Yves: 'Order Details' page contains the cancel order button:    false
+    ### try to cancel order of another customer ###
+    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
+    Yves: delete all shopping carts
+    Yves: delete all user addresses
+    Yves: create new 'Shopping Cart' with name:    cancelationCart+${random}
+    Yves: go to PDP of the product with sku:    ${one_variant_product_abstract_sku}
+    Yves: add product to the shopping cart
+    Yves: go to the shopping cart through the header with name:    cancelationCart+${random}
+    Yves: click on the 'Checkout' button in the shopping cart
+    Yves: billing address same as shipping address:    true
+    Yves: select the following existing address on the checkout as 'shipping' address and go next:    ${yves_company_user_buyer_address}
+    Yves: submit form on the checkout
+    Yves: select the following shipping method for the shipment:    1    Hermes    Next Day
+    Yves: submit form on the checkout
+    Yves: select the following payment method on the checkout and go next:    Invoice
+    Yves: accept the terms and conditions:    true
+    Yves: 'submit the order' on the summary page
+    Yves: 'Thank you' page is displayed    
+    Yves: go to 'Order History' page
+    Yves: get the last placed order ID by current customer
+    Yves: login on Yves with provided credentials:    ${yves_user_email}
+    Yves: go to 'Order History' page
+    Yves: filter order history by business unit:    Company Orders
+    Yves: 'View Order/Reorder/Return' on the order history page:    View Order    ${lastPlacedOrder}
+    Yves: 'Order Details' page contains the cancel order button:    false
+    [Teardown]    Run keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
+    ...    AND    Yves: delete all shopping carts
 
 # Multistore_Product_Offer
 #     [Documentation]    check product and offer multistore functionality
@@ -2414,24 +2414,24 @@ Packaging_Units
 #     ...    AND    Zed: go to second navigation item level:    Catalog    Products 
 #     ...    AND    Zed: click Action Button in a table for row that contains:      offAvProduct${random}     Deny
 
-# User_Control
-#     [Documentation]    Create a user with limited access
-#     Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     Zed: create new role with name:    controlRole${random}
-#     Zed: apply access permissions for user role:    ${full_access}    ${full_access}    ${full_access}   ${permission_allow}
-#     Zed: apply access permissions for user role:    ${bundle_access}    ${controller_access}    ${action_access}    ${permission_deny}
-#     Zed: create new group with role assigned:   controlGroup${random}    controlRole${random}
-#     Zed: create new Zed user with the following data:    sonia+control${random}@spryker.com   change${random}    First Control    Last Control    ControlGroup${random}    This user is an agent    en_US    
-#     Zed: login on Zed with provided credentials:   sonia+control${random}@spryker.com    change${random}
-#     Zed: go to second navigation item level:    Catalog    Attributes
-#     Zed: click button in Header:    Create Product Attribute
-#     Zed: validate the message when permission is restricted:    Access denied
-#     Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     Zed: deactivate the created user:    sonia+control${random}@spryker.com
-#     Zed: login with deactivated user/invalid data:    sonia+control${random}@spryker.com    change${random}
-#     [Teardown]    Run Keywords    Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     ...    AND    Zed: go to second navigation item level:    Users    User Roles
-#     ...    AND    Zed: click Action Button in a table for row that contains:    controlRole${random}    Delete 
+User_Control
+    [Documentation]    Create a user with limited access
+    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    Zed: create new role with name:    controlRole${random}
+    Zed: apply access permissions for user role:    ${full_access}    ${full_access}    ${full_access}   ${permission_allow}
+    Zed: apply access permissions for user role:    ${bundle_access}    ${controller_access}    ${action_access}    ${permission_deny}
+    Zed: create new group with role assigned:   controlGroup${random}    controlRole${random}
+    Zed: create new Zed user with the following data:    sonia+control${random}@spryker.com   change${random}    First Control    Last Control    ControlGroup${random}    This user is an agent    en_US    
+    Zed: login on Zed with provided credentials:   sonia+control${random}@spryker.com    change${random}
+    Zed: go to second navigation item level:    Catalog    Attributes
+    Zed: click button in Header:    Create Product Attribute
+    Zed: validate the message when permission is restricted:    Access denied
+    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    Zed: deactivate the created user:    sonia+control${random}@spryker.com
+    Zed: login with deactivated user/invalid data:    sonia+control${random}@spryker.com    change${random}
+    [Teardown]    Run Keywords    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    ...    AND    Zed: go to second navigation item level:    Users    User Roles
+    ...    AND    Zed: click Action Button in a table for row that contains:    controlRole${random}    Delete 
 
 # Update_Customer_Data
 #     [Documentation]    Checks customer data can be updated from Yves and Zed
@@ -2469,7 +2469,7 @@ Packaging_Units
 #     ...    || email                            | salutation | first name                           | last name                           ||
 #     ...    || ${yves_company_user_buyer_email} | Mr         | ${yves_company_user_buyer_firstname} | ${yves_company_user_buyer_lastname} ||
 
-# Comments_in_Cart
+# Comments_in_Cart BUG SLA-3696
 #     [Documentation]    Add comments to cart and verify comments in Yves and Zed
 #     Yves: login on Yves with provided credentials:    ${yves_company_user_shared_permission_owner_email}
 #     Yves: create new 'Shopping Cart' with name:    commentCart+${random}
@@ -2531,7 +2531,7 @@ Packaging_Units
 #     Zed: check comment appears at order detailed page in zed:    abc${random}    ${lastPlacedOrder}
 
 # Glossary
-#     [Documentation]    Create + edit glossary translation in BO
+#     [Documentation]    Create + edit glossary translation in BO - PASSED
 #     Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     Zed: go to second navigation item level:    Administration    Glossary  
 #     Zed: click button in Header:    Create Translation

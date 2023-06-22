@@ -2,6 +2,7 @@
 Resource    ../common/common_zed.robot
 Resource    ../common/common.robot
 Resource    ../pages/zed/zed_root_menus_page.robot
+Resource    checkout_steps.robot
 
 *** Keywords ***
 Zed: verify first navigation root menus
@@ -11,6 +12,7 @@ Zed: verify first navigation root menus
         Log    ${counter}
         Click    xpath=(//ul[@id='side-menu']/li/a/span[@class='nav-label']/../../a[contains(@href,'/') and not (contains(@href,'javascript'))])[${counter}]
         Sleep    3s
+        Click    ${zed_navbar_dropdown}
         Wait Until Element Is Visible    ${zed_log_out_button}    10s
         ${counter}=    Evaluate    ${counter} + 1   
     END
@@ -38,10 +40,12 @@ Zed: verify second navigation root menus
                 log    ${node_state}
                 IF    'active' not in '${node_state}'     Click Element by xpath with JavaScript    (//ul[@id='side-menu']/li/a/span[@class='nav-label']/../../a[contains(@href,'javascript')])[${counter}]
                 Click Element by xpath with JavaScript    ((//ul[@id='side-menu']/li/a/span[@class='nav-label']/../../a[contains(@href,'javascript')])[${counter}]/ancestor::li//ul[contains(@class,'nav-second-level')]//a)[${counter_1}]
+                Click    ${zed_navbar_dropdown}
                 Wait Until Element Is Visible    ${zed_log_out_button}    timeout=10s
                 Log    ${counter_1}
                 ${counter_1}=    Evaluate    ${counter_1} + 1   
-            END        
+            END    
+        Click    ${zed_navbar_dropdown}    
         Wait Until Element Is Visible    ${zed_log_out_button}    timeout=10s
         ${counter}=    Evaluate    ${counter} + 1  
     END
