@@ -15,7 +15,7 @@ ${pdp_variant_selector}    xpath=//*[@data-qa='component variant']//select
 ${pdp_variant_custom_selector}    xpath=//section[@data-qa='component variant-configurator']//span[contains(@id,'select2-attribute')]
 ${pdp_variant_custom_selector_results}    xpath=//ul[contains(@id,'select2-attribute')][contains(@id,'results')]
 ${pdp_amount_input_filed}    xpath=//*[@id="user-amount"]
-${pdp_packaging_unit_notification}    xpath=//div[contains(@class,'packaging-unit-quantity-selector')][contains(@class,'packaging-unit-choice')]/div[contains(@class,'packaging-unit')][contains(@class,'notifications')]
+${pdp_packaging_unit_notification}    xpath=xpath=//div[@class="packaging-unit-notifications"]
 &{pdp_product_bundle_include_small}    ui_b2b=xpath=//div[contains(@data-qa,'component bundle-items')]    ui_b2c=xpath=//div[contains(@data-qa,'component bundle-items')]    ui_mp_b2b=xpath=//div[contains(@data-qa,'component bundle-items')]    ui_mp_b2c=xpath=//div[contains(@data-qa,'component bundle-items')]
 ${pdp_product_bundle_include_large}    xpath=//div[@data-qa='component product-bundle']
 &{pdp_related_products}    ui_b2b=xpath=//*[contains(@class,'title--product-slider')][contains(.,'Similar products')]/../slick-carousel    ui_b2c=xpath=//*[contains(@class,'product-slider')][contains(.,'You might also like')]/../slick-carousel    ui_mp_b2b=xpath=//*[contains(@class,'title--product-slider')][contains(.,'Similar products')]/../slick-carousel    ui_mp_b2c=xpath=//*[contains(@class,'product-slider')][contains(.,'You might also like')]/../slick-carousel

@@ -67,12 +67,14 @@ Yves: check that user has address exists/doesn't exist:
         Run keywords
             Element Should Be Visible    xpath=//ul[contains(@class,'display-address')]//*[contains(text(),'${firstName} ${lastName}')]
             Element Should Be Visible    xpath=//ul[contains(@class,'display-address')]//*[contains(text(),'${street} ${houseNumber}')]
-            Element Should Be Visible    xpath=//ul[contains(@class,'display-address')]//*[contains(text(),'${postCode} ${city}, ${country}')]
+            Element Should Be Visible    xpath=//ul[contains(@class,'display-address')]//*[contains(text(),'${postCode} ${city}')]
+            Element Should Be Visible    xpath=//ul[contains(@class,'display-address')]//*[contains(text(),'${country}')]
     ELSE
         Run keywords
             Element Should Not Be Visible    xpath=//ul[contains(@class,'display-address')]//*[contains(text(),'${firstName} ${lastName}')]
             Element Should Not Be Visible    xpath=//ul[contains(@class,'display-address')]//*[contains(text(),'${street} ${houseNumber}')]
-            Element Should Not Be Visible    xpath=//ul[contains(@class,'display-address')]//*[contains(text(),'${postCode} ${city}, ${country}')]
+            Element Should Not Be Visible    xpath=//ul[contains(@class,'display-address')]//*[contains(text(),'${postCode} ${city}')]
+            Element Should Not Be Visible    xpath=//ul[contains(@class,'display-address')]//*[contains(text(),'${country}')]
     END
 
 Yves: delete user address:

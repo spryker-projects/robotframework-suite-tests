@@ -1,11 +1,12 @@
 {
     "environment":"ui_mp_b2b",
     "env":{
-      "yves_url":"http://yves.de.spryker.local/",
-      "yves_at_url":"http://yves.at.spryker.local/",
-      "zed_url":"http://backoffice.de.spryker.local/",
-      "mp_url":"http://mp.de.spryker.local/security-merchant-portal-gui/login/",
-       "bapi_url":"http://glue-backend.de.spryker.local"
+      "yves_url":"https://cloud:cloud@www.de.sc-b2b-mp-stage.demo-spryker.com/",
+      "yves_at_url":"https://cloud:cloud@www.at.sc-b2b-mp-stage.demo-spryker.com/",
+      "zed_url":"https://cloud:cloud@backoffice.de.sc-b2b-mp-stage.demo-spryker.com/",
+      "mp_url":"https://cloud:cloud@mp.de.sc-b2b-mp-stage.demo-spryker.com/security-merchant-portal-gui/login/",
+      "glue_url":"http://glue.de.spryker.local",
+      "bapi_url":"http://glue-backend.de.spryker.local"
    },
     "database":{
        "db_host":"127.0.0.1",
