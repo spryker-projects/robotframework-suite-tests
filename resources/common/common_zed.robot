@@ -5,7 +5,8 @@ Resource                  ../pages/zed/zed_login_page.robot
 Resource    ../pages/zed/zed_edit_product_page.robot
 
 *** Variable ***
-${zed_log_out_button}   xpath=//ul[@class='nav navbar-top-links navbar-right']//a[contains(@href,'logout')]
+${zed_log_out_button}   xpath=//a[contains(@class, 'user-data__link--logout')]
+${zed_navbar_dropdown}    xpath=//li[@class='dropdown user-navbar__item']
 ${zed_save_button}      xpath=//input[contains(@class,'safe-submit')]
 ${zed_success_flash_message}    xpath=//div[@class='flash-messages']/div[@class='alert alert-success']
 ${zed_error_flash_message}    xpath=//div[@class='flash-messages']/div[@class='alert alert-danger']
@@ -28,6 +29,7 @@ Zed: login on Zed with provided credentials:
     Type Text    ${zed_user_name_field}    ${email}
     Type Text    ${zed_password_field}    ${password}
     Click    ${zed_login_button}
+    Click    ${zed_navbar_dropdown}
     Wait Until Element Is Visible    ${zed_log_out_button}    Zed:Dashboard page is not displayed
 
 Zed: login with deactivated user/invalid data:
