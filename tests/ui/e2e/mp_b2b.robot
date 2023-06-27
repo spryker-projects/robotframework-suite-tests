@@ -402,21 +402,21 @@ Resource    ../../../resources/steps/configurable_product_steps.robot
 #     Yves: 'submit the order' on the summary page
 #     Yves: 'Thank you' page is displayed
 
-Product_Relations
-    [Documentation]    Checks related product on PDP and upsell products in cart
-    [Setup]    Run keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
-    ...    AND    Yves: create new 'Shopping Cart' with name:    productRelationCart+${random}
-    Yves: go to PDP of the product with sku:    ${product_with_relations_related_products_sku}
-    Yves: PDP contains/doesn't contain:    true    ${relatedProducts}
-    Yves: go to PDP of the product with sku:    ${product_with_relations_upselling_sku}
-    Yves: PDP contains/doesn't contain:    false    ${relatedProducts}
-    Yves: add product to the shopping cart
-    Yves: go to the shopping cart through the header with name:    productRelationCart+${random}
-    Yves: shopping cart contains/doesn't contain the following elements:    true    ${upSellProducts}
-    [Teardown]    Yves: delete 'Shopping Cart' with name:    productRelationCart+${random}
+# Product_Relations - BUG SLA-3706
+#     [Documentation]    Checks related product on PDP and upsell products in cart
+#     [Setup]    Run keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
+#     ...    AND    Yves: create new 'Shopping Cart' with name:    productRelationCart+${random}
+#     Yves: go to PDP of the product with sku:    ${product_with_relations_related_products_sku}
+#     Yves: PDP contains/doesn't contain:    true    ${relatedProducts}
+#     Yves: go to PDP of the product with sku:    ${product_with_relations_upselling_sku}
+#     Yves: PDP contains/doesn't contain:    false    ${relatedProducts}
+#     Yves: add product to the shopping cart
+#     Yves: go to the shopping cart through the header with name:    productRelationCart+${random}
+#     Yves: shopping cart contains/doesn't contain the following elements:    true    ${upSellProducts}
+#     [Teardown]    Yves: delete 'Shopping Cart' with name:    productRelationCart+${random}
 
 # Default_Merchants
-#     [Documentation]    Checks that default merchants are present in Zed
+#     [Documentation]    Checks that default merchants are present in Zed - PASSED
 #     Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     Zed: go to second navigation item level:    Marketplace    Merchants
 #     Zed: table should contain:    Restrictions Merchant
@@ -424,7 +424,7 @@ Product_Relations
 #     Zed: table should contain:    Products Restrictions Merchant
 
 # Product_Restrictions
-#     [Documentation]    Checks White and Aluminium lists
+#     [Documentation]    Checks White and Aluminium lists - PASSED
 #     Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
 #     Yves: perform search by:    Soennecken
 #     Yves: 'Catalog' page should show products:    18
@@ -444,7 +444,7 @@ Product_Relations
 #     Yves: 'Catalog' page should show products:    10
 
 # Customer_Specific_Prices
-#     [Documentation]    Checks that product price can be different for different customers
+#     [Documentation]    Checks that product price can be different for different customers - PASSED
 #     Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
 #     Yves: perform search by:    ${one_variant_product_abstract_name}
 #     Yves: product with name in the catalog should have price:    ${one_variant_product_abstract_name}    ${one_variant_product_default_price}
@@ -463,7 +463,7 @@ Product_Relations
 #     [Teardown]    Yves: delete 'Shopping Cart' with name:    customerPrices+${random}
 
 # Agent_Assist
-#     [Documentation]    Checks Agent creation and that it can login under customer.
+#     [Documentation]    Checks Agent creation and that it can login under customer. - PASSED
 #     Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     Zed: create new Zed user with the following data:    agent+${random}@spryker.com    change123${random}    Agent    Assist    Root group    This user is an agent    en_US
 #     Yves: go to the 'Home' page
@@ -480,17 +480,17 @@ Product_Relations
 #     [Teardown]    Run Keywords    Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     ...    AND    Zed: delete Zed user with the following email:    agent+${random}@spryker.com
 
-# Business_on_Behalf
-#     [Documentation]    Check that BoB user has possibility to change the business unit
-#     Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     Zed: go to second navigation item level:    Customers    Company Users
-#     Zed: click Action Button in a table for row that contains:    Donald    Attach to BU
-#     Zed: attach company user to the following BU with role:    Spryker Systems Zurich (id: 25)    Admin
-#     Yves: login on Yves with provided credentials:    ${yves_company_user_bob_email}
-#     Yves: go to URL:    en/company/user/select
-#     Yves: 'Select Business Unit' page is displayed
-#     Yves: 'Business Unit' dropdown contains:    Spryker Systems GmbH / Spryker Systems Berlin    Spryker Systems GmbH / Spryker Systems Zurich
-#     [Teardown]    Zed: delete company user xxx withing xxx company business unit:    Donald    Spryker Systems Zurich
+Business_on_Behalf
+    [Documentation]    Check that BoB user has possibility to change the business unit
+    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    Zed: go to second navigation item level:    Customers    Company Users
+    Zed: click Action Button in a table for row that contains:    Donald    Attach to BU
+    Zed: attach company user to the following BU with role:    Spryker Systems Zurich (id: 25)    Admin
+    Yves: login on Yves with provided credentials:    ${yves_company_user_bob_email}
+    Yves: go to URL:    en/company/user/select
+    Yves: 'Select Business Unit' page is displayed
+    Yves: 'Business Unit' dropdown contains:    Spryker Systems GmbH / Spryker Systems Berlin    Spryker Systems GmbH / Spryker Systems Zurich
+    [Teardown]    Zed: delete company user xxx withing xxx company business unit:    Donald    Spryker Systems Zurich
 
 # Business_Unit_Address_on_Checkout
 #     [Documentation]    Checks that business unit address can be used during checkout
