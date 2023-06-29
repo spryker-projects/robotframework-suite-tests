@@ -39,6 +39,7 @@ Resource    ../../../resources/steps/availability_steps.robot
 Resource    ../../../resources/steps/glossary_steps.robot
 Resource    ../../../resources/steps/order_comments_steps.robot
 Resource    ../../../resources/steps/configurable_product_steps.robot
+Resource    ../../../resources/steps/configurable_bundle_steps.robot
 
 *** Test Cases ***
 # Guest_User_Access_Restrictions
@@ -480,23 +481,24 @@ Resource    ../../../resources/steps/configurable_product_steps.robot
 #     [Teardown]    Run Keywords    Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     ...    AND    Zed: delete Zed user with the following email:    agent+${random}@spryker.com
 
-Business_on_Behalf
-    [Documentation]    Check that BoB user has possibility to change the business unit
-    Zed: login on Zed with provided credentials:    ${zed_admin_email}
-    Zed: go to second navigation item level:    Customers    Company Users
-    Zed: click Action Button in a table for row that contains:    Donald    Attach to BU
-    Zed: attach company user to the following BU with role:    Spryker Systems Zurich (id: 25)    Admin
-    Yves: login on Yves with provided credentials:    ${yves_company_user_bob_email}
-    Yves: go to URL:    en/company/user/select
-    Yves: 'Select Business Unit' page is displayed
-    Yves: 'Business Unit' dropdown contains:    Spryker Systems GmbH / Spryker Systems Berlin    Spryker Systems GmbH / Spryker Systems Zurich
-    [Teardown]    Zed: delete company user xxx withing xxx company business unit:    Donald    Spryker Systems Zurich
+# Business_on_Behalf
+#     [Documentation]    Check that BoB user has possibility to change the business unit - PASSED
+#     Zed: login on Zed with provided credentials:    ${zed_admin_email}
+#     Zed: go to second navigation item level:    Customers    Company Users
+#     Zed: click Action Button in a table for row that contains:    Donald    Attach to BU
+#     Zed: attach company user to the following BU with role:    Spryker Systems Zurich (id: 25)    Admin
+#     Yves: login on Yves with provided credentials:    ${yves_company_user_bob_email}
+#     Yves: go to URL:    en/company/user/select
+#     Yves: 'Select Business Unit' page is displayed
+#     Yves: 'Business Unit' dropdown contains:    Spryker Systems GmbH / Spryker Systems Berlin    Spryker Systems GmbH / Spryker Systems Zurich
+#     [Teardown]    Zed: delete company user xxx withing xxx company business unit:    Donald    Spryker Systems Zurich
 
 # Business_Unit_Address_on_Checkout
-#     [Documentation]    Checks that business unit address can be used during checkout
+#     [Documentation]    BUG: SLA-3685 Checks that business unit address can be used during checkout
 #     [Setup]    Run keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
 #     ...    AND    Yves: create new 'Shopping Cart' with name:    businessAddressCart+${random}
-#     Yves: go to PDP of the product with sku:    M64933
+#     Yves: go to PDP of the product with sku:    M1017902
+#     # M64933
 #     Yves: add product to the shopping cart
 #     Yves: go to the shopping cart through the header with name:    businessAddressCart+${random}
 #     Yves: click on the 'Checkout' button in the shopping cart
@@ -515,7 +517,7 @@ Business_on_Behalf
 #     Yves: shipping address on the order details page is:    Mr. Armando Richi Spryker Systems GmbH Gurmont Str. 23 8002 Barcelona, Spain 3490284322
 
 # Approval_Process
-#     [Documentation]    Checks role permissions on checkout and Approval process
+#     [Documentation]    BUG: SLA-3707 Checks role permissions on checkout and Approval process
 #     [Setup]    Run keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_with_limit_email}
 #     ...    AND    Yves: create new 'Shopping Cart' with name:    approvalCart+${random}
 #     Yves: go to PDP of the product with sku:    M49320
@@ -526,7 +528,7 @@ Business_on_Behalf
 #     Yves: select the following existing address on the checkout as 'shipping' address and go next:    ${yves_company_user_buyer_with_limit_address}
 #     Yves: select the following shipping method on the checkout and go next:    Express
 #     Yves: select the following payment method on the checkout and go next:    Invoice
-#     Yves: select approver on the 'Summary' page:    Lilu Dallas (€1,000.00)
+#     Yves: select approver on the 'Summary' page:    Lilu Dallas (Unlimited)
 #     Yves: 'send the request' on the summary page
 #     Yves: 'Summary' page is displayed
 #     Yves: 'Summary' page contains/doesn't contain:    true    ${cancelRequestButton}    ${alertWarning}    ${quoteStatus}
@@ -596,7 +598,7 @@ Business_on_Behalf
 #     Yves: 'Thank you' page is displayed
 
 # Request_for_Quote
-#     [Documentation]    Checks user can request and receive quote
+#     [Documentation]    BUG: SLA-3777 + BUG SLA-3783 Checks user can request and receive quote
 #     [Setup]    Run keywords    Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     ...    AND    Zed: create new Zed user with the following data:    agent_quote+${random}@spryker.com    change123${random}    Request    Quote    Root group    This user is an agent    en_US
 #     Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
@@ -604,7 +606,8 @@ Business_on_Behalf
 #     Yves: create new 'Shopping Cart' with name:    RfQCart+${random}
 #     Yves: go to PDP of the product with sku:    ${one_variant_product_abstract_sku}
 #     Yves: add product to the shopping cart
-#     Yves: go to PDP of the product with sku:    M1018212
+#     Yves: go to PDP of the product with sku:    M1028702
+#     # M1018212
 #     Yves: add product to the shopping cart
 #     Yves: go to the shopping cart through the header with name:    RfQCart+${random}
 #     Yves: submit new request for quote
@@ -629,7 +632,8 @@ Business_on_Behalf
 #     Yves: view quote request with reference:    ${lastCreatedRfQ}
 #     Yves: click 'Revise' button on the 'Quote Request Details' page
 #     Yves: click 'Edit Items' button on the 'Quote Request Details' page
-#     Yves: delete product from the shopping cart with sku:    102121
+#     Yves: delete product from the shopping cart with sku:    573330
+#     #102121
 #     Yves: click 'Save and Back to Edit' button on the 'Quote Request Details' page
 #     Yves: add the following note to the quote request:    Spryker rocks
 #     Yves: click 'Save' button on the 'Quote Request Details' page
@@ -685,7 +689,7 @@ Business_on_Behalf
 #     [Teardown]    Run Keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_manager_and_buyer_email}
 #     ...    AND    Yves: delete 'Shopping Cart' with name:    externalCart+${random}
 
-#### Configurable Bundles feature is not present in marketplace for now ####
+### Configurable Bundles feature is not present in marketplace for now ####
 # Configurable_Bundle
 #     [Documentation]    Checks checkout with the configurable bundle
 #     [Setup]    Run keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_manager_and_buyer_email}
@@ -721,6 +725,7 @@ Business_on_Behalf
 #     Yves: 'View Order' page is displayed
 #     Yves: 'Order Details' page contains the following product title N times:    Presentation bundle    3
 
+# ## Return_management is not implemented in Demo Shops ###
 # Return_Management
 #     [Documentation]    Checks OMS and that Yves user and in Zed main merchant can create/execute returns.
 #     [Setup]    Run keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
@@ -798,7 +803,7 @@ Business_on_Behalf
 #     ...    AND    Zed: delete Zed user with the following email:    return+agent+${random}@spryker.com
 
 # User_Account
-#     [Documentation]    Checks user account pages work + address management
+#     [Documentation]    Checks user account pages work + address management - PASSED
 #     Yves: login on Yves with provided credentials:    ${yves_user_email}
 #     Yves: go to user menu item in header:    Overview
 #     Yves: 'Overview' page is displayed
@@ -850,7 +855,7 @@ Business_on_Behalf
 #     ...    AND    Yves: delete 'Shopping Cart' with name:    externalCart+${random}
 
 # Product_labels
-#     [Documentation]    Checks that products have labels on PLP and PDP
+#     [Documentation]    Checks that products have labels on PLP and PDP - PASSED
 #     Yves: go to first navigation item level:    Sale %
 #     Yves: 1st product card in catalog (not)contains:     Sale label    true
 #     Yves: go to the PDP of the first available product on open catalog page
@@ -861,7 +866,7 @@ Business_on_Behalf
 #     Yves: PDP contains/doesn't contain:    true    ${pdp_new_label}[${env}] 
 
 # Catalog
-#     [Documentation]    Checks that catalog options and search work
+#     [Documentation]    BUG: SLA-3706 Checks that catalog options and search work
 #     Yves: login on Yves with provided credentials:    ${yves_user_email}
 #     Yves: perform search by:    claire
 #     Yves: 'Catalog' page should show products:    15
