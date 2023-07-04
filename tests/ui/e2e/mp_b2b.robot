@@ -934,7 +934,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     Yves: PDP contains/doesn't contain:    true    ${pdpPriceLocator}    ${addToCartButton}    ${pdp_limited_warranty_option}     ${pdp_insurance_coverage_option}
 
 # Split_Delivery
-#     [Documentation]    Checks split delivery in checkout with new addresses
+#     [Documentation]    Checks split delivery in checkout with new addresses - BUG SLA-3706
 #     [Setup]    Run Keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
 #     ...    AND    Yves: delete all shopping carts
 #     ...    AND    Yves: create new 'Shopping Cart' with name:    splitDelivery+${random}
@@ -976,7 +976,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     ...    AND    Yves: delete all user addresses
 
 # Content_Management
-#     [Documentation]    Checks cms content can be edited in zed and that correct cms elements are present on homepage   
+#     [Documentation]    Checks cms content can be edited in zed and that correct cms elements are present on homepage - PASSED
 #     Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     Zed: go to second navigation item level:    Content    Pages
 #     Zed: create a cms page and publish it:    Test Page${random}    test-page${random}    Page Title    Page text
@@ -1034,7 +1034,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     ...    AND    Zed: activate following discounts from Overview page:    20% off storage    10% off minimum order
 
 # Multiple_Merchants_Order
-#     [Documentation]    Checks that order with products and offers of multiple merchants could be placed and it will be splitted per merchant
+#     [Documentation]    Checks that order with products and offers of multiple merchants could be placed and it will be splitted per merchant - PASSED
 #     [Setup]    Run Keywords    
 #     ...    MP: login on MP with provided credentials:    ${merchant_computer_experts_email}
 #     ...    AND    MP: change offer stock:
@@ -1121,7 +1121,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     ...    AND    Zed: click Action Button in a table for row that contains:    Test Page${random}    Deactivate
 
 # Merchant_Profile_Set_to_Inactive_from_Backoffice
-#     [Documentation]    Checks that backoffice admin is able to deactivate merchant and then it's profile, products and offers won't be displayed on Yves
+#     [Documentation]    Checks that backoffice admin is able to deactivate merchant and then it's profile, products and offers won't be displayed on Yves - PASSED
 #     [Setup]    Run Keywords    
 #     ...    MP: login on MP with provided credentials:    ${merchant_computer_experts_email}
 #     ...    AND    MP: change offer stock:
@@ -1136,7 +1136,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     Zed: click Action Button in a table for row that contains:     Office King     Deactivate
 #     Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
 #     Yves: go to URL:    en/merchant/office-king
-#     Yves: try reloading page if element is/not appear:    ${merchant_profile_main_content_locator}    false
+#     Yves: try reloading page if element is/not appear:    ${merchant_profile_main_content_locator}    true
 #     Yves: perform search by:    Office King
 #     Yves: go to the PDP of the first available product on open catalog page
 #     Yves: merchant is (not) displaying in Sold By section of PDP:    Office King    false
@@ -1168,7 +1168,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     ...    || merchant name               | merchant reference | e-mail  | store | store | en url | de url ||
 #     ...    || NewMerchantUpdated${random} |                    |         |       |       |        |        ||
 #     Yves: go to newly created page by URL:    en/merchant/NewMerchantURL${random}
-#     Yves: assert merchant profile fields:
+#     # need to be refactored Yves: assert merchant profile fields:
 #     ...    || name                         | email| phone | delivery time | data privacy ||
 #     ...    || NewMerchantUpdated${random}  |      |       |               |              ||
 #     Zed: login on Zed with provided credentials:    ${zed_admin_email}
@@ -1183,7 +1183,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     ...    AND    Zed: click Action Button in a table for row that contains:     NewMerchantUpdated${random}     Deactivate
 
 # Manage_Merchant_Users
-#     [Documentation]    Checks that backoffice admin is able to create, activate, edit and delete merchant users
+#     [Documentation]    Checks that backoffice admin is able to create, activate, edit and delete merchant users - PASSED
 #     Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     Zed: go to second navigation item level:    Marketplace    Merchants
 #     Zed: click Action Button in a table for row that contains:     Office King     Edit
@@ -1219,7 +1219,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     ...    AND    Zed: submit the form
 
 # Create_and_Approve_New_Merchant_Product
-#     [Documentation]    Checks that merchant is able to create new multi-SKU product and marketplace operator is able to approve it in BO
+#     [Documentation]    Checks that merchant is able to create new multi-SKU product and marketplace operator is able to approve it in BO - PASSED
 #     MP: login on MP with provided credentials:    ${merchant_office_king_email}
 #     MP: open navigation menu tab:    Products    
 #     MP: click on create new entity button:    Create Product
@@ -1319,7 +1319,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     ...    AND    Zed: click Action Button in a table for row that contains:     SprykerProduct${random}     Deny
 
 # Approve_Offer
-#     [Documentation]    Checks that marketplace operator is able to approve or deny merchant's offer and it will be available or not in store due to this status
+#     [Documentation]    Checks that marketplace operator is able to approve or deny merchant's offer and it will be available or not in store due to this status - PASSED
 #     Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     Zed: go to second navigation item level:    Marketplace    Offers
 #     Zed: select merchant in filter:    Office King
@@ -1518,7 +1518,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     [Teardown]    Yves: delete 'Shopping List' with name:    shoppingListName${random}
 
 # Merchant_Portal_My_Account
-#     [Documentation]    Checks that MU can edit personal data in MP
+#     [Documentation]    Checks that MU can edit personal data in MP - PASSED
 #     Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     Zed: go to second navigation item level:    Marketplace    Merchants
 #     Zed: click Action Button in a table for row that contains:     Oryx Merchant     Edit
