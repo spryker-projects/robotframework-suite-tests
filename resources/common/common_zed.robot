@@ -96,13 +96,13 @@ Zed: click Action Button in Variant table for row that contains:
 
 Zed: Check checkbox by Label:
     [Arguments]    ${checkbox_label}
-    wait until element is visible    xpath=//div[@id='merchant_storeRelation_id_stores']//label[contains(text(),'${checkbox_label}')]
-    Check checkbox    xpath=//div[@id='merchant_storeRelation_id_stores']//label[contains(text(),'${checkbox_label}')]
+    wait until element is visible    xpath=//label[contains(text(),'${checkbox_label}')]
+    Check checkbox    xpath=//label[contains(text(),'${checkbox_label}')]
 
 Zed: Uncheck Checkbox by Label:
     [Arguments]    ${checkbox_label}
-    wait until element is visible    xpath=//div[@id='merchant_storeRelation_id_stores']//label[contains(text(),'${checkbox_label}')]
-    Uncheck Checkbox    xpath=//div[@id='merchant_storeRelation_id_stores']//label[contains(text(),'${checkbox_label}')]
+    wait until element is visible    xpath=//label[contains(text(),'${checkbox_label}')]
+    Uncheck Checkbox    xpath=//label[contains(text(),'${checkbox_label}')]
 
 Zed: submit the form
     Wait until element is visible    ${zed_save_button}

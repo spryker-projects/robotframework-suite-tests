@@ -2169,7 +2169,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     ...    AND    Zed: click Action Button in a table for row that contains:     multistoreSKU${random}     Deny
 
 # Multistore_CMS
-#     [Documentation]    Check CMS multistore functionality
+#     [Documentation]    Check CMS multistore functionality - PASSED
 #     Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     Zed: go to second navigation item level:    Content    Pages
 #     Zed: create a cms page and publish it:    Multistore Page${random}    multistore-page${random}    Multistore Page    Page text
@@ -2417,7 +2417,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     ...    AND    Zed: click Action Button in a table for row that contains:    controlRole${random}    Delete 
 
 # Update_Customer_Data
-#     [Documentation]    Checks customer data can be updated from Yves and Zed
+#     [Documentation]    Checks customer data can be updated from Yves and Zed - PASSED
 #     Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
 #     Yves: go to user menu item in header:    Overview
 #     Yves: 'Overview' page is displayed
