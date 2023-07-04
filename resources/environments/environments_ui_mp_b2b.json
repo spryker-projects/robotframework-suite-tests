@@ -5,8 +5,8 @@
        "yves_at_url":"https://cloud:cloud@www.at.sc-b2b-mp-stage.demo-spryker.com/",
        "zed_url":"https://cloud:cloud@backoffice.de.sc-b2b-mp-stage.demo-spryker.com/",
        "mp_url":"https://cloud:cloud@mp.de.sc-b2b-mp-stage.demo-spryker.com/security-merchant-portal-gui/login/",
-       "glue_url":"http://glue.de.spryker.local",
-       "bapi_url":"http://glue-backend.de.spryker.local"
+       "glue_url":"https://glue.de.sc-b2b-mp-stage.demo-spryker.com/",
+       "bapi_url":"https://glue.de.sc-b2b-mp-stage.demo-spryker.com/"
    },
     "database":{
        "db_host":"127.0.0.1",

@@ -689,7 +689,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     [Teardown]    Run Keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_manager_and_buyer_email}
 #     ...    AND    Yves: delete 'Shopping Cart' with name:    externalCart+${random}
 
-### Configurable Bundles feature is not present in marketplace for now ####
+## Configurable Bundles feature is not present in marketplace for now ####
 # Configurable_Bundle
 #     [Documentation]    Checks checkout with the configurable bundle
 #     [Setup]    Run keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_manager_and_buyer_email}
@@ -1546,7 +1546,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     ...    AND    Zed: delete Zed user with the following email:    sonia+new+editmu+${random}@spryker.com
     
 # Merchant_Portal_Dashboard
-#     [Documentation]    Checks that merchant user is able to access the dashboard page
+#     [Documentation]    Checks that merchant user is able to access the dashboard page - PASSED
 #     Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     Zed: go to second navigation item level:    Marketplace    Merchants
 #     Zed: click Action Button in a table for row that contains:     Oryx Merchant     Edit
@@ -1791,7 +1791,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     Yves: 1st product card in catalog (not)contains:     Original Price    €150.00
 #     Yves: go to PDP of the product with sku:     originalSKU${random}
 #     Yves: product price on the PDP should be:    €100.00
-#     Yves: product original price on the PDP should be:    €150.00
+#     # Yves: product original price on the PDP should be:    €150.00
 #     [Teardown]    Run Keywords    Yves: check if cart is not empty and clear it
 #     ...    AND    Zed: login on Zed with provided credentials:    ${zed_admin_email}
 #     ...    AND    Zed: go to second navigation item level:    Catalog    Products 
@@ -2475,7 +2475,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     Zed: check comment appears at order detailed page in zed:    abc${random}    ${lastPlacedOrder}
 
 # Comment_Management_in_the_Cart
-#     [Documentation]    Editing and deleting comments in carts
+#     [Documentation]    Editing and deleting comments in carts - PASSED
 #     Yves: login on Yves with provided credentials:    ${yves_company_user_shared_permission_owner_email}
 #     Yves: create new 'Shopping Cart' with name:    commentManagement+${random}
 #     Yves: go to PDP of the product with sku:    ${one_variant_product_abstract_sku}
@@ -2491,7 +2491,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 
 # Comment_Management_in_Order
 #     [Tags]    skip-due-to-issue
-#     [Documentation]    Bug: CC-23306. Add comments in Yves and check in Zed
+#     [Documentation]    Bug: SLA-3695/CC-23306. Add comments in Yves and check in Zed
 #     Yves: login on Yves with provided credentials:    ${yves_company_user_shared_permission_owner_email}
 #     Yves: create new 'Shopping Cart' with name:    comments+${random}
 #     Yves: go to PDP of the product with sku:    ${one_variant_product_abstract_sku}
