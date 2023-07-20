@@ -202,7 +202,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     [Teardown]    Yves: delete 'Shopping Cart' with name:    VolumePriceCart+${random}
 
 # Discontinued_Alternative_Products
-#     [Documentation]    BUG: SLA-3706 - Checks that product can be discontinued in Zed
+#     [Documentation]    Checks that product can be discontinued in Zed - PASSED
 #     Yves: go to PDP of the product with sku:  M21100
 #     Yves: PDP contains/doesn't contain:    true    ${alternativeProducts}
 #     Zed: login on Zed with provided credentials:    ${zed_admin_email}
@@ -243,6 +243,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     Yves: go to PDP of the product with sku:    M21766
 #     Yves: change variant of the product on PDP on:    Box
 #     Yves: change amount on PDP:    51
+#     Sleep    1s
 #     Yves: PDP contains/doesn't contain:    true    ${packagingUnitSuggestion}
 #     Yves: change amount on PDP:    10
 #     Yves: add product to the shopping cart
@@ -324,7 +325,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     Yves: perform search by:    Soennecken
 #     Yves: 'Catalog' page should show products:    18
 #     Yves: go to URL:    en/office-furniture/storage/lockers
-#     Yves: 'Catalog' page should show products:    34
+#     Yves: 'Catalog' page should show products:    32
 #     Yves: logout on Yves as a customer
 #     Yves: login on Yves with provided credentials:    ${yves_company_user_restriction_customer_email_1}
 #     Yves: perform search by:    Soennecken
@@ -430,7 +431,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     Yves: perform search by:    Soennecken
 #     Yves: 'Catalog' page should show products:    18
 #     Yves: go to URL:    en/office-furniture/storage/lockers
-#     Yves: 'Catalog' page should show products:    34
+#     Yves: 'Catalog' page should show products:    32
 #     Yves: logout on Yves as a customer
 #     Yves: login on Yves with provided credentials:    ${yves_company_user_restriction_customer_email_1}
 #     Yves: perform search by:    Soennecken
@@ -865,7 +866,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     Yves: go to the PDP of the first available product on open catalog page
 #     Yves: PDP contains/doesn't contain:    true    ${pdp_new_label}[${env}] 
 
-# Catalog
+# Catalog - REFACTOR
 #     [Documentation]    BUG: SLA-3706 Checks that catalog options and search work
 #     Yves: login on Yves with provided credentials:    ${yves_user_email}
 #     Yves: perform search by:    claire
@@ -921,7 +922,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     [Teardown]    Run Keywords    Yves: login on Yves with provided credentials:    ${yves_user_email}
 #     ...    AND     Yves: delete all user addresses
 
-# Product_PDP
+# Product_PDP - REFACTOR
 #     [Documentation]    Checks that PDP contains required elements - BUG SLA-3706
 #     Yves: go to PDP of the product with sku:    ${multi_variant_product_abstract_sku}
 #     Yves: change variant of the product on PDP on:    500 x 930 x 400
@@ -934,7 +935,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     Yves: PDP contains/doesn't contain:    true    ${pdpPriceLocator}    ${addToCartButton}    ${pdp_limited_warranty_option}     ${pdp_insurance_coverage_option}
 
 # Split_Delivery
-#     [Documentation]    Checks split delivery in checkout with new addresses - BUG SLA-3706
+#     [Documentation]    Checks split delivery in checkout with new addresses - PASSED
 #     [Setup]    Run Keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
 #     ...    AND    Yves: delete all shopping carts
 #     ...    AND    Yves: create new 'Shopping Cart' with name:    splitDelivery+${random}
@@ -1318,61 +1319,61 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     ...    AND    Zed: go to second navigation item level:    Catalog    Products 
 #     ...    AND    Zed: click Action Button in a table for row that contains:     SprykerProduct${random}     Deny
 
-# Approve_Offer
-#     [Documentation]    Checks that marketplace operator is able to approve or deny merchant's offer and it will be available or not in store due to this status - PASSED
-#     Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     Zed: go to second navigation item level:    Marketplace    Offers
-#     Zed: select merchant in filter:    Office King
-#     Zed: click Action Button in a table for row that contains:     ${product_with_multiple_offers_concrete_sku}     Deny
-#     Yves: go to the 'Home' page
-#     Yves: go to PDP of the product with sku:     ${product_with_multiple_offers_abstract_sku}
-#     Yves: merchant is (not) displaying in Sold By section of PDP:    Office King    false
-#     Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     Zed: go to second navigation item level:    Marketplace    Offers
-#     Zed: select merchant in filter:    Office King
-#     Zed: click Action Button in a table for row that contains:     ${product_with_multiple_offers_concrete_sku}    Approve
-#     Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
-#     Yves: go to PDP of the product with sku:    ${product_with_multiple_offers_abstract_sku}
-#     Yves: merchant is (not) displaying in Sold By section of PDP:    Office King    true
-#     Yves: merchant's offer/product price should be:    Office King    ${product_with_multiple_offers_office_king_price}
-#     Yves: select xxx merchant's offer:    Office King
-#     Yves: product price on the PDP should be:     ${product_with_multiple_offers_office_king_price}
+Approve_Offer
+    [Documentation]    Checks that marketplace operator is able to approve or deny merchant's offer and it will be available or not in store due to this status - PASSED
+    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    Zed: go to second navigation item level:    Marketplace    Offers
+    Zed: select merchant in filter:    Office King
+    Zed: click Action Button in a table for row that contains:     ${product_with_multiple_offers_concrete_sku}     Deny
+    Yves: go to the 'Home' page
+    Yves: go to PDP of the product with sku:     ${product_with_multiple_offers_abstract_sku}
+    Yves: merchant is (not) displaying in Sold By section of PDP:    Office King    false
+    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    Zed: go to second navigation item level:    Marketplace    Offers
+    Zed: select merchant in filter:    Office King
+    Zed: click Action Button in a table for row that contains:     ${product_with_multiple_offers_concrete_sku}    Approve
+    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
+    Yves: go to PDP of the product with sku:    ${product_with_multiple_offers_abstract_sku}
+    Yves: merchant is (not) displaying in Sold By section of PDP:    Office King    true
+    Yves: merchant's offer/product price should be:    Office King    ${product_with_multiple_offers_office_king_price}
+    Yves: select xxx merchant's offer:    Office King
+    Yves: product price on the PDP should be:     ${product_with_multiple_offers_office_king_price}
 
-# Manage_Merchant_Users
-#     [Documentation]    Checks that backoffice admin is able to create, activate, edit and delete merchant users - PASSED
-#     Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     Zed: go to second navigation item level:    Marketplace    Merchants
-#     Zed: click Action Button in a table for row that contains:     Office King     Edit
-#     Zed: create new Merchant User with the following data:
-#     ...    || e-mail                         | first name     | last name      ||
-#     ...    || sonia+mu+${random}@spryker.com | FName${random} | LName${random} ||
-#     Zed: perform merchant user search by:     sonia+mu+${random}@spryker.com
-#     Zed: table should contain non-searchable value:    Deactivated
-#     Zed: click Action Button in Merchant Users table for row that contains:    sonia+mu+${random}@spryker.com    Activate
-#     Zed: table should contain non-searchable value:    Active
-#     Zed: click Action Button in Merchant Users table for row that contains:    sonia+mu+${random}@spryker.com    Edit
-#     Zed: update Merchant User on edit page with the following data:
-#     ...    || e-mail | first name           | last name ||
-#     ...    ||        | UpdatedName${random} |           ||
-#     Zed: perform merchant user search by:    sonia+mu+${random}@spryker.com
-#     Zed: table should contain non-searchable value:    UpdatedName${random}
-#     Zed: update Zed user:
-#     ...    || oldEmail                       | newEmail | password      | firstName | lastName ||
-#     ...    || sonia+mu+${random}@spryker.com |          | Change123!321 |           |          ||
-#     MP: login on MP with provided credentials:    sonia+mu+${random}@spryker.com    Change123!321
-#     Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     Zed: go to second navigation item level:    Marketplace    Merchants
-#     Zed: click Action Button in a table for row that contains:     Office King     Edit
-#     Zed: go to tab:     Users
-#     Zed: click Action Button in Merchant Users table for row that contains:    sonia+mu+${random}@spryker.com    Deactivate
-#     Zed: table should contain non-searchable value:    Deactivated
-#     MP: login on MP with provided credentials and expect error:    sonia+mu+${random}@spryker.com    Change123!321
-#     [Teardown]    Run Keywords     Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     ...    AND    Zed: go to second navigation item level:    Marketplace    Merchants
-#     ...    AND    Zed: click Action Button in a table for row that contains:     Office King     Edit
-#     ...    AND    Zed: go to tab:     Users
-#     ...    AND    Zed: click Action Button in Merchant Users table for row that contains:    sonia+mu+${random}@spryker.com    Delete
-#     ...    AND    Zed: submit the form
+Manage_Merchant_Users
+    [Documentation]    Checks that backoffice admin is able to create, activate, edit and delete merchant users - PASSED
+    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    Zed: go to second navigation item level:    Marketplace    Merchants
+    Zed: click Action Button in a table for row that contains:     Office King     Edit
+    Zed: create new Merchant User with the following data:
+    ...    || e-mail                         | first name     | last name      ||
+    ...    || sonia+mu+${random}@spryker.com | FName${random} | LName${random} ||
+    Zed: perform merchant user search by:     sonia+mu+${random}@spryker.com
+    Zed: table should contain non-searchable value:    Deactivated
+    Zed: click Action Button in Merchant Users table for row that contains:    sonia+mu+${random}@spryker.com    Activate
+    Zed: table should contain non-searchable value:    Active
+    Zed: click Action Button in Merchant Users table for row that contains:    sonia+mu+${random}@spryker.com    Edit
+    Zed: update Merchant User on edit page with the following data:
+    ...    || e-mail | first name           | last name ||
+    ...    ||        | UpdatedName${random} |           ||
+    Zed: perform merchant user search by:    sonia+mu+${random}@spryker.com
+    Zed: table should contain non-searchable value:    UpdatedName${random}
+    Zed: update Zed user:
+    ...    || oldEmail                       | newEmail | password      | firstName | lastName ||
+    ...    || sonia+mu+${random}@spryker.com |          | Change123!321 |           |          ||
+    MP: login on MP with provided credentials:    sonia+mu+${random}@spryker.com    Change123!321
+    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    Zed: go to second navigation item level:    Marketplace    Merchants
+    Zed: click Action Button in a table for row that contains:     Office King     Edit
+    Zed: go to tab:     Users
+    Zed: click Action Button in Merchant Users table for row that contains:    sonia+mu+${random}@spryker.com    Deactivate
+    Zed: table should contain non-searchable value:    Deactivated
+    MP: login on MP with provided credentials and expect error:    sonia+mu+${random}@spryker.com    Change123!321
+    [Teardown]    Run Keywords     Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    ...    AND    Zed: go to second navigation item level:    Marketplace    Merchants
+    ...    AND    Zed: click Action Button in a table for row that contains:     Office King     Edit
+    ...    AND    Zed: go to tab:     Users
+    ...    AND    Zed: click Action Button in Merchant Users table for row that contains:    sonia+mu+${random}@spryker.com    Delete
+    ...    AND    Zed: submit the form
 
 # Shopping_List_Contains_Offers
 #     [Documentation]    Checks that customer is able to add merchant products and offers to list and merchant relation won't be lost in list and afterwards in cart - PASSED
@@ -1417,25 +1418,25 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     Yves: go to PDP of the product with sku:    ${one_variant_product_of_main_merchant_abstract_sku}
 #     Yves: merchant's offer/product price should be:    Spryker     €632.12
 
-# Approve_Offer
-#     [Documentation]    Checks that marketplace operator is able to approve or deny merchant's offer and it will be available or not in store due to this status - PASSED
-#     Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     Zed: go to second navigation item level:    Marketplace    Offers
-#     Zed: select merchant in filter:    Office King
-#     Zed: click Action Button in a table for row that contains:     ${product_with_multiple_offers_concrete_sku}     Deny
-#     Yves: go to the 'Home' page
-#     Yves: go to PDP of the product with sku:     ${product_with_multiple_offers_abstract_sku}
-#     Yves: merchant is (not) displaying in Sold By section of PDP:    Office King    false
-#     Zed: login on Zed with provided credentials:    ${zed_admin_email}
-#     Zed: go to second navigation item level:    Marketplace    Offers
-#     Zed: select merchant in filter:    Office King
-#     Zed: click Action Button in a table for row that contains:     ${product_with_multiple_offers_concrete_sku}    Approve
-#     Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
-#     Yves: go to PDP of the product with sku:    ${product_with_multiple_offers_abstract_sku}
-#     Yves: merchant is (not) displaying in Sold By section of PDP:    Office King    true
-#     Yves: merchant's offer/product price should be:    Office King    ${product_with_multiple_offers_office_king_price}
-#     Yves: select xxx merchant's offer:    Office King
-#     Yves: product price on the PDP should be:     ${product_with_multiple_offers_office_king_price}
+Approve_Offer
+    [Documentation]    Checks that marketplace operator is able to approve or deny merchant's offer and it will be available or not in store due to this status - PASSED
+    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    Zed: go to second navigation item level:    Marketplace    Offers
+    Zed: select merchant in filter:    Office King
+    Zed: click Action Button in a table for row that contains:     ${product_with_multiple_offers_concrete_sku}     Deny
+    Yves: go to the 'Home' page
+    Yves: go to PDP of the product with sku:     ${product_with_multiple_offers_abstract_sku}
+    Yves: merchant is (not) displaying in Sold By section of PDP:    Office King    false
+    Zed: login on Zed with provided credentials:    ${zed_admin_email}
+    Zed: go to second navigation item level:    Marketplace    Offers
+    Zed: select merchant in filter:    Office King
+    Zed: click Action Button in a table for row that contains:     ${product_with_multiple_offers_concrete_sku}    Approve
+    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
+    Yves: go to PDP of the product with sku:    ${product_with_multiple_offers_abstract_sku}
+    Yves: merchant is (not) displaying in Sold By section of PDP:    Office King    true
+    Yves: merchant's offer/product price should be:    Office King    ${product_with_multiple_offers_office_king_price}
+    Yves: select xxx merchant's offer:    Office King
+    Yves: product price on the PDP should be:     ${product_with_multiple_offers_office_king_price}
 
 # Merchant_Portal_Product_Volume_Prices
 #     [Documentation]    Checks that merchant is able to create new multi-SKU product with volume prices. Falback to default price after delete.
@@ -1848,7 +1849,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     ...    AND    Yves: delete all user addresses
 
 # Manage_Shipments
-#     [Documentation]    Checks create/edit shipment functions from backoffice
+#     [Documentation]    Checks create/edit shipment functions from backoffice - PASSED
 #     [Setup]    Run Keywords    Yves: login on Yves with provided credentials:    ${yves_company_user_buyer_email}
 #     ...    AND    Yves: delete all shopping carts
 #     ...    AND    Yves: create new 'Shopping Cart' with name:    manageShipment+${random}
@@ -2011,6 +2012,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     Yves: select the following existing address on the checkout as 'shipping' address and go next:    ${yves_company_user_buyer_address}
 #     Yves: submit form on the checkout
 #     Yves: select the following shipping method for the shipment:    1    Hermes    Next Day
+#     Yves: select the following shipping method for the shipment:    2    Hermes    Next Day
 #     Yves: submit form on the checkout
 #     Yves: select the following payment method on the checkout and go next:    Invoice
 #     Yves: accept the terms and conditions:    true
@@ -2055,6 +2057,7 @@ Resource    ../../../resources/steps/configurable_bundle_steps.robot
 #     Yves: select the following existing address on the checkout as 'shipping' address and go next:    ${yves_company_user_buyer_address}
 #     Yves: submit form on the checkout
 #     Yves: select the following shipping method for the shipment:    1    Hermes    Next Day
+#     Yves: select the following shipping method for the shipment:    2    Hermes    Next Day
 #     Yves: submit form on the checkout
 #     Yves: select the following payment method on the checkout and go next:    Invoice
 #     Yves: accept the terms and conditions:    true

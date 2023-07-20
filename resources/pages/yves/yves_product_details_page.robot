@@ -15,10 +15,10 @@ ${pdp_variant_selector}    xpath=//*[@data-qa='component variant']//select
 ${pdp_variant_custom_selector}    xpath=//section[@data-qa='component variant-configurator']//span[contains(@id,'select2-attribute')]
 ${pdp_variant_custom_selector_results}    xpath=//ul[contains(@id,'select2-attribute')][contains(@id,'results')]
 ${pdp_amount_input_filed}    xpath=//*[@id="user-amount"]
-${pdp_packaging_unit_notification}    xpath=xpath=//div[@class="packaging-unit-notifications"]
+${pdp_packaging_unit_notification}    xpath=//div[@class="packaging-unit-notifications"]
 &{pdp_product_bundle_include_small}    ui_b2b=xpath=//div[contains(@data-qa,'component bundle-items')]    ui_b2c=xpath=//div[contains(@data-qa,'component bundle-items')]    ui_mp_b2b=xpath=//div[contains(@data-qa,'component bundle-items')]    ui_mp_b2c=xpath=//div[contains(@data-qa,'component bundle-items')]
 ${pdp_product_bundle_include_large}    xpath=//div[@data-qa='component product-bundle']
-&{pdp_related_products}    ui_b2b=xpath=//*[contains(@class,'title--product-slider')][contains(.,'Similar products')]/../slick-carousel    ui_b2c=xpath=//*[contains(@class,'product-slider')][contains(.,'You might also like')]/../slick-carousel    ui_mp_b2b=xpath=//*[contains(@class,'title--product-slider')][contains(.,'Similar products')]/../slick-carousel    ui_mp_b2c=xpath=//*[contains(@class,'product-slider')][contains(.,'You might also like')]/../slick-carousel
+&{pdp_related_products}    ui_b2b=xpath=//*[contains(@class,'title--product-slider')][contains(.,'Similar products')]/../slick-carousel    ui_b2c=xpath=//*[contains(@class,'product-slider')][contains(.,'You might also like')]/../slick-carousel    ui_mp_b2b=xpath=//h2[text()='Similar products']    ui_mp_b2c=xpath=//*[contains(@class,'product-slider')][contains(.,'You might also like')]/../slick-carousel
 ${pdp_add_to_shopping_list_button}    xpath=//button[@data-qa='add-to-shopping-list-button']
 &{pdp_product_sku}    ui_b2b=xpath=//section[@class='product-configurator']//div[@class='product-configurator__sku']    ui_b2c=//section[@class='product-detail']//div[@class='spacing-top spacing-top--bigger']    ui_mp_b2b=xpath=//section[@class='product-configurator']//div[@class='product-configurator__sku']//span    ui_mp_b2c=//section[@class='product-detail']//div[@class='spacing-top spacing-top--bigger']
 ${pdp_shopping_list_selector}    xpath=//form[contains(@action,'shopping-list')]//select

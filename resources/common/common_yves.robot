@@ -265,7 +265,7 @@ Yves: go to first navigation item level:
     IF    '${env}' in ['ui_b2b','ui_mp_b2b']
         Run keywords
             Wait Until Element Is Visible    xpath=//div[@class='header__navigation']//navigation-multilevel[@data-qa='component navigation-multilevel']/ul[@class='menu menu--lvl-0']//li[contains(@class,'menu__item--lvl-0')]/span[@class='menu__trigger menu__trigger--lvl-0']//a[normalize-space()='${navigation_item_level1}']    AND
-            Click Element by xpath with JavaScript    //a[@class='menu__link menu__link--lvl-0' and @href='/en/outlet']
+            Click Element by xpath with JavaScript    //a[@class='menu__link menu__link--lvl-0'][contains(text(),'${navigation_item_level1}')]
     ELSE
         Run keywords
             Wait Until Element Is Visible    xpath=//*[contains(@class,'header') and @data-qa='component header']//*[contains(@data-qa,'navigation-multilevel')]/*[contains(@class,'navigation-multilevel-node__link--lvl-1') and contains(text(),'${navigation_item_level1}')]    AND
