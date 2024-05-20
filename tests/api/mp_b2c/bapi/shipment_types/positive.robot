@@ -69,7 +69,7 @@ Update_sipment_type_change_name_store_relation_and_deactivate
     When I send a GET request:    /shipment-types/${shipment_type_uuid}
     And Response body parameter should be:    [data][attributes][name]    updated_name${random}
     And Response body parameter should be:    [data][attributes][isActive]    False
-    And Response body parameter should be:    [data][attributes][stores]    AT
+    And Response body parameter should be:    [data][attributes][stores]    EU
     And Response body has correct self link internal
     [Teardown]     Delete shipment type in DB:    update-shipment-type-key${random}
 
