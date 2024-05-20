@@ -1,61 +1,83 @@
 *** Settings ***
 Library    RequestsLibrary
-Library    String
-Library    Dialogs
-Library    OperatingSystem
-Library    Collections
-Library    BuiltIn
-Library    DateTime
 Library    JSONLibrary
-Library    DatabaseLibrary
-Library    ../../resources/libraries/common.py
+Resource    common.robot
 
 *** Variables ***
-# *** SUITE VARIABLES ***
-${api_timeout}                 60
-${verify_ssl}                 false
-${default_password}            change123
+# *** API SUITE VARIABLES ***
+${api_timeout}    60
+${default_password}    change123
 ${default_allow_redirects}     true
-${default_auth}                ${NONE}
-# *** DB VARIABLES ***
-${default_db_host}         127.0.0.1
-${default_db_name}         eu-docker
-${default_db_password}     secret
-${default_db_port}         3306
-${default_db_port_postgres}    5432
-${default_db_user}         spryker
-${default_db_engine}       pymysql
-${db_engine}
+${default_auth}    ${NONE}
+&{default_headers}
+
+# *** default headers example: applied to all requests if not empty ***
+# &{default_headers}    Store=DE    Accept-Language=EN
+
+# *** API VARIABLES ***
 ${glue_env}
 ${bapi_env}
-${db_port}
-# ${default_db_engine}       psycopg2
+${sapi_env}
 
 *** Keywords ***
-SuiteSetup
+API_suite_setup
     [Documentation]    Basic steps before each suite. Should be sed with the ``Suite Setup`` tag.
     ...
     ...    *Example:*
     ...
-    ...    ``Suite Setup       SuiteSetup``
-    Remove Files    ${OUTPUTDIR}/selenium-screenshot-*.png
-    Remove Files    resources/libraries/__pycache__/*
-    Load Variables    ${env}
-    ${random}=    Generate Random String    5    [NUMBERS]
-    Set Global Variable    ${random}
-    ${today}=    Get Current Date    result_format=%Y-%m-%d
-    Set Global Variable    ${today}
-    ${verify_ssl}=    Convert To String    ${verify_ssl}
-    ${verify_ssl}=    Convert To Lower Case    ${verify_ssl}
-    IF    '${verify_ssl}' == 'true'
-        Set Global Variable    ${verify_ssl}    ${True}
-    ELSE
-        Set Global Variable    ${verify_ssl}    ${False}
-    END
-    [Teardown]
-    [Return]    ${random}
+    ...    ``Suite Setup       API_suite_setup``
+    Common_suite_setup
 
-TestSetup
+Overwrite api variables
+    FOR  ${tag}  IN  @{Test Tags}
+        Log   ${tag}
+        Set Test Variable    ${tag}
+        IF    '${tag}' == 'dms-on'    CONTINUE
+        IF    '${glue_env}' == '${EMPTY}'
+            IF    '${tag}' == 'glue'
+                Set Suite Variable    ${current_url}    ${glue_url}
+                Set Suite Variable    ${tag}    glue
+            END
+        ELSE
+            IF    '${tag}' == 'glue'
+                Set Suite Variable    ${current_url}    ${glue_env}
+                Set Suite Variable    ${tag}    glue
+            END
+        END
+        IF    '${bapi_env}' == '${EMPTY}'
+            IF    '${tag}'=='bapi'
+                Set Suite Variable    ${current_url}    ${bapi_url}
+                Set Suite Variable    ${tag}    bapi
+            END
+        ELSE
+            IF    '${tag}' == 'bapi'
+                Set Suite Variable    ${current_url}    ${bapi_env}
+                Set Suite Variable    ${tag}    bapi
+            END
+        END
+        IF    '${sapi_env}' == '${EMPTY}'
+            IF    '${tag}' == 'sapi'
+                Set Suite Variable    ${current_url}    ${sapi_url}
+                Set Suite Variable    ${tag}    sapi
+            END
+        ELSE
+            IF    '${tag}' == 'sapi'
+                Set Suite Variable    ${current_url}    ${sapi_env}
+                Set Suite Variable    ${tag}    sapi
+            END
+        END
+        ${current_url_last_character}=    Get Regexp Matches    ${current_url}    .$    flags=IGNORECASE
+        ${current_url_last_character}=    Convert To String    ${current_url_last_character}
+        ${current_url_last_character}=    Replace String    ${current_url_last_character}    '   ${EMPTY}
+        ${current_url_last_character}=    Replace String    ${current_url_last_character}    [   ${EMPTY}
+        ${current_url_last_character}=    Replace String    ${current_url_last_character}    ]   ${EMPTY}
+        IF    '${current_url_last_character}' == '/'
+            ${current_url}=    Replace String Using Regexp    ${current_url}    .$    ${EMPTY}
+            Set Suite Variable    ${current_url}
+        END
+    END
+
+API_test_setup
     [Documentation]   This setup should be called in Settings of every test suite. It defines which url variable will be used in the test suite.
     ...
     ...    At the moment it is used to define if the test is for GLUE (``glue`` tag) or BAPI (``bapi`` tag) by checking for the default or test tag.
@@ -79,59 +101,9 @@ TestSetup
     ...    ``Test Setup    TestSetup``
     ...
     ...    ``Default Tags    bapi``
-    FOR  ${tag}  IN  @{Test Tags}
-    Log   ${tag}
-    IF    '${glue_env}' == '${EMPTY}'
-        IF    '${tag}'=='glue'  
-            Set Suite Variable    ${current_url}    ${glue_url}
-            Set Suite Variable    ${tag}    glue
-        END
-    ELSE
-        IF    '${tag}'=='glue'   
-            Set Suite Variable    ${current_url}    ${glue_env}
-            Set Suite Variable    ${tag}    glue
-        END
-    END
-    IF    '${bapi_env}' == '${EMPTY}'
-        IF    '${tag}'=='bapi'  
-            Set Suite Variable    ${current_url}    ${bapi_url}
-            Set Suite Variable    ${tag}    bapi
-        END
-    ELSE
-        IF    '${tag}'=='bapi'  
-            Set Suite Variable    ${current_url}    ${bapi_env}
-            Set Suite Variable    ${tag}    bapi
-        END
-    END
-    END
-    ${current_url_last_character}=    Get Regexp Matches    ${current_url}    .$    flags=IGNORECASE
-    ${current_url_last_character}=    Convert To String    ${current_url_last_character}
-    ${current_url_last_character}=    Replace String    ${current_url_last_character}    '   ${EMPTY}
-    ${current_url_last_character}=    Replace String    ${current_url_last_character}    [   ${EMPTY}
-    ${current_url_last_character}=    Replace String    ${current_url_last_character}    ]   ${EMPTY}
-    IF    '${current_url_last_character}' == '/'
-        ${current_url}=    Replace String Using Regexp    ${current_url}    .$    ${EMPTY}
-        Set Suite Variable    ${current_url}
-    END
-
-Load Variables
-    [Documentation]    Keyword is used to load variable values from the environment file passed during execution. This Keyword is used during suite setup.
-    ...    It accepts the name of the environment as specified at the beginning of an environment file e.g. ``"environment": "api_suite"``.
-    ...
-    ...    These variables are loaded and usable throughtout all tests of the test suite, if this keyword is called during suite setup.
-    ...
-    ...    *Example:*
-    ...
-    ...    ``Load Variables    ${env}``
-    ...
-    ...    ``Load Variables    api_suite``
-    [Arguments]    ${env}
-    &{vars}=   Define Environment Variables From Json File    ${env}
-    FOR    ${key}    ${value}    IN    &{vars}
-        Log    Key is '${key}' and value is '${value}'.
-        ${var_value}=   Get Variable Value  ${${key}}   ${value}
-        Set Global Variable    ${${key}}    ${var_value}
-    END
+    Overwrite api variables
+    Should Test Run
+    I set default Headers:    &{default_headers}
 
 I set Headers:
     [Documentation]    Keyword sets any number of headers for the further endpoint calls.
@@ -145,8 +117,16 @@ I set Headers:
     ...    ``I set Headers:    Content-Type=${default_header_content_type}    Authorization=${token}``
 
     [Arguments]    &{headers}
+    Set To Dictionary    ${headers}    &{headers}    &{default_headers}
+    Log Dictionary    ${headers}
     Set Test Variable    &{headers}
-    [Return]    &{headers}
+    RETURN    &{headers}
+
+I set default Headers:
+    [Arguments]    &{headers}
+    Log Dictionary    ${headers}
+    Set Suite Variable    &{headers}
+    RETURN    &{headers}
 
 I get access token for the customer:
     [Documentation]    This is a helper keyword which helps get access token for future use in the headers of the following requests.
@@ -165,8 +145,8 @@ I get access token for the customer:
     ${response}=    IF    ${headers_not_empty}       run keyword    POST    ${current_url}/access-tokens    json=${data}    headers=${headers}    verify=${verify_ssl}
     ...    ELSE    POST    ${current_url}/access-tokens    json=${data}    verify=${verify_ssl}
     ${response.status_code}=    Set Variable    ${response.status_code}
-    IF    ${response.status_code} != 204    
-        TRY    
+    IF    ${response.status_code} != 204
+        TRY
             ${response_body}=    Set Variable    ${response.json()}
         EXCEPT
             ${content_type}=    Get From Dictionary    ${response.headers}    content-type
@@ -181,50 +161,7 @@ I get access token for the customer:
     Set Test Variable    ${response_body}    ${response_body}
     Set Test Variable    ${expected_self_link}    ${current_url}/access-tokens
     Log    ${token}
-    [Return]    ${token}
-
-I add 'admin' role to company user and get company_user_uuid:
-    [Documentation]    This is a helper keyword which sets the 'Admin' role to the company user if it is not already set and returns the uuid of this company user. Requires: company user email, company key and business unit key
-    ...    *Example:*
-    ...
-    ...    ``Add 'admin' role to company user and return company_user_uuid:    anne.boleyn@spryker.com    BoB-Hotel-Jim    business-unit-jim-1``
-    [Arguments]    ${email}    ${company_key}    ${business_unit_key}
-    Connect to Spryker DB
-    ${id_customer}=    Query    select id_customer from spy_customer WHERE email='${email}'
-    ${id_customer}=    Evaluate    ${id_customer[0][0]}+0
-    IF    '${db_engine}' == 'pymysql'
-        ${id_business_unit}=    Query    select id_company_business_unit from spy_company_business_unit where `key`='${business_unit_key}'
-    ELSE
-        ${id_business_unit}=    Query    select id_company_business_unit from spy_company_business_unit where "key"='${business_unit_key}'
-    END
-    ${id_business_unit}=    Evaluate    ${id_business_unit[0][0]}+0
-    IF    '${db_engine}' == 'pymysql'
-        ${id_company}=    Query    select id_company from spy_company WHERE `key`='${company_key}'
-    ELSE
-        ${id_company}=    Query    select id_company from spy_company WHERE "key"='${company_key}'
-    END
-    ${id_company}=    Evaluate    ${id_company[0][0]}+0
-    ${id_company_user}=    Query    select id_company_user from spy_company_user WHERE fk_customer=${id_customer} and fk_company_business_unit=${id_business_unit} and fk_company=${id_company}
-    ${id_company_user}=    Evaluate    ${id_company_user[0][0]}+0
-    ${id_company_role_admin}=    Query    select id_company_role from spy_company_role WHERE name='Admin' and fk_company='${id_company}'
-    ${id_company_role_admin}=    Evaluate    ${id_company_role_admin[0][0]}+0
-    ${is_role_set}=    Query    SELECT id_company_role_to_company_user FROM spy_company_role_to_company_user WHERE fk_company_role = ${id_company_role_admin} and fk_company_user = ${id_company_user}
-    ${is_role_set_length}=    Get Length    ${is_role_set}
-    IF    ${is_role_set_length} == 0
-        ${last_id}=    Query    SELECT id_company_role_to_company_user FROM spy_company_role_to_company_user ORDER BY id_company_role_to_company_user DESC LIMIT 1;
-        ${new_id}=    Evaluate    ${last_id[0][0]}+1
-        Execute Sql String    INSERT INTO spy_company_role_to_company_user (id_company_role_to_company_user, fk_company_role, fk_company_user) VALUES (${new_id}, ${id_company_role_admin}, ${id_company_user});
-    END
-    ${company_user_uuid}=    Query    select uuid from spy_company_user where id_company_user=${id_company_user}
-    ${company_user_uuid}=    Convert To String    ${company_user_uuid}
-    ${company_user_uuid}=    Replace String    ${company_user_uuid}    '   ${EMPTY}
-    ${company_user_uuid}=    Replace String    ${company_user_uuid}    ,   ${EMPTY}
-    ${company_user_uuid}=    Replace String    ${company_user_uuid}    (   ${EMPTY}
-    ${company_user_uuid}=    Replace String    ${company_user_uuid}    )   ${EMPTY}
-    ${company_user_uuid}=    Replace String    ${company_user_uuid}    [   ${EMPTY}
-    ${company_user_uuid}=    Replace String    ${company_user_uuid}    ]   ${EMPTY}
-    Set Test Variable    ${company_user_uuid}    ${company_user_uuid}
-    [Return]    ${company_user_uuid}
+    RETURN    ${token}
 
 I get access token for the company user by uuid:
     [Documentation]    This is a helper keyword which helps get company user access token by uuid for future use in the headers of the following requests.
@@ -241,8 +178,8 @@ I get access token for the company user by uuid:
     ${response}=    IF    ${headers_not_empty}       run keyword    POST    ${current_url}/company-user-access-tokens    json=${data}    headers=${headers}    verify=${verify_ssl}
     ...    ELSE    POST    ${current_url}/company-user-access-tokens    json=${data}    verify=${verify_ssl}
     ${response.status_code}=    Set Variable    ${response.status_code}
-    IF    ${response.status_code} != 204    
-        TRY    
+    IF    ${response.status_code} != 204
+        TRY
             ${response_body}=    Set Variable    ${response.json()}
         EXCEPT
             ${content_type}=    Get From Dictionary    ${response.headers}    content-type
@@ -257,7 +194,7 @@ I get access token for the company user by uuid:
     Set Test Variable    ${response_body}    ${response_body}
     Set Test Variable    ${expected_self_link}    ${current_url}/company-user-access-tokens
     Log    ${token}
-    [Return]    ${token}
+    RETURN    ${token}
 
 I send a POST request:
     [Documentation]    This keyword is used to make POST requests. It accepts the endpoint *without the domain* and the body in JOSN.
@@ -276,8 +213,8 @@ I send a POST request:
     ${response}=    IF    ${headers_not_empty}   run keyword    POST    ${current_url}${path}    json=${data}    headers=${headers}    timeout=${timeout}    allow_redirects=${allow_redirects}    auth=${auth}    expected_status=${expected_status}    verify=${verify_ssl}
     ...    ELSE    POST    ${current_url}${path}    json=${data}    timeout=${timeout}    allow_redirects=${allow_redirects}    auth=${auth}    expected_status=ANY    verify=${verify_ssl}
     ${response.status_code}=    Set Variable    ${response.status_code}
-    IF    ${response.status_code} != 204    
-        TRY    
+    IF    ${response.status_code} != 204
+        TRY
             ${response_body}=    Set Variable    ${response.json()}
         EXCEPT
             ${content_type}=    Get From Dictionary    ${response.headers}    content-type
@@ -285,17 +222,17 @@ I send a POST request:
         END
     END
     ${response_headers}=    Set Variable    ${response.headers}
-    IF    ${response.status_code} == 204    
+    IF    ${response.status_code} == 204
         ${response_body}=    Set Variable    ${EMPTY}
     END
     Set Test Variable    ${response_headers}    ${response_headers}
     Set Test Variable    ${response_body}    ${response_body}
     Set Test Variable    ${response}    ${response}
     Set Test Variable    ${expected_self_link}    ${current_url}${path}
-    [Return]    ${response_body}
+    RETURN    ${response_body}
 
 I send a POST request with data:
-    [Documentation]    This keyword is used to make POST requests. It accepts the endpoint *without the domain* and the body in plain text.
+    [Documentation]    This keyword is used to make POST requests with a plain text data. It accepts the endpoint *without the domain* and the body in plain text.
     ...    Variables can and should be used in the endpoint url and in the body.
     ...
     ...    If the endpoint needs to have any headers (e.g. token for authorisation), ``I set Headers`` keyword should be called before this keyword to set the headers beforehand.
@@ -304,15 +241,15 @@ I send a POST request with data:
     ...
     ...    *Example:*
     ...
-    ...    ``I send a POST request:    /agent-access-tokens    {"data": {"type": "agent-access-tokens","attributes": {"username": "${agent.email}","password": "${agent.password}"}}}``
+    ...    ``I send a POST request:    /agent-access-tokens    This is plain text body``
     [Arguments]   ${path}    ${data}    ${timeout}=${api_timeout}    ${allow_redirects}=${default_allow_redirects}    ${auth}=${default_auth}    ${expected_status}=ANY
     ${data}=    Evaluate    ${data}
     ${headers_not_empty}    Run Keyword and return status     Should not be empty    ${headers}
     ${response}=    IF    ${headers_not_empty}   run keyword    POST    ${current_url}${path}    data=${data}    headers=${headers}    timeout=${timeout}    allow_redirects=${allow_redirects}    auth=${auth}    expected_status=${expected_status}    verify=${verify_ssl}
     ...    ELSE    POST    ${current_url}${path}    data=${data}    timeout=${timeout}    allow_redirects=${allow_redirects}    auth=${auth}    expected_status=${expected_status}    verify=${verify_ssl}
     ${response.status_code}=    Set Variable    ${response.status_code}
-    IF    ${response.status_code} != 204    
-        TRY    
+    IF    ${response.status_code} != 204
+        TRY
             ${response_body}=    Set Variable    ${response.json()}
         EXCEPT
             ${content_type}=    Get From Dictionary    ${response.headers}    content-type
@@ -320,17 +257,17 @@ I send a POST request with data:
         END
     END
     ${response_headers}=    Set Variable    ${response.headers}
-    IF    ${response.status_code} == 204    
+    IF    ${response.status_code} == 204
         ${response_body}=    Set Variable    ${EMPTY}
     END
     Set Test Variable    ${response_headers}    ${response_headers}
     Set Test Variable    ${response_body}    ${response_body}
     Set Test Variable    ${response}    ${response}
     Set Test Variable    ${expected_self_link}    ${current_url}${path}
-    [Return]    ${response_body}
+    RETURN    ${response_body}
 
 I send a PUT request:
-    [Documentation]    This keyword is used to make POST requests. It accepts the endpoint *without the domain* and the body in JSON.
+    [Documentation]    This keyword is used to make PUT requests. It accepts the endpoint *without the domain* and the body in JSON.
     ...    Variables can and should be used in the endpoint url and in the body JSON.
     ...
     ...    If the endpoint needs to have any headers (e.g. token for authorisation), ``I set Headers`` keyword should be called before this keyword to set the headers beforehand.
@@ -346,8 +283,8 @@ I send a PUT request:
     ${response}=    IF    ${headers_not_empty}   run keyword    PUT    ${current_url}${path}    json=${data}    headers=${headers}    timeout=${timeout}    allow_redirects=${allow_redirects}    auth=${auth}    expected_status=${expected_status}    verify=${verify_ssl}
     ...    ELSE    PUT    ${current_url}${path}    json=${data}    timeout=${timeout}    allow_redirects=${allow_redirects}    auth=${auth}    expected_status=${expected_status}    verify=${verify_ssl}
     ${response.status_code}=    Set Variable    ${response.status_code}
-    IF    ${response.status_code} != 204    
-        TRY    
+    IF    ${response.status_code} != 204
+        TRY
             ${response_body}=    Set Variable    ${response.json()}
         EXCEPT
             ${content_type}=    Get From Dictionary    ${response.headers}    content-type
@@ -355,17 +292,17 @@ I send a PUT request:
         END
     END
     ${response_headers}=    Set Variable    ${response.headers}
-    IF    ${response.status_code} == 204    
+    IF    ${response.status_code} == 204
         ${response_body}=    Set Variable    ${EMPTY}
     END
     Set Test Variable    ${response_headers}    ${response_headers}
     Set Test Variable    ${response_body}    ${response_body}
     Set Test Variable    ${response}    ${response}
     Set Test Variable    ${expected_self_link}    ${current_url}${path}
-    [Return]    ${response_body}
+    RETURN    ${response_body}
 
 I send a PUT request with data:
-    [Documentation]    This keyword is used to make POST requests. It accepts the endpoint *without the domain* and the body in plain text.
+    [Documentation]    This keyword is used to make PUT requests with a plain text data. It accepts the endpoint *without the domain* and the body in plain text.
     ...    Variables can and should be used in the endpoint url and in the body plain text.
     ...
     ...    If the endpoint needs to have any headers (e.g. token for authorisation), ``I set Headers`` keyword should be called before this keyword to set the headers beforehand.
@@ -381,8 +318,8 @@ I send a PUT request with data:
     ${response}=    IF    ${headers_not_empty}   run keyword    PUT    ${current_url}${path}    data=${data}    headers=${headers}    timeout=${timeout}    allow_redirects=${allow_redirects}    auth=${auth}    expected_status=${expected_status}    verify=${verify_ssl}
     ...    ELSE    PUT    ${current_url}${path}    data=${data}    timeout=${timeout}    allow_redirects=${allow_redirects}    auth=${auth}    expected_status=${expected_status}    verify=${verify_ssl}
     ${response.status_code}=    Set Variable    ${response.status_code}
-    IF    ${response.status_code} != 204    
-        TRY    
+    IF    ${response.status_code} != 204
+        TRY
             ${response_body}=    Set Variable    ${response.json()}
         EXCEPT
             ${content_type}=    Get From Dictionary    ${response.headers}    content-type
@@ -390,14 +327,14 @@ I send a PUT request with data:
         END
     END
     ${response_headers}=    Set Variable    ${response.headers}
-    IF    ${response.status_code} == 204    
+    IF    ${response.status_code} == 204
         ${response_body}=    Set Variable    ${EMPTY}
     END
     Set Test Variable    ${response_headers}    ${response_headers}
     Set Test Variable    ${response_body}    ${response_body}
     Set Test Variable    ${response}    ${response}
     Set Test Variable    ${expected_self_link}    ${current_url}${path}
-    [Return]    ${response_body}
+    RETURN    ${response_body}
 
 I send a PATCH request:
     [Documentation]    This keyword is used to make PATCH requests. It accepts the endpoint *without the domain* and the body in JOSN.
@@ -421,8 +358,8 @@ I send a PATCH request:
     ${response}=    IF    ${headers_not_empty}   run keyword    PATCH   ${current_url}${path}    json=${data}    headers=${headers}    timeout=${timeout}    allow_redirects=${allow_redirects}    auth=${auth}    expected_status=${expected_status}    verify=${verify_ssl}
     ...    ELSE    PATCH    ${current_url}${path}    json=${data}    timeout=${timeout}    allow_redirects=${allow_redirects}    auth=${auth}    expected_status=${expected_status}    verify=${verify_ssl}
     ${response.status_code}=    Set Variable    ${response.status_code}
-    IF    ${response.status_code} != 204    
-        TRY    
+    IF    ${response.status_code} != 204
+        TRY
             ${response_body}=    Set Variable    ${response.json()}
         EXCEPT
             ${content_type}=    Get From Dictionary    ${response.headers}    content-type
@@ -430,17 +367,17 @@ I send a PATCH request:
         END
     END
     ${response_headers}=    Set Variable    ${response.headers}
-    IF    ${response.status_code} == 204    
+    IF    ${response.status_code} == 204
         ${response_body}=    Set Variable    ${EMPTY}
     END
     Set Test Variable    ${response_headers}    ${response_headers}
     Set Test Variable    ${response_body}    ${response_body}
     Set Test Variable    ${response}    ${response}
     Set Test Variable    ${expected_self_link}    ${current_url}${path}
-    [Return]    ${response_body}
+    RETURN    ${response_body}
 
-I send a PATCH request with data
-    [Documentation]    This keyword is used to make PATCH requests. It accepts the endpoint *without the domain* and the body in plain text.
+I send a PATCH request with data:
+    [Documentation]    This keyword is used to make PATCH requests with a plain text data. It accepts the endpoint *without the domain* and the body in plain text.
     ...    Variables can and should be used in the endpoint url and in the body JSON.
     ...
     ...    If the endpoint needs to have any headers (e.g. token for authorisation), ``I set Headers`` keyword should be called before this keyword to set the headers beforehand.
@@ -462,8 +399,8 @@ I send a PATCH request with data
     ${response}=    IF    ${headers_not_empty}   run keyword    PATCH    ${current_url}${path}    data=${data}    headers=${headers}    timeout=${timeout}    allow_redirects=${allow_redirects}    auth=${auth}    expected_status=${expected_status}    verify=${verify_ssl}
     ...    ELSE    PATCH    ${current_url}${path}    data=${data}    timeout=${timeout}    allow_redirects=${allow_redirects}    auth=${auth}    expected_status=${expected_status}    verify=${verify_ssl}
     ${response.status_code}=    Set Variable    ${response.status_code}
-    IF    ${response.status_code} != 204    
-        TRY    
+    IF    ${response.status_code} != 204
+        TRY
             ${response_body}=    Set Variable    ${response.json()}
         EXCEPT
             ${content_type}=    Get From Dictionary    ${response.headers}    content-type
@@ -471,14 +408,14 @@ I send a PATCH request with data
         END
     END
     ${response_headers}=    Set Variable    ${response.headers}
-    IF    ${response.status_code} == 204    
+    IF    ${response.status_code} == 204
         ${response_body}=    Set Variable    ${EMPTY}
     END
     Set Test Variable    ${response_headers}    ${response_headers}
     Set Test Variable    ${response_body}    ${response_body}
     Set Test Variable    ${response}    ${response}
     Set Test Variable    ${expected_self_link}    ${current_url}${path}
-    [Return]    ${response_body}
+    RETURN    ${response_body}
 
 I send a GET request:
     [Documentation]    This keyword is used to make GET requests. It accepts the endpoint *without the domain*.
@@ -500,8 +437,8 @@ I send a GET request:
     ${response}=    IF    ${headers_not_empty}   run keyword    GET    ${current_url}${path}    headers=${headers}    timeout=${timeout}    allow_redirects=${allow_redirects}    auth=${auth}    expected_status=${expected_status}    verify=${verify_ssl}
     ...    ELSE    GET    ${current_url}${path}    timeout=${timeout}    allow_redirects=${allow_redirects}    auth=${auth}    expected_status=${expected_status}    verify=${verify_ssl}
     ${response.status_code}=    Set Variable    ${response.status_code}
-    IF    ${response.status_code} != 204    
-        TRY    
+    IF    ${response.status_code} != 204
+        TRY
             ${response_body}=    Set Variable    ${response.json()}
         EXCEPT
             ${content_type}=    Get From Dictionary    ${response.headers}    content-type
@@ -509,14 +446,14 @@ I send a GET request:
         END
     END
     ${response_headers}=    Set Variable    ${response.headers}
-    IF    ${response.status_code} == 204    
+    IF    ${response.status_code} == 204
         ${response_body}=    Set Variable    ${EMPTY}
     END
     Set Test Variable    ${response_headers}    ${response_headers}
     Set Test Variable    ${response_body}    ${response_body}
     Set Test Variable    ${response}    ${response}
     Set Test Variable    ${expected_self_link}    ${current_url}${path}
-    [Return]    ${response_body}
+    RETURN    ${response_body}
 
 I send a DELETE request:
     [Documentation]    This keyword is used to make DELETE requests. It accepts the endpoint *without the domain*.
@@ -542,22 +479,22 @@ I send a DELETE request:
     ...    ELSE    DELETE    ${current_url}${path}    timeout=${timeout}    allow_redirects=${allow_redirects}    auth=${auth}    expected_status=${expected_status}    verify=${verify_ssl}
     ${response_headers}=    Set Variable    ${response.headers}
     ${response.status_code}=    Set Variable    ${response.status_code}
-    IF    ${response.status_code} != 204    
-        TRY    
+    IF    ${response.status_code} != 204
+        TRY
             ${response_body}=    Set Variable    ${response.json()}
         EXCEPT
             ${content_type}=    Get From Dictionary    ${response.headers}    content-type
             Fail    Got: '${response.status_code}' status code on: '${response.url}' with reason: '${response.reason}'. Response content type: '${content_type}'. Details: '${response.content}'
         END
     END
-    IF    ${response.status_code} == 204    
+    IF    ${response.status_code} == 204
         ${response_body}=    Set Variable    ${EMPTY}
     END
     Set Test Variable    ${response}    ${response}
     Set Test Variable    ${response_headers}    ${response_headers}
     Set Test Variable    ${response_body}    ${response_body}
     Set Test Variable    ${expected_self_link}    ${current_url}${path}
-    [Return]    ${response_body}
+    RETURN    ${response_body}
 
 Response reason should be:
     [Documentation]    This keyword checks that response reason saved  in ``${response}`` test variable matches the reason passed as an argument.
@@ -588,8 +525,19 @@ Response body should contain:
     ${response_body}=    Replace String    ${response_body}    '    "
     Should Contain    ${response_body}    ${value}    Response body does not contain expected: '${value}'.
 
+Response body should not contain:
+    [Documentation]    This keyword checks that the response saved  in ``${response_body}`` test variable does not contain the string passed as an argument.
+    ...
+    ...    *Example:*
+    ...
+    ...    ``Response body should not contain:    "localizedName": "Weight"``
+    [Arguments]    ${value}
+    ${response_body}=    Convert To String    ${response_body}
+    ${response_body}=    Replace String    ${response_body}    '    "
+    Should Not Contain    ${response_body}    ${value}    Response body contains not expected: '${value}'.
+
 Response body parameter should be:
-    [Documentation]    This keyword checks that the response saved  in ``${response_body}`` test variable contsains the speficied parameter ``${json_path}`` with he specified value ``${expected_value}``.
+    [Documentation]    This keyword checks that the response saved  in ``${response_body}`` test variable contsains the speficied parameter ``${json_path}`` with the specified value ``${expected_value}``.
     ...
     ...    *Example:*
     ...
@@ -600,7 +548,25 @@ Response body parameter should be:
     ${data}=    Replace String    ${data}    '   ${EMPTY}
     ${data}=    Replace String    ${data}    [   ${EMPTY}
     ${data}=    Replace String    ${data}    ]   ${EMPTY}
-    Log    ${data} 
+    Log    ${data}
+    Should Be Equal    ${data}    ${expected_value}    Response data in: '${json_path}', does not equal expected: '${expected_value}', actual is: '${data}'.
+
+Response body case-insensitive parameter should be:
+    [Documentation]    This keyword checks that the response saved in ``${response_body}`` test variable contains the specified parameter ``${json_path}`` with the specified case-insensitive value ``${expected_value}``.
+    ...
+    ...    *Example:*
+    ...
+    ...    ``Response body case-insensitive parameter should be:    [data][0][type]    Abstract-Product-Availabilities``
+    [Arguments]    ${json_path}    ${expected_value}
+    ${data}=    Get Value From Json    ${response_body}    ${json_path}
+    ${data}=    Convert To String    ${data}
+    ${data}=    Replace String    ${data}    '   ${EMPTY}
+    ${data}=    Replace String    ${data}    [   ${EMPTY}
+    ${data}=    Replace String    ${data}    ]   ${EMPTY}
+    ${data}=    Convert To Lower Case    ${data}
+    ${expected_value}=    Convert To Lower Case    ${expected_value}
+    Log    ${data}
+    Log    ${expected_value}
     Should Be Equal    ${data}    ${expected_value}    Response data in: '${json_path}', does not equal expected: '${expected_value}', actual is: '${data}'.
 
 Perform arithmetical calculation with two arguments:
@@ -626,7 +592,7 @@ Perform arithmetical calculation with two arguments:
     END
     ${result}=    Convert To String    ${result}
     Set Test Variable    ${${variable_name}}    ${result}
-    [Return]    ${variable_name}
+    RETURN    ${variable_name}
 
 Response body parameter should be in:
     [Documentation]    This keyword checks that the response saved  in ``${response_body}`` test variable contsains the speficied parameter ``${json_path}`` with the value that matches one of the parameters ``${expected_value1}``, ``${expected_value2}``.
@@ -643,7 +609,7 @@ Response body parameter should be in:
     ${data}=    Replace String    ${data}    [   ${EMPTY}
     ${data}=    Replace String    ${data}    ]   ${EMPTY}
     Log    ${data}
-    TRY    
+    TRY
         Should Contain Any   ${data}    ${expected_value1}    ${expected_value2}    ${expected_value3}    ${expected_value4}    ${expected_value5}    ${expected_value6}    ${expected_value7}    ${expected_value8}    ${expected_value9}      ignore_case=True
     EXCEPT
         Fail    Response data in: '${json_path}', does not contains any: '${expected_value1}', '${expected_value2}', '${expected_value3}', '${expected_value4}', '${expected_value5}', '${expected_value6}', '${expected_value7}', '${expected_value8}', '${expected_value9}', in '${data}'.
@@ -692,7 +658,7 @@ Response body parameter should be NOT in:
     ${data}=    Replace String    ${data}    [   ${EMPTY}
     ${data}=    Replace String    ${data}    ]   ${EMPTY}
     Log    ${data}
-    TRY    
+    TRY
         Should NOT Contain Any   ${data}    ${expected_value1}    ${expected_value2}    ${expected_value3}    ${expected_value4}    ignore_case=True
     EXCEPT
         Fail    Response data in: '${json_path}', should not contain any: ${expected_value1}, ${expected_value2}, ${expected_value3}, ${expected_value4} in '${data}'.
@@ -740,7 +706,7 @@ Evaluate datatype of a variable:
     ...    ``${is string}=   Evaluate     isinstance($variable, str) ``    will be False
     [Arguments]    ${variable}
     ${data_type}=    Evaluate     type($variable).__name__
-    [Return]    ${data_type}
+    RETURN    ${data_type}
 
 Response header parameter should be:
     [Documentation]    This keyword checks that the response header saved previiously in ``${response_headers}`` test variable has the expected header with name ``${header_parameter}`` and this header has value ``${header_value}``
@@ -899,6 +865,29 @@ Response should contain the array larger than a certain size:
     ${result}=    Convert To String    ${result}
     Should Be Equal    ${result}    True    Actual array length is '${list_length}' and it is not greater than expected '${expected_size}' in '${json_path}'.
 
+Each array element of the array in response should contain a nested array larger than a certain size:
+    [Documentation]    This keyword checks that each element in the array specified as ``${json_path}`` contains the `` ${nested_array}` with certain size greater than ``${expected_size}``.
+    ...
+    ...    If at least one array element has ``${nested_array} `` less than ``${expected_size}``, the keyword will fail.
+
+    ...    *Example:*
+    ...
+    ...    `` Each array element of the array in response should contain a nested array larger than a certain size:    [data]    [attributes][stores]    0``
+    [Arguments]    ${json_path}    ${nested_array}    ${expected_size}
+    @{data}=    Get Value From Json    ${response_body}    ${json_path}
+    ${list_length}=    Get Length    @{data}
+    ${log_list}=    Log List    @{data}
+    FOR    ${index}    IN RANGE    0    ${list_length}
+    @{data}=    Get Value From Json    ${response_body}    ${json_path}
+    ${list_length}=    Get Length    @{data}
+    ${list_length}=    Get From List    @{data}    ${index}
+    @{data}=    Get Value From Json    ${list_length}    ${nested_array}
+    ${nested_array_list_length}=    Get Length    @{data}
+    ${result}=    Evaluate   ${nested_array_list_length} > ${expected_size}
+    ${result}=    Convert To String    ${result}
+    Should Be Equal    ${result}    True    Actual nested array length is '${nested_array_list_length}' not greater than expected '${expected_size}'.
+    END
+
 Response should contain the array smaller than a certain size:
     [Documentation]    This keyword checks that the body array sent in ``${json_path}`` argument contains the number of items that is fewer than ``${expected_size}``.
     ...    The expected size should be an integer value that is less than you expect elements. So if you expect an array to have 0 or 1 elements, the ``${expected_size}`` should be 2.
@@ -1028,14 +1017,64 @@ Each array element of array in response should contain property with value in:
         END
     END
 
-Each array element of array in response should contain property with value NOT in:
+Each array in response should contain property with NOT EMPTY value:
+    [Documentation]    This keyword checks that each element in the array specified as ``${json_path}`` contains the specified property ``${expected_property}`` with NOT EMPTY  value.
+    ...
+    ...    If at least one array element has this property with EMPTY value, the keyword will fail.
+
+    ...    *Example:*
+    ...
+    ...    ``Each array element in response should contain property with NOT EMPTY value:    [data]    [attributes][name]``
+
+    [Arguments]    ${json_path}    ${expected_property}
+    @{data}=    Get Value From Json    ${response_body}    ${json_path}
+    ${list_length}=    Get Length    @{data}
+    ${log_list}=    Log List    @{data}
+    FOR    ${index}    IN RANGE    0    ${list_length}
+        ${list_element}=    Get From List    @{data}    ${index}
+        ${list_element}=    Get Value From Json    ${list_element}    ${expected_property}
+        ${list_element}=    Convert To String    ${list_element}
+        ${list_element}=    Replace String    ${list_element}    '   ${EMPTY}
+        ${list_element}=    Replace String    ${list_element}    [   ${EMPTY}
+        ${list_element}=    Replace String    ${list_element}    ]   ${EMPTY}
+    Should Not Be Empty     ${list_element}    '${expected_property}' property value in json path '${json_path}' is empty but shoud Not Be EMPTY
+    END
+
+Each array in response should contain property with value NOT in:
     [Documentation]    This keyword checks that each array element contsains the speficied parameter ``${expected_property}`` with the value that does not match any of the parameters ``${expected_value1}``, ``${expected_value2}``, etc..
     ...
     ...    The minimal number of arguments is 1, maximum is 4
     ...
     ...    *Example:*
     ...
-    ...    ``Each array element of array in response should contain property with value in:    [data]    [attributes][isSuper]    None``
+    ...    ``Each array element in response should contain property with value NOT in:    [data]    [attributes][isSuper]    None``
+    [Arguments]    ${json_path}    ${expected_property}    ${expected_value1}    ${expected_value2}=robotframework-dummy-value    ${expected_value3}=robotframework-dummy-value    ${expected_value4}=robotframework-dummy-value
+
+    @{data}=    Get Value From Json    ${response_body}    ${json_path}
+    ${list_length}=    Get Length    @{data}
+    ${log_list}=    Log List    @{data}
+    FOR    ${index}    IN RANGE    0    ${list_length}
+        ${list_element}=    Get From List    @{data}    ${index}
+        ${list_element}=    Get Value From Json    ${list_element}    ${expected_property}
+        ${list_element}=    Convert To String    ${list_element}
+        ${list_element}=    Replace String    ${list_element}    '   ${EMPTY}
+        ${list_element}=    Replace String    ${list_element}    [   ${EMPTY}
+        ${list_element}=    Replace String    ${list_element}    ]   ${EMPTY}
+        TRY
+            Should Not Contain Any   ${list_element}    ${expected_value1}    ${expected_value2}    ${expected_value3}    ${expected_value4}    ignore_case=True
+        EXCEPT
+            Fail    Element: '${expected_property}' of array: '${json_path}' contain any but SHOULD NOT: ${expected_value1}, ${expected_value2}, ${expected_value3}, ${expected_value4}
+        END
+    END
+
+Each array element of array in response should contain property with value NOT in:
+    [Documentation]    This keyword checks that each array element of array contsains the speficied parameter ``${expected_property}`` with the value that does not match any of the parameters ``${expected_value1}``, ``${expected_value2}``, etc..
+    ...
+    ...    The minimal number of arguments is 1, maximum is 4
+    ...
+    ...    *Example:*
+    ...
+    ...    ``Each array element of array in response should contain property with value NOT in:    [data]    [attributes][isSuper]    None``
     [Arguments]    ${json_path}    ${expected_property}    ${expected_value1}    ${expected_value2}=robotframework-dummy-value    ${expected_value3}=robotframework-dummy-value    ${expected_value4}=robotframework-dummy-value
 
     @{data}=    Get Value From Json    ${response_body}    ${json_path}
@@ -1379,7 +1418,7 @@ Response should return error message:
     ...
     ...    ``Response should return error message:    Can`t find abstract product image sets.``
     [Arguments]    ${error_message}
-    IF    '${tag}'=='bapi'   
+    IF    '${tag}'=='bapi' or '${tag}'=='sapi'
         ${data}=    Get Value From Json    ${response_body}    [errors][0][message]
     ELSE
         ${data}=    Get Value From Json    ${response_body}    [errors][0][detail]
@@ -1493,32 +1532,7 @@ Save value to a variable:
     ${var_value}=    Replace String    ${var_value}    [   ${EMPTY}
     ${var_value}=    Replace String    ${var_value}    ]   ${EMPTY}
     Set Test Variable    ${${name}}    ${var_value}
-    [Return]    ${name}
-
-Save the result of a SELECT DB query to a variable:
-    [Documentation]    This keyword saves any value which you receive from DB using SQL query ``${sql_query}`` to a test variable called ``${variable_name}``.
-    ...
-    ...    It can be used to save a value returned by any query into a custom test variable.
-    ...    This variable, once created, can be used during the specific test where this keyword is used and can be re-used by the keywords that follow this keyword in the test.
-    ...    It will not be visible to other tests.
-    ...    NOTE: Make sure that you expect only 1 value from DB, you can also check your query via external SQL tool.
-    ...
-    ...    *Examples:*
-    ...
-    ...    ``Save the result of a SELECT DB query to a variable:    select registration_key from spy_customer where customer_reference = '${user_reference_id}'    confirmation_key``
-    [Arguments]    ${sql_query}    ${variable_name}
-    Connect to Spryker DB
-    ${var_value} =    Query    ${sql_query}
-    Disconnect From Database
-    ${var_value}=    Convert To String    ${var_value}
-    ${var_value}=    Replace String    ${var_value}    '   ${EMPTY}
-    ${var_value}=    Replace String    ${var_value}    ,   ${EMPTY}
-    ${var_value}=    Replace String    ${var_value}    (   ${EMPTY}
-    ${var_value}=    Replace String    ${var_value}    )   ${EMPTY}
-    ${var_value}=    Replace String    ${var_value}    [   ${EMPTY}
-    ${var_value}=    Replace String    ${var_value}    ]   ${EMPTY}
-    Set Test Variable    ${${variable_name}}    ${var_value}
-    [Return]    ${variable_name}
+    RETURN    ${name}
 
 Save Header value to a variable:
     [Documentation]    This keyword saves any value located in a response Header parameter ``${header_parameter}`` to a test variable called ``${name}``.
@@ -1535,7 +1549,7 @@ Save Header value to a variable:
     [Arguments]    ${header_parameter}    ${name}
     ${actual_header_value}=    Get From Dictionary    ${response_headers}    ${header_parameter}
     Set Test Variable    ${${name}}    ${actual_header_value}
-    [Return]    ${name}
+    RETURN    ${name}
 
 Response body parameter should contain:
     [Documentation]    This keyword checks that response parameter with name ``${json_path}`` contains the specified substing ``${expected_value}``.
@@ -1609,15 +1623,15 @@ Cleanup existing customer addresses:
     ...    ``Cleanup existing customer addresses:    ${yves_user.reference}``
     [Arguments]    ${customer_reference}
     ${response}=    GET    ${current_url}/customers/${customer_reference}/addresses    headers=${headers}    timeout=${api_timeout}    allow_redirects=${default_allow_redirects}    auth=${default_auth}    expected_status=200    verify=${verify_ssl}
-    IF    ${response.status_code} != 204    
-        TRY    
+    IF    ${response.status_code} != 204
+        TRY
             ${response_body}=    Set Variable    ${response.json()}
         EXCEPT
             ${content_type}=    Get From Dictionary    ${response.headers}    content-type
             Fail    Got: '${response.status_code}' status code on: '${response.url}' with reason: '${response.reason}'. Response content type: '${content_type}'. Details: '${response.content}'
         END
     END
-    IF    ${response.status_code} == 204    
+    IF    ${response.status_code} == 204
         ${response_body}=    Set Variable    ${EMPTY}
     END
     Set Variable    ${response_body}    ${response_body}
@@ -1637,8 +1651,8 @@ Cleanup existing customer addresses:
         ${address_uid}=    Replace String    ${address_uid}    ]   ${EMPTY}
         ${response_delete}=    DELETE    ${current_url}/customers/${customer_reference}/addresses/${address_uid}    headers=${headers}    timeout=${api_timeout}    allow_redirects=${default_allow_redirects}    auth=${default_auth}    expected_status=204    verify=${verify_ssl}
         ${response.status_code}=    Set Variable    ${response_delete.status_code}
-        IF    ${response.status_code} != 204    
-            TRY    
+        IF    ${response.status_code} != 204
+            TRY
                 ${response_body}=    Set Variable    ${response.json()}
             EXCEPT
                 ${content_type}=    Get From Dictionary    ${response.headers}    content-type
@@ -1657,15 +1671,15 @@ Find or create customer cart
         ...
         ${response}=    GET    ${current_url}/carts    headers=${headers}    timeout=${api_timeout}    allow_redirects=${default_allow_redirects}    auth=${default_auth}    expected_status=200    verify=${verify_ssl}
         ${response.status_code}=    Set Variable    ${response.status_code}
-        IF    ${response.status_code} != 204    
-            TRY    
+        IF    ${response.status_code} != 204
+            TRY
                 ${response_body}=    Set Variable    ${response.json()}
             EXCEPT
                 ${content_type}=    Get From Dictionary    ${response.headers}    content-type
                 Fail    Got: '${response.status_code}' status code on: '${response.url}' with reason: '${response.reason}'. Response content type: '${content_type}'. Details: '${response.content}'
             END
         END
-        IF    ${response.status_code} == 204    
+        IF    ${response.status_code} == 204
             ${response_body}=    Set Variable    ${EMPTY}
         END
         ${response_headers}=    Set Variable    ${response.headers}
@@ -1697,7 +1711,7 @@ Find or create customer cart
                         Set Test Variable    ${cart_id}    ${cart_id}
                         BREAK
                     END
-                    IF    ${index} < ${carts_number}-1 and ${expected_cart_found} == 0    
+                    IF    ${index} < ${carts_number}-1 and ${expected_cart_found} == 0
                         Continue For Loop
                     ELSE
                         I send a POST request:    /carts    {"data": {"type": "carts","attributes": {"priceMode": "${mode.gross}","currency": "${currency.eur.code}","store": "${store.de}","name": "dummyCart${random}"}}}
@@ -1711,14 +1725,14 @@ Find or create customer cart
 
 Create empty customer cart:
     [Documentation]    This keyword creates cart for the current customer token. This keyword sets ``${cart_id} `` variable
-        ...                and it can be re-used by the keywords that follow this keyword in the test. 
-        ...    
+        ...                and it can be re-used by the keywords that follow this keyword in the test.
+        ...
         ...    Note: work only for registered customers. For guest users use ``Create a guest cart:``
         ...
         ...    *Example:*
         ...
         ...    ``Create empty customer cart:    ${mode.gross}    ${currency.eur.code}    ${store.de}    cart_rules``
-        ...    
+        ...
         [Arguments]    ${price_mode}    ${currency_code}    ${store_code}    ${cart_name}
         I send a POST request:    /carts    {"data": {"type": "carts","attributes": {"priceMode": "${price_mode}","currency": "${currency_code}","store": "${store_code}","name": "${cart_name}-${random}"}}}
         Save value to a variable:    [data][id]    cart_id
@@ -1741,33 +1755,7 @@ Get ETag header value from cart
         ${Etag}=    Replace String    ${Etag}    "   ${EMPTY}
         Log    ${Etag}
         Set Test Variable    ${Etag}
-        [Return]    ${Etag}
-
-Create giftcode in Database:
-    [Documentation]    This keyword creates a new entry in the DB table spy_gift_card with the name, value and gift-card code.
-        ...    *Example:*
-        ...
-        ...    ``Create giftcode in Database:    checkout_${random}    ${gift_card.amount}``
-        ... 
-    [Arguments]    ${spy_gift_card_code}    ${spy_gift_card_value}
-    ${amount}=   Evaluate    ${spy_gift_card_value} / 100
-    ${amount}=    Evaluate    "%.f" % ${amount}
-    Connect to Spryker DB
-    ${last_id}=    Query    SELECT id_gift_card FROM spy_gift_card ORDER BY id_gift_card DESC LIMIT 1;
-    ${new_id}=    Set Variable    ${EMPTY}
-    ${last_id_length}=    Get Length    ${last_id}
-    IF    ${last_id_length} > 0    
-        ${new_id}=    Evaluate    ${last_id[0][0]} + 1
-    ELSE
-        ${new_id}=    Evaluate    1
-    END
-    Log    ${new_id}
-    IF    '${db_engine}' == 'pymysql'
-        Execute Sql String    insert ignore into spy_gift_card (code,name,currency_iso_code,value) value ('${spy_gift_card_code}','Gift_card_${amount}','EUR','${spy_gift_card_value}')
-    ELSE
-        Execute Sql String    INSERT INTO spy_gift_card (id_gift_card, code, name, currency_iso_code, value) VALUES (${new_id}, '${spy_gift_card_code}', 'Gift_card_${amount}', 'EUR', '${spy_gift_card_value}');
-    END
-    Disconnect From Database
+        RETURN    ${Etag}
 
 Create a guest cart:
     [Documentation]    This keyword creates guest cart and sets ``${x_anonymous_customer_unique_id}`` that specify guest reference
@@ -1796,15 +1784,15 @@ Cleanup all items in the cart:
         [Arguments]    ${cart_id}
         ${response}=    GET    ${current_url}/carts/${cart_id}    headers=${headers}    timeout=${api_timeout}    allow_redirects=${default_allow_redirects}    auth=${default_auth}  params=include=items,bundle-items     expected_status=200    verify=${verify_ssl}
         ${response.status_code}=    Set Variable    ${response.status_code}
-        IF    ${response.status_code} != 204    
-            TRY    
+        IF    ${response.status_code} != 204
+            TRY
                 ${response_body}=    Set Variable    ${response.json()}
             EXCEPT
                 ${content_type}=    Get From Dictionary    ${response.headers}    content-type
                 Fail    Got: '${response.status_code}' status code on: '${response.url}' with reason: '${response.reason}'. Response content type: '${content_type}'. Details: '${response.content}'
             END
         END
-        IF    ${response.status_code} == 204    
+        IF    ${response.status_code} == 204
             ${response_body}=    Set Variable    ${EMPTY}
         END
         @{included}=    Get Value From Json    ${response_body}    [included]
@@ -1826,7 +1814,7 @@ Cleanup all items in the cart:
                     ${cart_item_sku}=    Replace String    ${cart_item_sku}    ]   ${EMPTY}
                     TRY
                         ${response_delete}=    DELETE    ${current_url}/carts/${cart_id}/items/${cart_item_uid}    headers=${headers}    timeout=${api_timeout}    allow_redirects=${default_allow_redirects}    auth=${default_auth}    expected_status=204    verify=${verify_ssl}
-                    EXCEPT    
+                    EXCEPT
                         ${response_delete}=    DELETE    ${current_url}/carts/${cart_id}/items/${cart_item_sku}    headers=${headers}    timeout=${api_timeout}    allow_redirects=${default_allow_redirects}    auth=${default_auth}    expected_status=204    verify=${verify_ssl}
                     END
             END
@@ -1837,21 +1825,25 @@ Cleanup all customer carts
         ...
         ...    Before using this method you should get customer token and set it into the headers with the help of ``I get access token for the customer:`` and ``I set Headers:``
         ...    This keyword does not accept any arguments.
-        ...    
+        ...
         ...    *Example:*
         ...
         ...    ``Cleanup all customer carts``
+        IF    '${env}' not in ['api_b2c','api_mp_b2c']
+            I send a POST request:    /carts    {"data": {"type": "carts","attributes": {"priceMode": "${mode.gross}","currency": "${currency.eur.code}","store": "${store.de}","name": "dummyCart-${{random.randint(0, 100)}}${random}"}}}
+            Save value to a variable:    [data][id]    cart_id
+        END
         ${response}=    GET    ${current_url}/carts    headers=${headers}    timeout=${api_timeout}    allow_redirects=${default_allow_redirects}    auth=${default_auth}  params=include=items,bundle-items     expected_status=200    verify=${verify_ssl}
         ${response.status_code}=    Set Variable    ${response.status_code}
-        IF    ${response.status_code} != 204    
-            TRY    
+        IF    ${response.status_code} != 204
+            TRY
                 ${response_body}=    Set Variable    ${response.json()}
             EXCEPT
                 ${content_type}=    Get From Dictionary    ${response.headers}    content-type
                 Fail    Got: '${response.status_code}' status code on: '${response.url}' with reason: '${response.reason}'. Response content type: '${content_type}'. Details: '${response.content}'
             END
         END
-        IF    ${response.status_code} == 204    
+        IF    ${response.status_code} == 204
             ${response_body}=    Set Variable    ${EMPTY}
         END
         @{data}=    Get Value From Json    ${response_body}    [data]
@@ -1866,7 +1858,15 @@ Cleanup all customer carts
                     ${cart_uuid}=    Replace String    ${cart_uuid}    '   ${EMPTY}
                     ${cart_uuid}=    Replace String    ${cart_uuid}    [   ${EMPTY}
                     ${cart_uuid}=    Replace String    ${cart_uuid}    ]   ${EMPTY}
-                    ${response_delete}=    DELETE    ${current_url}/carts/${cart_uuid}    headers=${headers}    timeout=${api_timeout}    allow_redirects=${default_allow_redirects}    auth=${default_auth}    expected_status=204    verify=${verify_ssl}
+                    IF    '${env}' not in ['api_b2c','api_mp_b2c']
+                        IF    '${cart_uuid}' == '${cart_id}'
+                            Continue For Loop
+                        ELSE
+                            ${response_delete}=    DELETE    ${current_url}/carts/${cart_uuid}    headers=${headers}    timeout=${api_timeout}    allow_redirects=${default_allow_redirects}    auth=${default_auth}    expected_status=204    verify=${verify_ssl}
+                        END
+                    ELSE
+                        ${response_delete}=    DELETE    ${current_url}/carts/${cart_uuid}    headers=${headers}    timeout=${api_timeout}    allow_redirects=${default_allow_redirects}    auth=${default_auth}    expected_status=204    verify=${verify_ssl}
+                    END
             END
         END
 
@@ -1881,15 +1881,15 @@ Cleanup all items in the guest cart:
         [Arguments]    ${cart_id}
         ${response}=    GET    ${current_url}/guest-carts/${cart_id}    headers=${headers}    timeout=${api_timeout}    allow_redirects=${default_allow_redirects}    auth=${default_auth}  params=include=guest-cart-items,bundle-items    expected_status=200    verify=${verify_ssl}
         ${response.status_code}=    Set Variable    ${response.status_code}
-        IF    ${response.status_code} != 204    
-            TRY    
+        IF    ${response.status_code} != 204
+            TRY
                 ${response_body}=    Set Variable    ${response.json()}
             EXCEPT
                 ${content_type}=    Get From Dictionary    ${response.headers}    content-type
                 Fail    Got: '${response.status_code}' status code on: '${response.url}' with reason: '${response.reason}'. Response content type: '${content_type}'. Details: '${response.content}'
             END
         END
-        IF    ${response.status_code} == 204    
+        IF    ${response.status_code} == 204
             ${response_body}=    Set Variable    ${EMPTY}
         END
         @{included}=    Get Value From Json    ${response_body}    [included]
@@ -1918,15 +1918,15 @@ Cleanup all availability notifications:
         [Arguments]    ${yves_user.reference}
         ${response}=    GET    ${current_url}/customers/${yves_user.reference}/availability-notifications    headers=${headers}    timeout=${api_timeout}    allow_redirects=${default_allow_redirects}    auth=${default_auth}   expected_status=200    verify=${verify_ssl}
         ${response.status_code}=    Set Variable    ${response.status_code}
-        IF    ${response.status_code} != 204    
-            TRY    
+        IF    ${response.status_code} != 204
+            TRY
                 ${response_body}=    Set Variable    ${response.json()}
             EXCEPT
                 ${content_type}=    Get From Dictionary    ${response.headers}    content-type
                 Fail    Got: '${response.status_code}' status code on: '${response.url}' with reason: '${response.reason}'. Response content type: '${content_type}'. Details: '${response.content}'
             END
         END
-        IF    ${response.status_code} == 204    
+        IF    ${response.status_code} == 204
             ${response_body}=    Set Variable    ${EMPTY}
         END
         @{data}=    Get Value From Json    ${response_body}    [data]
@@ -1947,86 +1947,12 @@ Cleanup all availability notifications:
                     ${response_delete}=    DELETE    ${current_url}/availability-notifications/${availability_notification_id}    headers=${headers}    timeout=${api_timeout}    allow_redirects=${default_allow_redirects}    auth=${default_auth}    expected_status=204    verify=${verify_ssl}
             END
         END
-Update order status in Database:
-    [Documentation]    This keyword updates order status in database to any required status. This allows to skip going through the order workflow manually 
-    ...    but just switch to the status you need to create a test. 
-    ...    There is no separate endpoint to update order status and this keyword allows to do this via database value update.
-    ...    *Example:*
-    ...    
-    ...    ``Update order status in Database:    7    shipped``
-    [Arguments]    ${order_item_status_name}    ${uuid_to_use}
-    Connect to Spryker DB
-    ${new_id}=    Set Variable    ${EMPTY}
-    ${state_id}=    Set Variable    ${EMPTY}
-    ${last_id}=    Query    SELECT id_oms_order_item_state FROM spy_oms_order_item_state ORDER BY id_oms_order_item_state DESC LIMIT 1;
-    ${expected_state_id}=    Query    SELECT id_oms_order_item_state FROM spy_oms_order_item_state WHERE name='${order_item_status_name}';
-    ${last_id_length}=    Get Length    ${last_id}
-    ${expected_state_id_length}=    Get Length    ${expected_state_id}
-    IF    ${expected_state_id_length} > 0 
-        ${state_id}=    Set Variable    ${expected_state_id[0][0]}
-    ELSE
-        ${new_id}=    Evaluate    ${last_id[0][0]} + 1
-        Execute Sql String    INSERT INTO spy_oms_order_item_state (id_oms_order_item_state, name) VALUES (${new_id}, '${order_item_status_name}');
-        ${state_id}=    Set Variable    ${new_id}
-    END
-    Execute Sql String    update spy_sales_order_item set fk_oms_order_item_state = '${state_id}' where uuid= '${uuid_to_use}'
-    Disconnect From Database
- 
-Get voucher code by discountId from Database:
-    [Documentation]    This keyword allows to get voucher code according to the discount ID. Discount_id can be found in Backoffice > Merchandising > Discount page
-    ...        and set this id as an argument of a keyword.
-    ...
-    ...    *Example:*
-    ...    ``Get voucher code by discountId from Database:    3``
-    [Arguments]    ${discount_id}
-    Save the result of a SELECT DB query to a variable:    select fk_discount_voucher_pool from spy_discount where id_discount = ${discount_id}    discount_voucher_pool_id
-    IF    '${db_engine}' == 'pymysql'
-        Save the result of a SELECT DB query to a variable:    select code from spy_discount_voucher where fk_discount_voucher_pool = ${discount_voucher_pool_id} and is_active = 1 limit 1    discount_voucher_code
-    ELSE
-        Save the result of a SELECT DB query to a variable:    select code from spy_discount_voucher where fk_discount_voucher_pool = ${discount_voucher_pool_id} and is_active = true limit 1    discount_voucher_code
-    END
-
-Connect to Spryker DB
-    [Documentation]    This keyword allows to connect to Spryker DB. 
-    ...        Supports both MariaDB and PostgeSQL.
-    ...    
-    ...        To specify the expected DB engine, use ``db_engine`` variabl. Default one -> *MariaDB*
-    ...    
-    ...    *Example:*
-    ...    ``robot -v env:api_suite -v db_engine:psycopg2``
-    ...    
-    ...    with the example above you'll use PostgreSQL DB engine
-    ${db_name}=    Set Variable If    '${db_name}' == '${EMPTY}'    ${default_db_name}    ${db_name}
-    ${db_user}=    Set Variable If    '${db_user}' == '${EMPTY}'    ${default_db_user}    ${db_user}
-    ${db_password}=    Set Variable If    '${db_password}' == '${EMPTY}'    ${default_db_password}    ${db_password}
-    ${db_host}=    Set Variable If    '${db_host}' == '${EMPTY}'    ${default_db_host}    ${db_host}
-    ${db_engine}=    Set Variable If    '${db_engine}' == '${EMPTY}'    ${default_db_engine}    ${db_engine}
-    IF    '${db_engine}' == 'mysql'
-        ${db_engine}=    Set Variable    pymysql
-    ELSE IF    '${db_engine}' == 'postgresql'
-        ${db_engine}=    Set Variable    psycopg2
-    ELSE IF    '${db_engine}' == 'postgres'
-        ${db_engine}=    Set Variable    psycopg2
-    END    
-    IF    '${db_engine}' == 'psycopg2'
-        ${db_port}=    Set Variable If    '${db_port}' == '${EMPTY}'    ${db_port_postgres_env}    ${db_port}
-        IF    '${db_port_postgres_env}' == '${EMPTY}'
-        ${db_port}=    Set Variable If    '${db_port_postgres_env}' == '${EMPTY}'    ${default_db_port_postgres}    ${db_port_postgres_env}
-        END
-    ELSE
-    ${db_port}=    Set Variable If    '${db_port}' == '${EMPTY}'    ${db_port_env}    ${db_port}
-        IF    '${db_port_env}' == '${EMPTY}'
-        ${db_port}=    Set Variable If    '${db_port_env}' == '${EMPTY}'    ${default_db_port}    ${db_port_env}
-        END
-    END
-    Set Test Variable    ${db_engine}
-    Connect To Database    ${db_engine}    ${db_name}    ${db_user}    ${db_password}    ${db_host}    ${db_port}
 
 Get the first company user id and its' customer email
     [Documentation]    This keyword sends the GET reguest to the ``/company-users?include=customers`` endpoint and returns first available company user id and its' customer email in
-    ...    ``${companyUserId}``  and  ``${companyUserEmail}`` variables. 
+    ...    ``${companyUserId}``  and  ``${companyUserEmail}`` variables.
     ...    If the fist company user is anne.boleyn@spryker.com - the next one will be taken and Anna is a 'BoB' user
-    ...    
+    ...
     I send a GET request:    /company-users?include=customers
     Save value to a variable:    [data][0][id]    companyUserId
     Save value to a variable:    [included][0][attributes][email]    companyUserEmail
@@ -2041,7 +1967,7 @@ Array element should contain nested array at least once:
     ...    *Example:*
     ...
     ...   ``Array element should contain nested array at least once:    [data]    [relationships]``
-    ...    
+    ...
     [Arguments]    ${parent_array}    ${expected_nested_array}
     @{data}=    Get Value From Json    ${response_body}    ${parent_array}
     ${list_length}=    Get Length    @{data}
@@ -2156,7 +2082,7 @@ Array element should contain nested array with property and value at least once:
     ...    *Example:*
     ...
     ...   ``And Array element should contain nested array with property and value at least once:    [data][0][attributes][categoryTreeFilter]    [children]    docCount    ${category_lvl2.qty}``
-    ...    
+    ...
     [Arguments]    ${json_path}    ${nested_array}    ${expected_property}    ${expected_value}
     @{data}=    Get Value From Json    ${response_body}    ${json_path}
     ${list_length1}=    Get Length    @{data}
@@ -2188,10 +2114,10 @@ Array element should contain nested array with property and value at least once:
 
 Get company user id by customer reference:
     [Documentation]    This keyword sends the GET reguest to the ``/company-users?include=customers`` endpoint and returns company user id by customer reference. Sets variable : ``${companyUserId}``
-    ...    
+    ...
     ...    *Example:*
     ...    ``Get company user id by customer reference:    ${yves_fifth_user.reference}``
-    ...    
+    ...
     [Arguments]    ${customer_reference}
     I send a GET request:    /company-users?include=customers
     @{data}=    Get Value From Json    ${response_body}    [data]
@@ -2216,7 +2142,7 @@ Get company user id by customer reference:
         IF    '${company_user_customer_id}' == '${customer_reference}'    BREAK
         IF    ${index} == ${list_length}-1
             Fail    expected customer reference '${customer_reference}' is not present in '@{data}' but should
-        END        
+        END
     END
 
 Cleanup all existing shopping lists
@@ -2224,21 +2150,21 @@ Cleanup all existing shopping lists
         ...
         ...    Before using this method you should get customer token and set it into the headers with the help of ``I get access token for the customer:`` and ``I set Headers:``
         ...    This keyword does not accept any arguments.
-        ...    
+        ...
         ...    *Example:*
         ...
         ...    ``Cleanup all existing shopping lists``
         ${response}=    GET    ${current_url}/shopping-lists    headers=${headers}    timeout=${api_timeout}    allow_redirects=${default_allow_redirects}    auth=${default_auth}  params=include=items,bundle-items     expected_status=200    verify=${verify_ssl}
         ${response.status_code}=    Set Variable    ${response.status_code}
-        IF    ${response.status_code} != 204    
-            TRY    
+        IF    ${response.status_code} != 204
+            TRY
                 ${response_body}=    Set Variable    ${response.json()}
             EXCEPT
                 ${content_type}=    Get From Dictionary    ${response.headers}    content-type
                 Fail    Got: '${response.status_code}' status code on: '${response.url}' with reason: '${response.reason}'. Response content type: '${content_type}'. Details: '${response.content}'
             END
         END
-        IF    ${response.status_code} == 204    
+        IF    ${response.status_code} == 204
             ${response_body}=    Set Variable    ${EMPTY}
         END
         @{data}=    Get Value From Json    ${response_body}    [data]
@@ -2257,63 +2183,20 @@ Cleanup all existing shopping lists
             END
         END
 
-Create merchant order for the item in DB and change status:
-    [Documentation]    This keyword creates new merchant order in the DB and sets the desired status . This allows to skip going through the order workflow manually 
-    ...    but just switch to the status you need to create a test. 
-    ...    There is no separate endpoint to update order status and this keyword allows to do this via database value update.
+I get access token by user credentials:
+    [Documentation]    This is a helper keyword which helps get access token for future use in the headers of the following requests.
+    ...
+    ...    It gets the token for the specified user ``${email}`` and saves it into the test variable ``${token}``, which can then be used within the scope of the test where this keyword was called.
+    ...    After the test ends the ``${token}`` variable is cleared. This keyword needs to be called separately for each test where you expect to need a customer token.
+    ...
+    ...    The password in this case is not passed to the keyword and the default password stored in ``${default_password}`` will be used when getting token.
+    ...
     ...    *Example:*
-    ...    
-    ...    ``Create merchant order for the item in DB and change status:    shipped    ${uuid}    ${merchants.sony_experts.merchant_reference}``
-    [Arguments]    ${order_item_status_name}    ${uuid_to_use}    ${merchant_reference}
-    Connect to Spryker DB
-    ${new_id}=    Set Variable    ${EMPTY}
-    ${state_id}=    Set Variable    ${EMPTY}
-    ${last_id}=    Query    SELECT id_state_machine_item_state FROM spy_state_machine_item_state ORDER BY id_state_machine_item_state DESC LIMIT 1;
-    ${expected_state_id}=    Query    SELECT id_state_machine_item_state FROM spy_state_machine_item_state WHERE name='${order_item_status_name}';
-    ${last_id_length}=    Get Length    ${last_id}
-    IF    ${last_id_length} == 0
-        ${state_id}=    Set Variable    1
-        ${state_id}=    Convert To String    ${state_id}
-    END
-    ${expected_state_id_length}=    Get Length    ${expected_state_id}
-    IF    ${expected_state_id_length} > 0 
-        ${state_id}=    Set Variable    ${expected_state_id[0][0]}
-    ELSE
-        ${state_id}=    Set Variable    ${state_id}
-        Execute Sql String    INSERT INTO spy_state_machine_item_state (id_state_machine_item_state, fk_state_machine_process, name) VALUES (${state_id}, 2, '${order_item_status_name}');
-    END
-    ${last_order_item_id}=    Query    SELECT id_merchant_sales_order_item from spy_merchant_sales_order_item order by id_merchant_sales_order_item desc limit 1;
-    ${last_order_item_id_length}=    Get Length    ${last_order_item_id}
-    IF    ${last_order_item_id_length} == 0
-        ${new_order_item_id}=    Set variable    1
-        ${new_order_item_id}=    Convert To String    ${new_order_item_id}
-    END
-    IF    ${last_order_item_id_length} > 0
-        ${new_order_item_id}=    Evaluate    ${last_order_item_id[0][0]} +1
-    ELSE
-        ${new_order_item_id}=    Set Variable    ${new_order_item_id}
-    END
-    ${last_merchant_order_id}=    Query    SELECT id_merchant_sales_order from spy_merchant_sales_order order by id_merchant_sales_order desc limit 1;
-    ${last_merchant_order_id_length}=    Get Length    ${last_merchant_order_id}
-    IF    ${last_merchant_order_id_length} == 0
-        ${new_merchant_order_id}=    Set Variable    1
-        ${new_merchant_order_id}=    Convert To String    ${new_merchant_order_id}
-    END
-    IF    ${last_merchant_order_id_length} > 0
-        ${new_merchant_order_id}=    Evaluate    ${last_merchant_order_id[0][0]} +1
-    ELSE
-        ${new_merchant_order_id}=    Set Variable    ${new_merchant_order_id}
-    END
-    ${sales_order_id}=    Query    SELECT fk_sales_order from spy_sales_order_item where uuid='${uuid_to_use}';
-    ${sales_order_id}=    Set Variable    ${sales_order_id[0][0]}
-    Execute Sql String    INSERT INTO spy_merchant_sales_order (id_merchant_sales_order, fk_sales_order, merchant_reference, merchant_sales_order_reference) VALUES (${new_merchant_order_id}, ${sales_order_id}, '${merchant_reference}', 'DE--${sales_order_id}--${merchant_reference}');
-    ${last_merchant_order_item_id}=    Query    SELECT id_merchant_sales_order from spy_merchant_sales_order order by id_merchant_sales_order desc limit 1;
-    ${last_merchant_order_item_id_length}=    Get Length    ${last_merchant_order_item_id}
-    IF    ${last_merchant_order_item_id_length} > 0
-        ${new_merchant_order_item_id}=    Evaluate    ${last_merchant_order_item_id[0][0]} +1
-    END
-    ${sales_order_item_id}=    Query    SELECT id_sales_order_item from spy_sales_order_item where uuid='${uuid_to_use}';
-    ${sales_order_item_id}=    Set Variable    ${sales_order_item_id[0][0]}
-    ${random_merchant_order_item_reference}=    Generate Random String    10    [NUMBERS]
-    Execute Sql String    INSERT INTO spy_merchant_sales_order_item (id_merchant_sales_order_item, fk_merchant_sales_order, fk_sales_order_item, fk_state_machine_item_state, merchant_order_item_reference) VALUES (${new_merchant_order_item_id}, ${new_merchant_order_id}, ${sales_order_item_id}, ${state_id}, '${random_merchant_order_item_reference}');
-    Disconnect From Database
+    ...
+    ...    ``I get access token by user credentials:    ${zed_admin.email}``
+    [Arguments]    ${email}    ${password}=${default_password}
+    When I set Headers:    Content-Type=application/x-www-form-urlencoded
+    And I send a POST request:    /token    {"grantType": "${grant_type.password}","username": "${email}","password": "${password}"}
+    Save value to a variable:    [access_token]    token
+    Log    ${token}
+    RETURN    ${token}

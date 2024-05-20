@@ -12,7 +12,11 @@ Zed: select merchant in filter:
 Zed: create new Merchant with the following data:
     [Arguments]    @{args}
     ${merchantData}=    Set Up Keyword Arguments    @{args}
-    Zed: go to second navigation item level:    Marketplace    Merchants  
+    IF    '${env}' in ['ui_suite','ui_mp_b2b','ui_mp_b2c','ui_b2c']
+        Zed: go to second navigation item level:    Marketplace    Merchants
+    ELSE
+        Zed: go to second navigation item level:    B2B Contracts    Merchants
+    END    
     Zed: click button in Header:    Add Merchant
     Wait Until Element Is Visible    ${zed_create_merchant_name_field}
     FOR    ${key}    ${value}    IN    &{merchantData}
@@ -47,6 +51,7 @@ Zed: update Merchant on edit page with the following data:
     Zed: submit the form
     Zed: wait for button in Header to be visible:    Add Merchant    ${browser_timeout}
     Zed: table should contain:    ${zedMerchantNewName}
+
 Zed: update Merchant name on edit page:
     [Arguments]    ${zedMerchantNewName}
     Wait Until Element Is Visible    ${zed_create_merchant_name_field}
@@ -86,18 +91,14 @@ Zed: update Merchant User on edit page with the following data:
 Zed: perform Merchant User search by:
     [Arguments]    ${search_key}
     Wait Until Page Contains Element    ${zed_table_locator}
+    Clear Text    ${zed_merchant_user_search_field_locator}
     Type Text    ${zed_merchant_user_search_field_locator}    ${search_key}
     TRY
-        Wait Until Element Is Visible    ${zed_processing_block_locator}    3s
+        Wait For Response    timeout=10s
     EXCEPT    
-        Log    processing locator is now shown
+        Log    Search event is not fired
     END
-    TRY
-        Wait Until Element Is Not Visible    ${zed_processing_block_locator}    3s
-    EXCEPT    
-        Log    processing locator is now shown
-    END
-    Sleep    3s
+    Repeat Keyword    3    Wait For Load State
 
 Zed: click Action Button in Merchant Users table for row that contains:
     [Arguments]    ${row_content}    ${zed_table_action_button_locator}

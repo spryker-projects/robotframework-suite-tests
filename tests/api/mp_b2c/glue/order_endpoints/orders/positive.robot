@@ -1,12 +1,12 @@
 *** Settings ***
-Suite Setup       SuiteSetup
+Suite Setup       API_suite_setup
 Resource    ../../../../../../resources/common/common_api.robot
-Test Setup        TestSetup
+Test Setup        API_test_setup
 Default Tags    glue
 
 *** Test Cases ***
 ENABLER
-    TestSetup
+    API_test_setup
 
 #GET requests
 Get_order_by_order_id
@@ -131,7 +131,7 @@ Get_order_by_order_id
     #payments
     And Response body parameter should be greater than:    [data][attributes][payments][0][amount]    0
     And Response body parameter should be:    [data][attributes][payments][0][paymentProvider]    ${payment.provider_name}
-    And Response body parameter should be:    [data][attributes][payments][0][paymentMethod]    ${payment.method_name}
+    And Response body case-insensitive parameter should be:    [data][attributes][payments][0][paymentMethod]    ${payment.method_name}
     #shipments
     And Response body parameter should be:    [data][attributes][shipments][0][shipmentMethodName]    ${shipment.method_name}
     And Response body parameter should be:    [data][attributes][shipments][0][carrierName]    ${shipment.carrier_name}

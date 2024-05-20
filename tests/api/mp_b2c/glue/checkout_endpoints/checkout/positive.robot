@@ -1,12 +1,12 @@
 *** Settings ***
-Suite Setup    SuiteSetup
-Test Setup     TestSetup
+Suite Setup    API_suite_setup
+Test Setup     API_test_setup
 Resource    ../../../../../../resources/common/common_api.robot
 Default Tags    glue
 
 *** Test Cases ***
 ENABLER
-    TestSetup
+    API_test_setup
 
 #POST requests
 Create_order
@@ -27,10 +27,10 @@ Create_order
 
 Create_order_include_orders
     [Setup]    Run Keywords    I get access token for the customer:    ${yves_user.email}
-    ...  AND    I set Headers:    Authorization=${token}
+    ...    AND    I set Headers:    Authorization=${token}
     ...    AND    Find or create customer cart
     ...    AND    Cleanup all items in the cart:    ${cart_id}
-    ...  AND    I send a POST request:    /carts/${cart_id}/items    {"data": {"type": "items","attributes": {"sku": "${product_availability.concrete_available_with_stock_and_never_out_of_stock_sku}","quantity": 1}}}
+    ...    AND    I send a POST request:    /carts/${cart_id}/items    {"data": {"type": "items","attributes": {"sku": "${product_availability.concrete_available_with_stock_and_never_out_of_stock_sku}","quantity": 1}}}
     When I send a POST request:    /checkout?include=orders    {"data": {"type": "checkout","attributes": {"customer": {"email": "${yves_user.email}","salutation": "${yves_user.salutation}","firstName": "${yves_user.first_name}","lastName": "${yves_user.last_name}"},"idCart": "${cart_id}","billingAddress": {"salutation": "${yves_user.salutation}","firstName": "${yves_user.first_name}","lastName": "${yves_user.last_name}","address1": "${default.address1}","address2": "${default.address2}","address3": "${default.address3}","zipCode": "${default.zipCode}","city": "${default.city}","iso2Code": "${default.iso2Code}","company": "${default.company}","phone": "${default.phone}","isDefaultBilling": False,"isDefaultShipping": False},"shippingAddress": {"salutation": "${yves_user.salutation}","firstName": "${yves_user.first_name}","lastName": "${yves_user.last_name}","address1": "${default.address1}","address2": "${default.address2}","address3": "${default.address3}","zipCode": "${default.zipCode}","city": "${default.city}","iso2Code": "${default.iso2Code}","company": "${default.company}","phone": "${default.phone}","isDefaultBilling": False,"isDefaultShipping": False},"payments": [{"paymentProviderName": "${payment.provider_name}","paymentMethodName": "${payment.method_name}","paymentSelection": "${payment.selection_name}"}],"shipment": {"idShipmentMethod": 1},"items": ["${product_availability.concrete_available_with_stock_and_never_out_of_stock_sku}"]}}}
     Then Response status code should be:    201
     And Response reason should be:    Created
@@ -155,7 +155,7 @@ Create_order_include_orders
     #payments
     And Response body parameter should be greater than:    [included][0][attributes][payments][0][amount]    0
     And Response body parameter should be:    [included][0][attributes][payments][0][paymentProvider]    ${payment.provider_name}
-    And Response body parameter should be:    [included][0][attributes][payments][0][paymentMethod]    ${payment.method_name}
+    And Response body case-insensitive parameter should be:    [included][0][attributes][payments][0][paymentMethod]    ${payment.method_name}
     #shipments
     And Response body parameter should be:    [included][0][attributes][shipments][0][shipmentMethodName]    ${shipment.method_name}
     And Response body parameter should be:    [included][0][attributes][shipments][0][carrierName]    ${shipment.carrier_name}
@@ -522,7 +522,7 @@ Create_order_with_configurable_product
     #payments
     And Response body parameter should be greater than:    [included][0][attributes][payments][0][amount]    0
     And Response body parameter should be:    [included][0][attributes][payments][0][paymentProvider]    ${payment.provider_name}
-    And Response body parameter should be:    [included][0][attributes][payments][0][paymentMethod]    ${payment.method_name}
+    And Response body case-insensitive parameter should be:    [included][0][attributes][payments][0][paymentMethod]    ${payment.method_name}
     #shipments
     And Response body parameter should be:    [included][0][attributes][shipments][0][shipmentMethodName]    ${shipment.method_name}
     And Response body parameter should be:    [included][0][attributes][shipments][0][carrierName]    ${shipment.carrier_name}

@@ -1,13 +1,13 @@
 *** Settings ***
 Resource    ../../../../../../resources/common/common_api.robot
-Suite Setup    SuiteSetup
-Test Setup     TestSetup
+Suite Setup    API_suite_setup
+Test Setup     API_test_setup
 Default Tags    glue
 
 *** Test Cases ***
 
 ENABLER
-    TestSetup
+    API_test_setup
 #Get Request
 Get_product_reviews
     When I send a GET request:    /abstract-products/${abstract_product.product_with_reviews.sku}/product-reviews
@@ -59,8 +59,6 @@ Get_product_reviews_for_product_with_no_reviews
     And Response body has correct self link
    
 Get_product_review_by_id
-    [Documentation]   https://spryker.atlassian.net/browse/CC-16486
-    [Tags]    skip-due-to-issue
     [Setup]    Run Keywords    I send a GET request:    /abstract-products/${abstract_product.product_with_reviews.sku}/product-reviews
     ...    AND    Save value to a variable:    [data][0][id]    review_id
     When I send a GET request:    /abstract-products/${abstract_product.product_with_reviews.sku}/product-reviews/${review_id}
@@ -78,8 +76,6 @@ Get_product_review_by_id
     And Response body parameter should not be EMPTY:    [data][links][self]
 
 Create_a_product_review
-    [Documentation]   https://spryker.atlassian.net/browse/CC-16486 (501 error and also incorrect self link on review creation)
-    [Tags]    skip-due-to-issue
     [Setup]    Run Keywords    I get access token for the customer:    ${yves_user.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}    Authorization=${token}
     When I send a POST request:    /abstract-products/${abstract_available_product_with_stock.sku}/product-reviews    {"data": {"type": "product-reviews","attributes": {"rating": ${review.default_rating},"nickname": "${yves_user.first_name}","summary": "${review.title}","description": "${review.text}"}}}

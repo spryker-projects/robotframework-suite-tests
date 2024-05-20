@@ -1,12 +1,12 @@
 *** Settings ***
-Suite Setup       SuiteSetup
+Suite Setup       API_suite_setup
 Resource    ../../../../../../resources/common/common_api.robot
 Default Tags    glue
 
 *** Test Cases ***
 
 ENABLER
-    TestSetup
+    API_test_setup
 
 ######POST#####
 Create_customer_address_with_missing_required_fields
@@ -117,9 +117,9 @@ Get_address_list_for_non-existent_customer
     When I get access token for the customer:    ${yves_user.email}
     And I set Headers:    Content-Type=${default_header_content_type}    Authorization=${token}
     When I send a GET request:    /customers/fake/addresses
-    Then Response status code should be:    404
-    And Response reason should be:    Not Found
-    And Response should return error message:    Customer not found.
+    Then Response status code should be:    403
+    And Response reason should be:    Forbidden
+    And Response should return error message:    Unauthorized request.
 
 Get_address_list_with_no_token
     When I send a GET request:    /customers/${yves_user.reference}/addresses

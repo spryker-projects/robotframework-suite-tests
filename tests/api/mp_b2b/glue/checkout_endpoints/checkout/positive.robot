@@ -1,12 +1,12 @@
 *** Settings ***
-Suite Setup    SuiteSetup
-Test Setup     TestSetup
+Suite Setup    API_suite_setup
+Test Setup     API_test_setup
 Resource    ../../../../../../resources/common/common_api.robot
 Default Tags    glue
 
 *** Test Cases ***
 ENABLER
-      TestSetup
+    API_test_setup
 
  #POST requests
 Create_order
@@ -158,7 +158,7 @@ Create_order_include_orders
     #payments
     And Response body parameter should be greater than:    [included][0][attributes][payments][0][amount]    0
     And Response body parameter should be:    [included][0][attributes][payments][0][paymentProvider]    ${payment.provider_name}
-    And Response body parameter should be:    [included][0][attributes][payments][0][paymentMethod]    ${payment.method_name}
+    And Response body case-insensitive parameter should be:    [included][0][attributes][payments][0][paymentMethod]    ${payment.method_name}
     #shipments
     And Response body parameter should be:    [included][0][attributes][shipments][0][shipmentMethodName]    ${shipment.method_name_1}
     And Response body parameter should be:    [included][0][attributes][shipments][0][carrierName]    ${shipment.carrier_name}
@@ -581,7 +581,7 @@ Create_order_with_configurable_product
     #payments
     And Response body parameter should be greater than:    [included][0][attributes][payments][0][amount]    0
     And Response body parameter should be:    [included][0][attributes][payments][0][paymentProvider]    ${payment.provider_name}
-    And Response body parameter should be:    [included][0][attributes][payments][0][paymentMethod]    ${payment.method_name}
+    And Response body case-insensitive parameter should be:    [included][0][attributes][payments][0][paymentMethod]    ${payment.method_name}
     #shipments
     And Response body parameter should be:    [included][0][attributes][shipments][0][shipmentMethodName]    ${shipment.method_name_1}
     And Response body parameter should be:    [included][0][attributes][shipments][0][carrierName]    ${shipment.carrier_name}

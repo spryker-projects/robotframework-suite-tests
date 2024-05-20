@@ -9,7 +9,7 @@ Resource    ../steps/quick_order_steps.robot
 Resource    ../steps/request_for_quote_steps.robot
 Resource    ../steps/wishlist_steps.robot
 
-*** Variable ***
+*** Variables ***
 ${priceModeSwitcher}    ${price_mode_switcher_header_menu_item}
 ${currencySwitcher}    ${currency_switcher_header_menu_item}
 ${languageSwitcher}    ${language_switcher_header_menu_item}
@@ -33,6 +33,7 @@ Yves: perform search by:
     Type Text    ${search_form_header_menu_item}    ${searchTerm}
     Keyboard Key    press    Enter
     Wait Until Page Contains Element    ${catalog_main_page_locator}[${env}]
+    Repeat Keyword    3    Wait For Load State
 
 Yves: go to company menu item:
     [Arguments]    ${company_menu_item}
@@ -49,6 +50,7 @@ Yves: company menu '${condition}' be available for logged in user
 
 Yves: header contains/doesn't contain:
     [Arguments]    ${condition}    @{header_elements_list}    ${element1}=${EMPTY}     ${element2}=${EMPTY}     ${element3}=${EMPTY}     ${element4}=${EMPTY}     ${element5}=${EMPTY}     ${element6}=${EMPTY}     ${element7}=${EMPTY}     ${element8}=${EMPTY}     ${element9}=${EMPTY}     ${element10}=${EMPTY}     ${element11}=${EMPTY}     ${element12}=${EMPTY}     ${element13}=${EMPTY}     ${element14}=${EMPTY}     ${element15}=${EMPTY}
+    ${condition}=    Convert To Lower Case    ${condition}
     ${header_elements_list_count}=   get length  ${header_elements_list}
     FOR    ${index}    IN RANGE    0    ${header_elements_list_count}
         ${header_element_to_check}=    Get From List    ${header_elements_list}    ${index}
@@ -66,21 +68,22 @@ Yves: header contains/doesn't contain:
 
 Yves: go to '${pageName}' page through the header
     IF    '${pageName}' == 'Shopping Lists'
-        Yves: go To 'Shopping Lists' Page
+        Yves: go to 'Shopping Lists' page
     ELSE IF    '${pageName}' == 'Shopping Carts'
-        Yves: Go to 'Shopping Carts' page
+        Yves: go to 'Shopping Carts' page
     ELSE IF    '${pageName}' == 'Quick Order'
-        Yves: Go to 'Quick Order' page
+        Yves: go to 'Quick Order' page
     ELSE IF    '${pageName}' == 'Quote Requests'
-        Yves: Go to 'Quote Requests' page
+        Yves: go to 'Agent Quote Requests' page
     ELSE IF    '${pageName}' == 'Wishlist'
-        Yves: go To 'Wishlist' Page
+        Yves: go to 'Wishlist' page
+    ELSE IF    '${pageName}' == 'Agent Quote Requests'
+        Yves: go to 'Agent Quote Requests' page
     END
 
 Yves: go to user menu item in header:
     [Arguments]    ${user_menu_item}
     Wait Until Element Is Visible  ${user_navigation_icon_header_menu_item}[${env}]
-    Sleep    1s
     Mouse Over  ${user_navigation_icon_header_menu_item}[${env}]
     Wait Until Element Is Visible    ${user_navigation_fly_out_header_menu_item}[${env}]
     IF    '${env}' in ['ui_b2b','ui_mp_b2b']

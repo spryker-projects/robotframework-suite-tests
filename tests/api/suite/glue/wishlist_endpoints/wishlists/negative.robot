@@ -1,12 +1,12 @@
 *** Settings ***
 Resource    ../../../../../../resources/common/common_api.robot
-Suite Setup    SuiteSetup
-Test Setup     TestSetup
+Suite Setup    API_suite_setup
+Test Setup     API_test_setup
 Default Tags    glue
 
 *** Test Cases ***
 ENABLER
-    TestSetup
+    API_test_setup
 #Get_request
 Getting_wishlist_by_invalid_Access_Token
     [Setup]    I set Headers:    Authorization=abc
@@ -42,8 +42,6 @@ Creating_wishlist_with_missing_name
     And Response reason should be:    Unprocessable Content
 
 Creating_wishlist_with_space_in_name
-    [Documentation]    Skip due to issue https://spryker.atlassian.net/browse/CC-16553
-    [Tags]    skip-due-to-issue
     Run Keywords    I GET access token for the customer:    ${yves_second_user.email}
     ...    AND     I set headers:    authorization=${token}
     When I send a POST request:    /wishlists    {"data": {"type": "wishlists","attributes": {"name": " "}}}

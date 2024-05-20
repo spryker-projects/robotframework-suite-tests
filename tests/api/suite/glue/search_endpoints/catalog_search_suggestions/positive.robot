@@ -1,12 +1,12 @@
 *** Settings ***
-Suite Setup    SuiteSetup
-Test Setup    TestSetup
+Suite Setup    API_suite_setup
+Test Setup    API_test_setup
 Resource    ../../../../../../resources/common/common_api.robot
 Default Tags    glue
 
 *** Test Cases ***
 ENABLER
-    TestSetup
+    API_test_setup
     
 Get_search_suggestions_without_query_parameter
     When I send a GET request:    /catalog-search-suggestions
@@ -168,8 +168,6 @@ Get_search_suggestions_with_cms_pages
     And Response body has correct self link
 
 Get_search_suggestions_with_category_collection
-    [Documentation]    Bug: https://spryker.atlassian.net/browse/CC-25894
-    [Tags]    skip-due-to-issue
     When I send a GET request:    /catalog-search-suggestions?q=${category_collection_name}
     Then Response status code should be:    200
     And Response reason should be:    OK

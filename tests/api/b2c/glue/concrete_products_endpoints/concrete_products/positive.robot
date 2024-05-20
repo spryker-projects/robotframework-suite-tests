@@ -1,12 +1,12 @@
 *** Settings ***
-Suite Setup    SuiteSetup
-Test Setup     TestSetup
+Suite Setup    API_suite_setup
+Test Setup     API_test_setup
 Resource    ../../../../../../resources/common/common_api.robot
 Default Tags    glue
 
 *** Test Cases ***
 ENABLER
-    TestSetup
+    API_test_setup
 Request_product_concrete_by_id
     When I send a GET request:    /concrete-products/${concrete_product_with_concrete_product_alternative.sku}
     Then Response status code should be:    200
@@ -55,6 +55,7 @@ Request_product_concrete_with_included_availabilities_and_product_prices
     And Response include element has self link:   concrete-product-availabilities
 
 Request_product_concrete_with_included_product_labels_and_product_options
+    [Setup]    Trigger product labels update
     When I send a GET request:    /concrete-products/${concrete_product.original_prices.sku}?include=product-labels,product-options
     Then Response status code should be:    200
     And Response reason should be:    OK

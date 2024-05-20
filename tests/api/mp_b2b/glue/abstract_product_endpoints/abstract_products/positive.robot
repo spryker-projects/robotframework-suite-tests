@@ -1,12 +1,12 @@
 *** Settings ***
-Suite Setup       SuiteSetup
-Test Setup        TestSetup
+Suite Setup       API_suite_setup
+Test Setup        API_test_setup
 Resource    ../../../../../../resources/common/common_api.robot
 Default Tags    glue
 
 *** Test Cases ***
 ENABLER
-    TestSetup
+    API_test_setup
 
 Get_abstract_product_with_one_concrete
     When I send a GET request:    /abstract-products/${abstract_available_product_with_stock.sku}
@@ -157,6 +157,7 @@ Get_abstract_product_with_product_options_included
 
 
 Get_abstract_product_with_product_labels_included
+    [Setup]    Trigger product labels update
     When I send a GET request:    /abstract-products/${abstract_product.abstract_product_with_label.sku}?include=product-labels
     Then Response status code should be:    200
     And Response reason should be:    OK

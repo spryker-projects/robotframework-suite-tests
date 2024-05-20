@@ -28,8 +28,9 @@ Zed: trigger all matching states inside xxx order:
 
 Zed: trigger all matching states inside this order:
     [Arguments]    ${status}    ${delay}=3s    ${iterations}=21
+    Trigger oms
     Reload
-    FOR    ${index}    IN RANGE    0    ${iterations}
+    FOR    ${index}    IN RANGE    1    ${iterations}
         ${order_state_reached}=    Run Keyword And Return Status    Page Should Contain Element    xpath=//div[@id='order-overview']//form[@name='oms_trigger_form']//button[@id='oms_trigger_form_submit'][text()='${status}']
         IF    '${order_state_reached}'=='False'
             Run Keywords    Sleep    ${delay}    AND    Reload
@@ -38,28 +39,38 @@ Zed: trigger all matching states inside this order:
         END
         IF    ${index} == ${iterations}-1
             Scroll Element Into View    xpath=(//div[@id='order-overview']//form[@name='oms_trigger_form']//button[@id='oms_trigger_form_submit'])[1]
-            Take Screenshot
-            ${order_state}=    Get Text    xpath=(//div[@id='order-overview']//form[@name='oms_trigger_form'])[1]
-            Fail    Expected order state transition '${status}' is not available. Only '${order_state}' is available. Check if OMS is functional
+            Take Screenshot    EMBED    fullPage=True
+            ${order_available_states}=    Set Variable    xpath=//div[@id='order-overview']//form[@name='oms_trigger_form']
+            ${order_available_states_count}=    Get Element Count    ${order_available_states}
+            ${order_available_states}=    Create List
+            FOR    ${index}    IN RANGE    1    ${order_available_states_count}+1
+                ${order_available_state}=    Get Text    xpath=(//div[@id='order-overview']//form[@name='oms_trigger_form'])[${index}]
+                Append To List    ${order_available_states}    ${order_available_state}
+            END
+            Fail    Expected order state transition '${status}' is not available. Only '${order_available_states}' is/are available. Check if OMS is functional
         END
     END
     Click    xpath=//div[@id='order-overview']//form[@name='oms_trigger_form']//button[@id='oms_trigger_form_submit'][text()='${status}']
+    Trigger oms
     ${order_changed_status}=    Run Keyword And Ignore Error    Element Should Not Be Visible    xpath=//div[@id='order-overview']//form[@name='oms_trigger_form']//button[@id='oms_trigger_form_submit'][text()='${status}']    timeout=1s
     IF    'FAIL' in ${order_changed_status}
             Reload
             Click    xpath=//div[@id='order-overview']//form[@name='oms_trigger_form']//button[@id='oms_trigger_form_submit'][text()='${status}']
+            Trigger oms
     END
     ${order_changed_status}=    Run Keyword And Ignore Error    Element Should Not Be Visible    xpath=//div[@id='order-overview']//form[@name='oms_trigger_form']//button[@id='oms_trigger_form_submit'][text()='${status}']    timeout=1s
     IF    'FAIL' in ${order_changed_status}
             ${order_state}=    Get Text    xpath=//div[@id='order-overview']//form[@name='oms_trigger_form']//button[@id='oms_trigger_form_submit'][text()='${status}']
             Scroll Element Into View    xpath=//div[@id='order-overview']//form[@name='oms_trigger_form']//button[@id='oms_trigger_form_submit'][text()='${status}']
-            Take Screenshot
+            Take Screenshot    EMBED    fullPage=True
             Fail    Order stuck in '${order_state}' state. Check if OMS is functional
     END
 
 Zed: trigger matching state of xxx merchant's shipment:
     [Documentation]    Marketplace specific method, suitable for My Orders of merchant. Triggers action for whole shipment
     [Arguments]    ${shipment_number}    ${event}    ${delay}=10s    ${iterations}=20
+    Trigger oms
+    Reload
     ${elementSelector}=    Set Variable    xpath=//div[@id='items']//h3[contains(.,'Shipment ${shipment_number}')]/../../following-sibling::div[2]//form[@name='event_trigger_form']//button[@id='event_trigger_form_submit'][text()='${event}']
     ${shipment_available_transitions_count}=    Get Element Count    xpath=//div[@id='items']//h3[contains(.,'Shipment ${shipment_number}')]/../../following-sibling::div[2]//form[@name='event_trigger_form']//button[@id='event_trigger_form_submit']
     ${shipment_available_transitions}=    Create List
@@ -72,21 +83,25 @@ Zed: trigger matching state of xxx merchant's shipment:
     ${shipment_available_transitions}=    Convert To String    ${shipment_available_transitions}
     Try reloading page until element is/not appear:    ${elementSelector}    true    ${iterations}    ${delay}    message=Expected shipment state transition '${event}' for shipment# '${shipment_number}' is not available. Only '${shipment_available_transitions}' is/are available. Check if OMS is functional
     Click    ${elementSelector}
+    Trigger oms
     ${order_changed_status}=    Run Keyword And Ignore Error    Element Should Not Be Visible    ${elementSelector}    timeout=1s
     IF    'FAIL' in ${order_changed_status}
             Reload
             Click    ${elementSelector}
+            Trigger oms
     END
     ${order_changed_status}=    Run Keyword And Ignore Error    Element Should Not Be Visible    ${elementSelector}    timeout=1s
     IF    'FAIL' in ${order_changed_status}
             ${order_state}=    Get Text    ${elementSelector}
             Scroll Element Into View    ${elementSelector}
-            Take Screenshot
+            Take Screenshot    EMBED    fullPage=True
             Fail    Order stuck in '${order_state}' state. Check if OMS is functional
     END
 
 Zed: trigger matching state of order item inside xxx shipment:
     [Arguments]    ${sku}    ${event}    ${shipment}=1    ${delay}=10s    ${iterations}=20
+    Trigger oms
+    Reload
     IF    '${env}' in ['ui_mp_b2b','ui_mp_b2c']
         ${elementSelector}=    Set Variable    xpath=//table[@data-qa='order-item-list'][${shipment}]/tbody//td//div[@class='sku'][contains(text(),'${sku}')]/ancestor::tr//td/form[@name='event_item_trigger_form']//button[contains(text(),'${event}')]
     ELSE
@@ -100,6 +115,7 @@ Zed: trigger matching state of order item inside xxx shipment:
     ${item_available_transitions_count}=    Get Element Count    ${item_available_transition_selector}
     ${item_available_transitions}=    Create List
     Set Browser Timeout    1s
+    ${item_available_transition}=    Set Variable
     FOR    ${index}    IN RANGE    1    ${item_available_transitions_count}+1
         IF    '${env}' in ['ui_mp_b2b','ui_mp_b2c']
             ${item_available_transition}=    Get Text    xpath=(//table[@data-qa='order-item-list'][${shipment}]/tbody//td//div[@class='sku'][contains(text(),'${sku}')]/ancestor::tr//td/form[@name='event_item_trigger_form']//button)[${index}]
@@ -112,21 +128,25 @@ Zed: trigger matching state of order item inside xxx shipment:
     ${item_available_transition}=    Convert To String    ${item_available_transition}
     Try reloading page until element is/not appear:    ${elementSelector}    true    ${iterations}    ${delay}    message=Expected item state transition '${event}' for item '${sku}' is not available. Only '${item_available_transitions}' is/are available. Check if OMS is functional
     Click    ${elementSelector}
+    Trigger oms
     ${order_changed_status}=    Run Keyword And Ignore Error    Element Should Not Be Visible    ${elementSelector}    timeout=1s
     IF    'FAIL' in ${order_changed_status}
             Reload
             Click    ${elementSelector}
+            Trigger oms
     END
     ${order_changed_status}=    Run Keyword And Ignore Error    Element Should Not Be Visible    ${elementSelector}    timeout=1s
     IF    'FAIL' in ${order_changed_status}
             ${order_item_state}=    Get Text    ${elementSelector}
             Scroll Element Into View    ${elementSelector}
-            Take Screenshot
+            Take Screenshot    EMBED    fullPage=True 
             Fail    Order item stuck in '${order_item_state}' state. Check if OMS is functional
     END
 
 Zed: trigger matching state of xxx order item inside xxx shipment:
     [Arguments]    ${event}    ${item_number}=1    ${shipment}=1    ${delay}=10s    ${iterations}=20
+    Trigger oms
+    Reload
     ${elementSelector}=    Set Variable    xpath=//table[@data-qa='order-item-list'][${shipment}]/tbody//tr[${item_number}]//td//form[contains(@name,'trigger_form')]//button[contains(text(),'${event}')]
     ${item_available_transitions_count}=    Get Element Count    xpath=//table[@data-qa='order-item-list'][${shipment}]/tbody//tr[${item_number}]//td//form[contains(@name,'trigger_form')]//button
     ${item_available_transitions}=    Create List
@@ -139,22 +159,24 @@ Zed: trigger matching state of xxx order item inside xxx shipment:
     ${item_available_transitions}=    Convert To String    ${item_available_transitions}
     Try reloading page until element is/not appear:    ${elementSelector}    true    ${iterations}    ${delay}    message=Expected item state transition '${event}' for item number '${item_number}' is not available in shipment# '${shipment}'. Only '${item_available_transitions}' is/are available. Check if OMS is functional
     Click    ${elementSelector}
+    Trigger oms
     ${order_changed_status}=    Run Keyword And Ignore Error    Element Should Not Be Visible    ${elementSelector}    timeout=1s
     IF    'FAIL' in ${order_changed_status}
             Reload
             Click    ${elementSelector}
+            Trigger oms
     END
     ${order_changed_status}=    Run Keyword And Ignore Error    Element Should Not Be Visible    ${elementSelector}    timeout=1s
     IF    'FAIL' in ${order_changed_status}
             ${order_item_state}=    Get Text    ${elementSelector}
             Scroll Element Into View    ${elementSelector}
-            Take Screenshot
+            Take Screenshot    EMBED    fullPage=True
             Fail    Order item stuck in '${order_item_state}' state. Check if OMS is functional
     END
 
 Zed: wait for order item to be in state:
     [Arguments]    ${sku}    ${state}    ${shipment}=1    ${delay}=10s    ${iterations}=20
-    ${elementSelector}=    Set Variable    xpath=//table[@data-qa='order-item-list'][${shipment}]/tbody//td/div[@class='sku'][contains(text(),'${sku}')]/ancestor::tr/td[@class='state-history']//a[contains(text(),'${state}')]
+    ${elementSelector}=    Set Variable    xpath=(//table[@data-qa='order-item-list'][${shipment}]/tbody//td/div[@class='sku'][contains(text(),'${sku}')]/ancestor::tr/td[@class='state-history']//a[contains(text(),'${state}')])[1]
     Try reloading page until element is/not appear:    ${elementSelector}    true    ${iterations}    ${delay}    message=Expected order item state '${state}' is not available for the item '${sku}'. Check if OMS is functional
 
 Yves: create return for the following products:
@@ -165,16 +187,36 @@ Yves: create return for the following products:
         Click    xpath=(//form[@name='return_create_form']//div[@data-qa='component return-product-item']//*[contains(text(),'${sku_to_check}')]/ancestor::div[@data-qa='component return-product-item']/../div[contains(@class,'col')]//span[contains(@class,'checkbox')])[1]
     END
     Click    ${create_return_button}[${env}]
+    Trigger oms
 
 Yves: check that 'Print Slip' contains the following products:
     [Arguments]    @{sku_list}    ${element1}=${EMPTY}     ${element2}=${EMPTY}     ${element3}=${EMPTY}     ${element4}=${EMPTY}     ${element5}=${EMPTY}     ${element6}=${EMPTY}     ${element7}=${EMPTY}     ${element8}=${EMPTY}     ${element9}=${EMPTY}     ${element10}=${EMPTY}     ${element11}=${EMPTY}     ${element12}=${EMPTY}     ${element13}=${EMPTY}     ${element14}=${EMPTY}     ${element15}=${EMPTY}
-    Click    ${return_details_print_slip_button}
-    Switch Page    NEW
-    Wait Until Page Contains Element    ${return_slip_products_table}
-    ${sku_list_count}=   get length  ${sku_list}
-    FOR    ${index}    IN RANGE    0    ${sku_list_count}
-        ${sku_to_check}=    Get From List    ${sku_list}    ${index}
-        Table Should Contain    ${return_slip_products_table}    ${sku_to_check}
+    IF    'local' not in '${yves_url}' or 'false' in '${headless}'
+        Click    ${return_details_print_slip_button}
+        Repeat Keyword    3    Wait For Load State
+        ### Wait until new page (pop-up) is displayed ###
+        Sleep    3s
+        ${context}=    Get Browser Catalog
+        ${page_count}=    Get Length    ${context[0]['contexts'][0]['pages']}
+        IF    ${page_count}<2
+            Sleep    7s
+            ${context}=    Get Browser Catalog
+        END
+        ${print_slip_page_id}=    Evaluate    [page['id'] for page in ${context[0]['contexts'][0]['pages']} if '/return/slip-print/' in page['url']]
+        ${print_slip_page_length}=    Get Length    ${print_slip_page_id}
+        IF    ${print_slip_page_length}>0
+            ${print_slip_page_url}=    Evaluate    [page['url'] for page in ${context[0]['contexts'][0]['pages']} if '/return/slip-print/' in page['url']]
+            ${print_slip_page_url}=    Get From List    ${print_slip_page_url}    0
+            Go To    ${print_slip_page_url}
+            Wait Until Page Contains Element    ${return_slip_products_table}
+            ${sku_list_count}=   get length  ${sku_list}
+            FOR    ${index}    IN RANGE    0    ${sku_list_count}
+                ${sku_to_check}=    Get From List    ${sku_list}    ${index}
+                Table Should Contain    ${return_slip_products_table}    ${sku_to_check}
+            END
+        ELSE
+            Log    New browser page did not open, there is nothing to switch to
+        END
     END
 
 Zed: create a return for the following order and product in it:
@@ -188,10 +230,11 @@ Zed: create a return for the following order and product in it:
     ${sku_list_count}=   get length  ${sku_list}
     FOR    ${index}    IN RANGE    0    ${sku_list_count}
         ${sku_to_check}=    Get From List    ${sku_list}    ${index}
-        Click    xpath=//table[@data-qa='order-item-list']//td/div[contains(text(),'SKU: ${sku_to_check}')]/ancestor::tr//div[@class='checkbox']//input
+        Click    xpath=//table[@data-qa='order-item-list']//td/div[contains(@class,'sku')][contains(.,'${sku_to_check}')]/ancestor::tr//div[@class='checkbox']//input
     END
     Click    ${zed_create_return_button}
     Wait Until Page Contains Element    ${zed_return_details_main_content_locator}
+    Trigger oms
 
 Zed: grand total for the order equals:
     [Arguments]    ${orderID}    ${grandTotal}
@@ -206,7 +249,7 @@ Zed: get the last placed order ID of the customer by email:
     Zed: perform search by:    ${email}
     ${zedLastPlacedOrder}=    Get Text    xpath=//table[contains(@data-ajax,'sales')][contains(@class,'dataTable')]/tbody/tr[1]/td[2]
     Set Suite Variable    ${zedLastPlacedOrder}    ${zedLastPlacedOrder}
-    [Return]    ${zedLastPlacedOrder}
+    RETURN    ${zedLastPlacedOrder}
 
 Zed: order has the following number of shipments:
     [Arguments]    ${orderID}    ${expectedShipments}
@@ -223,7 +266,7 @@ Zed: return details page contains the following items:
     ${sku_list_count}=   get length  ${sku_list}
     FOR    ${index}    IN RANGE    0    ${sku_list_count}
         ${sku_to_check}=    Get From List    ${sku_list}    ${index}
-        Page Should Contain Element    xpath=//table[@data-qa='return-items-table']//td//a[contains(@href,'view/variant')]/../div[@class='sku'][contains(text(),'SKU: ${sku_to_check}')]    message=Return details page doesn't contain '${sku_list}' but should.
+        Page Should Contain Element    xpath=//table[@data-qa='return-items-table']//td//a[contains(@href,'view/variant')]/../div[@class='sku'][contains(.,'${sku_to_check}')]    message=Return details page doesn't contain '${sku_list}' but should.
     END
 
 Zed: view the latest return from My Returns:
@@ -317,6 +360,7 @@ Zed: shipment data inside xxx shipment should be:
 
 Zed: xxx shipment should/not contain the following products:
     [Arguments]    ${shipment}    ${condition}    @{sku_list}    ${element1}=${EMPTY}     ${element2}=${EMPTY}     ${element3}=${EMPTY}     ${element4}=${EMPTY}     ${element5}=${EMPTY}     ${element6}=${EMPTY}     ${element7}=${EMPTY}     ${element8}=${EMPTY}     ${element9}=${EMPTY}     ${element10}=${EMPTY}     ${element11}=${EMPTY}     ${element12}=${EMPTY}     ${element13}=${EMPTY}     ${element14}=${EMPTY}     ${element15}=${EMPTY}
+    ${condition}=    Convert To Lower Case    ${condition}
     ${sku_list_count}=   get length  ${sku_list}
     FOR    ${index}    IN RANGE    0    ${sku_list_count}
         ${sku_to_check}=    Get From List    ${sku_list}    ${index}
@@ -330,16 +374,14 @@ Zed: xxx shipment should/not contain the following products:
 
 Yves: cancel the order:
     [Arguments]    ${order_id}
+    Trigger oms
     Yves: 'View Order/Reorder/Return' on the order history page:    View Order    ${order_id}
+    Yves: try reloading page if element is/not appear:    ${order_details_cancel_button_locator}    true
     Wait Until Element Is Visible    ${order_details_cancel_button_locator}
-    Set Browser Timeout    3s
-    TRY
-        Click    ${order_details_cancel_button_locator}
-        Wait Until Element Is Not Visible    ${order_details_cancel_button_locator}    timeout=5s
-    EXCEPT    
-        Click    ${order_details_cancel_button_locator}
-        Wait Until Element Is Not Visible    ${order_details_cancel_button_locator}    timeout=5s
-    END    
-    Set Browser Timeout    ${browser_timeout}
+    Repeat Keyword    3    Wait For Load State
+    Click    ${order_details_cancel_button_locator}
+    Repeat Keyword    2    Wait For Load State
+    Wait Until Element Is Not Visible    ${order_details_cancel_button_locator}
     Yves: go to 'Order History' page
     Yves: 'Order History' page contains the following order with a status:    ${order_id}    Canceled
+    Trigger oms

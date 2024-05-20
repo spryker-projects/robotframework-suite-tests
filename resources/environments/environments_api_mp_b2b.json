@@ -2,7 +2,8 @@
     "environment":"api_mp_b2b",
     "env":{
        "glue_url":"http://glue.de.spryker.local",
-       "bapi_url":"http://glue-backend.de.spryker.local"
+       "bapi_url":"http://glue-backend.de.spryker.local",
+       "sapi_url":"http://glue-storefront.de.spryker.local"
     },
     "dataType": {
       "array": []
@@ -406,8 +407,10 @@
        "concrete_product_with_alternative":{
           "sku":"420566",
           "name":"Verbatim USB stick Store n Go V3 49173 32GB USB3.0 gray",
-          "name_lower_case":"verbatim usb stick store n go v3 49173 32gb usb3.0 gray"
+          "name_lower_case":"verbatim usb stick store n go v3 49173 32gb usb3.0 gray",
+          "abstract_sku":"M90810"
        },
+
        "concrete_product_with_discontinued":{
           "sku":"421540"
        },
@@ -421,6 +424,8 @@
        },
        "abstract_available_product_with_stock":{
           "sku":"M61125",
+          "price_de":"21759",
+          "price_at":"21859",
           "merchant_reference":"MER000008",
           "name":"Prosedia vertebral disc swivel chair with synchronous mechanics and contoured seat - backrest height 660 mm",
           "description":" Easy-to-care-for fabric cover. Substructure in graphite black RAL 9011.<br/>Standard rolling for soft floors.<br/>The backrest has height-adjustable lumbar support.  ",
@@ -586,7 +591,7 @@
        "configurable_product": {
           "sku": "574601",
           "name":"CP steel cabinet, fire-resistant - 3 adjustable shelves - 1 locker - black gray / light gray"
-        }  
+        }
       },
     "product_offers":{
        "inactive_offer_with_volume_price":"offer3",
@@ -801,6 +806,8 @@
        "configuration": "{\"time_of_day\": \"3\"}",
        "configuratorKey": "DATE_TIME_CONFIGURATOR",
        "isComplete": true
-   }
- }   
+   },
+      "dummy_api_key":"eba8110c9f9bf5685e8b5f4eba9b17c2",
+      "dummy_key_hash":"f683f48de788d57cd396fc212ef33fd146e1ff0b51cde37ecb4ddd77eeed1706"
+ }
  }

@@ -1,12 +1,12 @@
 *** Settings ***
-Suite Setup    SuiteSetup
-Test Setup     TestSetup
+Suite Setup    API_suite_setup
+Test Setup     API_test_setup
 Resource    ../../../../../../resources/common/common_api.robot
 Default Tags    glue
 
 *** Test Cases ***
 ENABLER
-    TestSetup
+    API_test_setup
 ## Important CHECKOUT and CHECKOUT-DATA endpoints require Item ID and NOT intem sku. To get item id add include to the cart endpoint.
 ## Example:  
 ##I send a POST request:    /carts/${cartId}/items?include=items   {"data": {"type": "items","attributes": {"sku": "${concrete_product.random_weight.sku}","quantity": 1,"salesUnit": {"id": "${sales_unit_id}","amount": 5}}}}
@@ -162,7 +162,7 @@ Create_order_include_orders
     #payments
     And Response body parameter should be greater than:    [included][0][attributes][payments][0][amount]    0
     And Response body parameter should be:    [included][0][attributes][payments][0][paymentProvider]    ${payment.provider_name_1}
-    And Response body parameter should be:    [included][0][attributes][payments][0][paymentMethod]    ${payment.method_name}
+    And Response body case-insensitive parameter should be:    [included][0][attributes][payments][0][paymentMethod]    ${payment.method_name}
     #shipments
     And Response body parameter should be:    [included][0][attributes][shipments][0][shipmentMethodName]    ${shipment.method_name_1}
     And Response body parameter should be:    [included][0][attributes][shipments][0][carrierName]    ${shipment.carrier_name}
@@ -537,7 +537,7 @@ Create_order_with_configurable_bundle_item
     #payments
     And Response body parameter should be greater than:    [included][0][attributes][payments][0][amount]    0
     And Response body parameter should be:    [included][0][attributes][payments][0][paymentProvider]    ${payment.provider_name_1}
-    And Response body parameter should be:    [included][0][attributes][payments][0][paymentMethod]    ${payment.method_name}
+    And Response body case-insensitive parameter should be:    [included][0][attributes][payments][0][paymentMethod]    ${payment.method_name}
     #shipments
     And Response body parameter should be:    [included][0][attributes][shipments][0][shipmentMethodName]    ${shipment.method_name_1}
     And Response body parameter should be:    [included][0][attributes][shipments][0][carrierName]    ${shipment.carrier_name}
@@ -687,10 +687,10 @@ Create_checkout_with_gift_card
     #payments
     And Response body parameter should be:    [included][0][attributes][payments][0][amount]    ${gift_card.amount}
     And Response body parameter should be:    [included][0][attributes][payments][0][paymentProvider]    ${gift_card.paymentProvider}
-    And Response body parameter should be:    [included][0][attributes][payments][0][paymentMethod]    ${gift_card.paymentMethod}
+    And Response body case-insensitive parameter should be:    [included][0][attributes][payments][0][paymentMethod]    ${gift_card.paymentMethod}
     And Response body parameter should be greater than:    [included][0][attributes][payments][1][amount]    0
     And Response body parameter should be:    [included][0][attributes][payments][1][paymentProvider]    ${payment.provider_name_1}
-    And Response body parameter should be:    [included][0][attributes][payments][1][paymentMethod]    ${payment.method_name}
+    And Response body case-insensitive parameter should be:    [included][0][attributes][payments][1][paymentMethod]    ${payment.method_name}
     #shipments
     And Response body parameter should be:    [included][0][attributes][shipments][0][shipmentMethodName]    ${shipment.method_name_1}
     And Response body parameter should be:    [included][0][attributes][shipments][0][carrierName]    ${shipment.carrier_name}
@@ -707,7 +707,6 @@ Create_checkout_with_gift_card
     And Response body parameter should contain:    [included][0][attributes][calculatedDiscounts]    quantity
     
 Create_checkout_with_gift_card_when_gift_amount_partially_used
-    [Documentation]    bug https://spryker.atlassian.net/browse/CC-21301
     [Setup]    Run Keywords    I get access token for the customer:    ${yves_second_user.email}
     ...  AND    I set Headers:    Authorization=${token}
     ...  AND    I send a POST request:    /carts    {"data":{"type":"carts","attributes":{"priceMode":"${mode.gross}","currency":"${currency.eur.code}","store":"${store.de}","name": "${test_cart_name}-${random}"}}}
@@ -845,11 +844,11 @@ Create_checkout_with_gift_card_when_gift_amount_partially_used
     #payments
     And Response body parameter should be:    [included][0][attributes][payments][0][amount]    ${gift_card.amount}
     And Response body parameter should be:    [included][0][attributes][payments][0][paymentProvider]    ${gift_card.paymentProvider}
-    And Response body parameter should be:    [included][0][attributes][payments][0][paymentMethod]    ${gift_card.paymentMethod}
+    And Response body case-insensitive parameter should be:    [included][0][attributes][payments][0][paymentMethod]    ${gift_card.paymentMethod}
     
     And Response body parameter should be greater than:    [included][0][attributes][payments][1][amount]    0
     And Response body parameter should be:    [included][0][attributes][payments][1][paymentProvider]    ${payment.provider_name_1}
-    And Response body parameter should be:    [included][0][attributes][payments][1][paymentMethod]    ${payment.method_name}
+    And Response body case-insensitive parameter should be:    [included][0][attributes][payments][1][paymentMethod]    ${payment.method_name}
     #shipments
     And Response body parameter should be:    [included][0][attributes][shipments][0][shipmentMethodName]    ${shipment.method_name_1}
     And Response body parameter should be:    [included][0][attributes][shipments][0][carrierName]    ${shipment.carrier_name}
@@ -997,7 +996,7 @@ Create_order_with_configurable_product
     #payments
     And Response body parameter should be greater than:    [included][0][attributes][payments][0][amount]    0
     And Response body parameter should be:    [included][0][attributes][payments][0][paymentProvider]    ${payment.provider_name_1}
-    And Response body parameter should be:    [included][0][attributes][payments][0][paymentMethod]    ${payment.method_name}
+    And Response body case-insensitive parameter should be:    [included][0][attributes][payments][0][paymentMethod]    ${payment.method_name}
     #shipments
     And Response body parameter should be:    [included][0][attributes][shipments][0][shipmentMethodName]    ${shipment.method_name_1}
     And Response body parameter should be:    [included][0][attributes][shipments][0][carrierName]    ${shipment.carrier_name}

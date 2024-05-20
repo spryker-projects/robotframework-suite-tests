@@ -1,13 +1,13 @@
 
 *** Settings ***
-Suite Setup       SuiteSetup
-Test Setup        TestSetup
+Suite Setup       API_suite_setup
+Test Setup        API_test_setup
 Resource    ../../../../../../resources/common/common_api.robot
 Default Tags    glue
 
 *** Test Cases ***
 ENABLER
-    TestSetup
+    API_test_setup
 
 Add_a_concrete_product_to_the_shopping_list
     [Setup]    Run Keywords    I get access token for the customer:    ${yves_user.email}
@@ -407,16 +407,16 @@ Add_2_Configurable_products_but_with_different_configurations
    And Response status code should be:    200
    And Response body parameter should be:    [data][attributes][numberOfItems]    3
    And Response should contain the array of a certain size:    [included]    2
-   And Response body parameter should be:   [included][0][id]    ${shoppingListItemId1}
-   And Response body parameter should be:   [included][0][attributes][quantity]    2
+   And Response body parameter should be in:   [included][0][id]    ${shoppingListItemId1}    ${shoppingListItemId2}
+   And Response body parameter should be in:   [included][1][id]    ${shoppingListItemId1}    ${shoppingListItemId2}
+   And Response body parameter should be in:   [included][0][attributes][quantity]    2    1
+   And Response body parameter should be in:   [included][1][attributes][quantity]    2    1  
    And Response body parameter should be:   [included][0][attributes][sku]    ${configurable_product.sku}
-   And Response body parameter should be:    [included][0][attributes][productConfigurationInstance][displayData]    {\"Preferred time of the day\":\"Morning\",\"Date\":\"10.10.2040\"}
-   And Response body parameter should be:    [included][0][attributes][productConfigurationInstance][isComplete]    True
-   And Response body parameter should be:   [included][1][id]    ${shoppingListItemId2}
-   And Response body parameter should be:   [included][1][attributes][quantity]    1
    And Response body parameter should be:   [included][1][attributes][sku]    ${configurable_product.sku}
-   And Response body parameter should be:    [included][1][attributes][productConfigurationInstance][displayData]    {\"Preferred time of the day\":\"Afternoon\",\"Date\":\"11.11.2040\"}
-   And Response body parameter should be:    [included][1][attributes][productConfigurationInstance][isComplete]    False
+   And Response body parameter should be in:    [included][0][attributes][productConfigurationInstance][displayData]    {\"Preferred time of the day\":\"Morning\",\"Date\":\"10.10.2040\"}    {\"Preferred time of the day\":\"Afternoon\",\"Date\":\"11.11.2040\"}
+   And Response body parameter should be in:    [included][0][attributes][productConfigurationInstance][isComplete]    True    False
+   And Response body parameter should be in:    [included][1][attributes][productConfigurationInstance][displayData]    {\"Preferred time of the day\":\"Afternoon\",\"Date\":\"11.11.2040\"}    {\"Preferred time of the day\":\"Morning\",\"Date\":\"10.10.2040\"}
+   And Response body parameter should be in:    [included][1][attributes][productConfigurationInstance][isComplete]    False    True
    And Response include element has self link:   shopping-list-items
    [Teardown]    Run Keywords    I send a DELETE request:    /shopping-lists/${ShoppingListId}
     ...    AND    Response status code should be:    204

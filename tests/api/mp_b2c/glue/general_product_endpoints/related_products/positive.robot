@@ -1,12 +1,12 @@
 *** Settings ***
-Suite Setup       SuiteSetup
-Test Setup    TestSetup
+Suite Setup       API_suite_setup
+Test Setup    API_test_setup
 Resource    ../../../../../../resources/common/common_api.robot
 Default Tags    glue
 
 *** Test Cases ***
 ENABLER
-    TestSetup
+    API_test_setup
 
 Product_has_related_products
     When I send a GET request:    /abstract-products/${product_with_relations.has_related_products.sku}/related-products
@@ -63,7 +63,8 @@ Product_has_related_products
     And Response body has correct self link
 
 Product_has_related_products_with_includes
-    [Setup]    Run Keywords    I get access token for the customer:    ${yves_user.email}
+    [Setup]    Run Keywords    Trigger product labels update
+    ...    AND    I get access token for the customer:    ${yves_user.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}    Authorization=${token}
     When I send a GET request:    /abstract-products/${product_with_relations.has_related_products.sku}/related-products?include=product-labels
     Then Response status code should be:    200

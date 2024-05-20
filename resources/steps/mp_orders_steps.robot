@@ -5,7 +5,8 @@ Resource    ../pages/mp/mp_order_drawer.robot
 
 *** Keywords ***
 MP: wait for order to appear:
-    [Arguments]    ${orderReference}    ${tries}=20    ${timeout}=1s    
+    [Arguments]    ${orderReference}    ${tries}=20    ${timeout}=1s   
+    Trigger oms 
     FOR    ${index}    IN RANGE    0    ${tries}
         MP: perform search by:    ${orderReference}
         ${elementAppears}=    Run Keyword And Return Status    Table Should Contain    ${mp_items_table}     ${orderReference}
@@ -17,7 +18,7 @@ MP: wait for order to appear:
         END
     END
     IF    ${index} == ${tries}-1
-        Take Screenshot
+        Take Screenshot    EMBED    fullPage=True
         Fail    'Timeout exceeded, merchant order was not created'
     END
      
@@ -35,16 +36,22 @@ MP: update order state using header button:
     [Arguments]    ${buttonName}
     Wait Until Element Is Enabled    xpath=//div[@class='mp-manage-order__transitions']//button[contains(text(),'${buttonName}')]
     Click    xpath=//div[@class='mp-manage-order__transitions']//button[contains(text(),'${buttonName}')]
-    Wait Until Element Is Visible    xpath=//span[text()='The state is updated successfully.']
-    Wait Until Element Is Not Visible    xpath=//span[text()='The state is updated successfully.']
+    Wait For Response
+    Wait For Load State
+    Wait Until Element Is Visible    ${mp_success_flyout}
+    MP: remove notification wrapper
+    Trigger oms
 
 MP: change order item state on:
     [Arguments]    ${sku}    ${state}
     Wait Until Element Is Visible    xpath=//web-mp-order-items-table[@table-id='web-mp-order-items-table']//spy-table[@class='spy-table']//tbody
     Click    xpath=//web-mp-order-items-table[@table-id='web-mp-order-items-table']//spy-table[@class='spy-table']//tbody//orc-render-item//*[contains(text(),'${sku}')]/ancestor::tr/td//spy-checkbox
     Click    xpath=//*[contains(@class,'table-features')]//*[contains(@class,'batch-actions')]//button[contains(text(),'${state}')]
-    Wait Until Element Is Visible    xpath=//span[text()='The state is updated successfully.']
-    Wait Until Element Is Not Visible    xpath=//span[text()='The state is updated successfully.']
+    Wait For Response
+    Wait For Load State
+    Wait Until Element Is Visible    ${mp_success_flyout}
+    MP: remove notification wrapper
+    Trigger oms
 
 MP: order item state should be:
     [Arguments]    ${sku}    ${state}

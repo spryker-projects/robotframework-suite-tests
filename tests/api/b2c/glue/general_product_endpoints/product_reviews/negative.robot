@@ -1,28 +1,27 @@
 *** Settings ***
-Suite Setup       SuiteSetup
-Test Setup    TestSetup
+Suite Setup       API_suite_setup
+Test Setup    API_test_setup
 Default Tags    glue
 Resource    ../../../../../../resources/common/common_api.robot
 
 *** Test Cases ***
 
 ENABLER
-    TestSetup
-    
+    API_test_setup
+
 Get_a_review_with_non_existent_review_id
     When I send a GET request:    /abstract-products/${abstract_product.with_reviews.sku}/product-reviews/fake
-    Then Response status code should be:    501
-    And Response reason should be:    Not Implemented
-    And Response should return error message:    Resource is not available.
+    Then Response status code should be:    404
+    And Response reason should be:    Not Found
+    And Response should return error code:    302
+    And Response should return error message:    Product review is not found.
 
 Get_a_reviews_with_non_existent_abstract_product
-   [Documentation]    https://spryker.atlassian.net/browse/CC-16486
-   [Tags]    skip-due-to-issue 
     When I send a GET request:    /abstract-products/fake/product-reviews/78
     Then Response status code should be:    404
     And Response reason should be:    Not Found
-    And Response should return error code:    3402
-    And Response should return error message:    Product review not found.
+    And Response should return error code:    301
+    And Response should return error message:    Abstract product is not found.
 
 Get_reviews_with_non_existent_abstract_product
     When I send a GET request:    /abstract-products/fake/product-reviews

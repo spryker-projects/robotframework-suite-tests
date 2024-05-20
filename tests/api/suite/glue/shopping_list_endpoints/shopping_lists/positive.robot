@@ -1,12 +1,12 @@
 *** Settings ***
 Resource    ../../../../../../resources/common/common_api.robot
-Suite Setup    SuiteSetup
-Test Setup    TestSetup
+Suite Setup    API_suite_setup
+Test Setup    API_test_setup
 Default Tags    glue
 
 *** Test Cases ***
 ENABLER
-    TestSetup
+    API_test_setup
 
 Create_a_shopping_list
     [Setup]    Run Keywords    I get access token for the customer:    ${yves_user.email}
@@ -203,8 +203,6 @@ Get_single_shopping_list_info_with_includes
     ...    AND    Response reason should be:    No Content
 
 Get_several_shopping_lists_info_with_includes
-    [Documentation]    Skip due to issue CC-16541
-    [Tags]    skip-due-to-issue
     [Setup]    Run Keywords    I get access token for the customer:    ${yves_user.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}    Authorization=${token}  
     I send a GET request:    /shopping-lists?include=shopping-list-items,concrete-products

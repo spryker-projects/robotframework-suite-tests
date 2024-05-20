@@ -1,14 +1,16 @@
 *** Settings ***
-Suite Setup       SuiteSetup
+Suite Setup       API_suite_setup
 Resource    ../../../../../../resources/common/common_api.robot
-Test Setup        TestSetup
+Test Setup        API_test_setup
 Default Tags    glue
 
 *** Test Cases ***
 ENABLER
-    TestSetup
+    API_test_setup
 
 Get_store_by_non_exist_id
+    [Tags]    dms-off
+    [Documentation]    https://spryker.atlassian.net/browse/FRW-7427 Test has been skipped for dms-on shop. discussed with Platform team. Bug has low priority can be not fixed soon.
     When I send a GET request:    /stores/NON_EXIST_STORE
     Then Response status code should be:    404
     And Response should return error code:    601

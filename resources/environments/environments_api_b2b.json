@@ -2,7 +2,8 @@
     "environment":"api_b2b",
     "env":{
        "glue_url":"http://glue.de.spryker.local",
-       "bapi_url":"http://glue-backend.de.spryker.local"
+       "bapi_url":"http://glue-backend.de.spryker.local",
+       "sapi_url":"http://glue-storefront.de.spryker.local"
     },
 	"dataType": {
 			"array": []
@@ -213,7 +214,7 @@
        "category_lvl2":{
           "id":"12",
           "qty":"56",
-          "qty_approx":"50" 
+          "qty_approx":"50"
        },
        "category_lvl3":{
           "id":"13",
@@ -346,6 +347,8 @@
           "alternative_products":{
              "product_1":{
                 "sku":"M21100",
+                "price_de":"1579",
+                "price_at":"1679",
                 "name":"Verbatim USB stick Store n Go V3 49173 32GB USB3.0 gray"
              },
              "product_2":{
@@ -512,7 +515,7 @@
           "storage_name_2":"Fish",
           "storage_url_2":"/en/foods/fish"
        },
-           
+
        "brand_name":"verbatim",
        "cart_permission_group_id":"1"
     },
@@ -619,5 +622,7 @@
            "configuratorKey": "DATE_TIME_CONFIGURATOR",
            "isComplete": true
        }
-     }   
-     }
+     },
+      "dummy_api_key":"eba8110c9f9bf5685e8b5f4eba9b17c2",
+      "dummy_key_hash":"f683f48de788d57cd396fc212ef33fd146e1ff0b51cde37ecb4ddd77eeed1706"
+  }

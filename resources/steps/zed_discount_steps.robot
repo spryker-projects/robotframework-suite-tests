@@ -8,7 +8,7 @@ Resource    ../common/common.robot
 Zed: create a discount and activate it:
     [Arguments]    ${discountType}    ${valueType}    ${discountValue}    ${applyToQuery}=    ${voucherCode}=    ${promotionalProductDiscount}=False    ${promotionalProductAbstractSku}=    ${promotionalProductQuantity}=    ${applyWhenQuery}=    ${discountName}=Test Discount    ${discountDescription}='Test Description'
     ${currentURL}=    Get Location
-# General information
+    ### General information
     Click    ${zed_discount_add_new_discount_button}
     Wait Until Element Is Visible    ${zed_discount_create_discount_page}
     IF    '${discountType}'=='voucher'
@@ -20,9 +20,10 @@ Zed: create a discount and activate it:
     Type Text    ${zed_discount_description_field}     ${discountDescription}
     Evaluate Javascript    ${None}  document.getElementById("discount_discountGeneral_valid_from").setAttribute("value", "01.01.2021 01:00")
     Evaluate JavaScript    ${None}   document.getElementById("discount_discountGeneral_valid_to").setAttribute("value", "01.01.2025 01:00")
-# Discount calculation
+    ### Discount calculation
     Zed: go to tab:    Discount calculation
-    Wait For Elements State    ${zed_discount_query_builder_first_calculation_group}    visible    15s
+    Wait For Load State
+    Wait For Elements State    ${zed_discount_query_builder_first_calculation_group}    visible    ${browser_timeout}
     IF    '${valueType}'=='Percentage'    Run Keywords    Select From List By Label    ${zed_discount_calculator_type_drop_down}    Percentage
     ...    AND    Type Text    ${zed_discount_percentage_value_field}     ${discountValue}
     ...    ELSE   Run keywords    '${valueType}'=='Fixed amount'    Select From List By Label    ${zed_discount_calculator_type_drop_down}    Fixed amount
@@ -39,9 +40,10 @@ Zed: create a discount and activate it:
     ...    AND    Type Text    ${zed_discount_promotional_product_abstract_sku_field}     ${promotionalProductAbstractSku}
     ...    AND    Type Text    ${zed_discount_promotional_product_abstract_quantity_field}     ${promotionalProductQuantity}
     END
-    # Discount condition
+    ### Discount condition
     Zed: go to tab:    Conditions
-    Wait For Elements State    ${zed_discount_query_builder_first_condition_group}    visible    15s
+    Wait For Load State
+    Wait For Elements State    ${zed_discount_query_builder_first_condition_group}    visible    ${browser_timeout}
     Click    ${zed_discount_plain_query_apply_when__button}
     Wait Until Element Is Visible    ${zed_discount_plain_query_apply_when_field}
     IF    '${applyWhenQuery}' != '${EMPTY}'
@@ -50,9 +52,9 @@ Zed: create a discount and activate it:
     Click    ${zed_discount_save_button}
     Wait Until Element Is Visible    ${zed_discount_activate_button}
     Click    ${zed_discount_activate_button}
-    # Voucher codes
+    ### Voucher codes
     IF    '${discountType}'=='voucher'    Zed: generate vouchers:    1    ${voucherCode}
-    # Check discount in Zed
+    ### Check discount in Zed
     Zed: go to second navigation item level:    Merchandising    Discount
     Zed: perform search by:    ${discountName}
     Element Should Be Visible    xpath=//td[contains(@class,'name') and contains(text(),'${discountName}')]/ancestor::tr//span[contains(@class,'label') and contains(text(),'Active')]    message=None
@@ -74,7 +76,7 @@ Zed: deactivate following discounts from Overview page:
         Zed: clear search field
         Zed: perform search by:    ${name}
         ${isDiscountActive}=    Set Variable    ${EMPTY}
-        ${isDiscountActive}=    Run Keyword And Return Status    Page Should Contain Element    xpath=//td[contains(text(),'${name}')]/following-sibling::td[contains(@class,'Action')]//button[contains(.,'Deactivate')]
+        ${isDiscountActive}=    Run Keyword And Return Status    Page Should Contain Element    xpath=//td[contains(text(),'${name}')]/following-sibling::td[contains(@class,'Action')]//button[contains(.,'Deactivate')]    timeout=1s
         IF    '${isDiscountActive}'=='True'    
             Click    xpath=//td[contains(text(),'${name}')]/following-sibling::td[contains(@class,'Action')]//button[contains(.,'Deactivate')]
             Wait Until Element Is Visible    xpath=/descendant::button[@type='submit'][contains(.,'Activate')][1]

@@ -1,12 +1,12 @@
 *** Settings ***
-Suite Setup       SuiteSetup
+Suite Setup       API_suite_setup
 Resource    ../../../../../../resources/common/common_api.robot
 Default Tags    glue
 
 *** Test Cases ***
 
 ENABLER
-    TestSetup
+    API_test_setup
 
 Create_a_customer_with_already_existing_email
     I send a POST request:    /customers/    {"data":{"type":"customers","attributes":{"firstName":"${yves_third_user.first_name}","lastName":"${yves_third_user.last_name}","gender":"${gender.male}","salutation":"${yves_third_user.salutation}","email":"${yves_user.email}","password":"${yves_user.password}","confirmPassword":"${yves_user.password}","acceptedTerms":True}}}
@@ -231,7 +231,7 @@ Delete_a_cusomer_without_access_token
 
 Delete_a_customer_without_id
     [Setup]    Run Keywords    I get access token for the customer:    ${yves_user.email}
-    ...    AND    I set Headers:    Content-Type=${default_header_content_type}    Authorization=${token}  
+    ...    AND    I set Headers:    Content-Type=${default_header_content_type}    Authorization=${token}
     I send a DELETE request:    /customers/
     Response status code should be:    400
     And Response reason should be:    Bad Request
@@ -240,17 +240,17 @@ Delete_a_customer_without_id
 
 Delete_a_customer_with_wrong_id
     [Setup]    Run Keywords    I get access token for the customer:    ${yves_user.email}
-    ...    AND    I set Headers:    Content-Type=${default_header_content_type}    Authorization=${token}  
+    ...    AND    I set Headers:    Content-Type=${default_header_content_type}    Authorization=${token}
     I send a DELETE request:    /customers/DE35
-    Response status code should be:    404
-    And Response reason should be:    Not Found
-    And Response should return error code:    402
-    And Response should return error message:    Customer not found.
+    Response status code should be:    403
+    And Response reason should be:    Forbidden
+    And Response should return error code:    411
+    And Response should return error message:    Unauthorized request.
     And Response header parameter should be:    Content-Type    ${default_header_content_type}
 
 Delete_a_customer_with_access_token_from_another
     [Setup]    Run Keywords    I get access token for the customer:    ${yves_user.email}
-    ...    AND    I set Headers:    Content-Type=${default_header_content_type}    Authorization=${token}  
+    ...    AND    I set Headers:    Content-Type=${default_header_content_type}    Authorization=${token}
     I send a DELETE request:    /customers/DE--30
     Response status code should be:    403
     And Response reason should be:    Forbidden
