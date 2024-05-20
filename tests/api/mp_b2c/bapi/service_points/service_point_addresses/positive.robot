@@ -12,7 +12,7 @@ ENABLER
 Create_Service_Point_Address
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
-    When I send a POST request:    /service-points    {"data": {"type": "service-points","attributes": {"name": "Some Service Point ${random}","key": "some-service-point-${random}","isActive": "true","stores": ["DE", "AT"]}}}
+    When I send a POST request:    /service-points    {"data": {"type": "service-points","attributes": {"name": "Some Service Point ${random}","key": "some-service-point-${random}","isActive": "true","stores": ["DE", "EU"]}}}
     Then Response status code should be:    201
     And Save value to a variable:    [data][attributes][key]    service_point_key
     And Save value to a variable:    [data][id]    service_point_id
@@ -33,7 +33,7 @@ Create_Service_Point_Address
 Create_Service_Point_Address_with_address_3
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
-    When I send a POST request:    /service-points    {"data": {"type": "service-points","attributes": {"name": "Some Service Point ${random}","key": "some-service-point-2${random}","isActive": "true","stores": ["DE", "AT"]}}}
+    When I send a POST request:    /service-points    {"data": {"type": "service-points","attributes": {"name": "Some Service Point ${random}","key": "some-service-point-2${random}","isActive": "true","stores": ["DE", "EU"]}}}
     Then Response status code should be:    201
     And Save value to a variable:    [data][attributes][key]    service_point_key
     And Save value to a variable:    [data][id]    service_point_id
@@ -48,7 +48,7 @@ Create_Service_Point_Address_with_address_3
 Create_Service_Point_Address_with_region_uuid
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
-    When I send a POST request:    /service-points    {"data": {"type": "service-points","attributes": {"name": "Some Service Point ${random}","key": "some-service-point-3${random}","isActive": "true","stores": ["DE", "AT"]}}}
+    When I send a POST request:    /service-points    {"data": {"type": "service-points","attributes": {"name": "Some Service Point ${random}","key": "some-service-point-3${random}","isActive": "true","stores": ["DE", "EU"]}}}
     Then Response status code should be:    201
     And Save value to a variable:    [data][attributes][key]    service_point_key
     And Save value to a variable:    [data][id]    service_point_id
@@ -64,7 +64,7 @@ Create_Service_Point_Address_with_region_uuid
 Update_Service_Point_Address
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
-    When I send a POST request:    /service-points    {"data": {"type": "service-points","attributes": {"name": "Some Service Point ${random}","key": "some-service-point-update-4${random}","isActive": "true","stores": ["DE", "AT"]}}}
+    When I send a POST request:    /service-points    {"data": {"type": "service-points","attributes": {"name": "Some Service Point ${random}","key": "some-service-point-update-4${random}","isActive": "true","stores": ["DE", "EU"]}}}
     Then Response status code should be:    201
     And Save value to a variable:    [data][attributes][key]    service_point_key
     And Save value to a variable:    [data][id]    service_point_id
@@ -96,7 +96,7 @@ Retrive_Service_Point_Address
     And Response body parameter should be:    [data][0][type]    service-point-addresses
     And Response body parameter should be:    [data][0][id]    ${service_point_address.uuid2}
     And Response body parameter should be:    [data][0][attributes][countryIso2Code]    DE
-    And Response body parameter should be:    [data][0][attributes][uuid]    ${service_point_address.uuid2} 
+    And Response body parameter should be:    [data][0][attributes][uuid]    ${service_point_address.uuid2}
     And Response body parameter should be:    [data][0][attributes][address1]    ${service_point_address.address1}
     And Response body parameter should be:    [data][0][attributes][address2]    ${service_point_address.address2}
     And Response body parameter should be:    [data][0][attributes][address3]    ${service_point_address.address3}

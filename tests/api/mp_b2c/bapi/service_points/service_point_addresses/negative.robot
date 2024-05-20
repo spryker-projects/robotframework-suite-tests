@@ -43,7 +43,7 @@ Create_Service_Point_address_without_address
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
     When I send a POST request:    /service-points/${spryker_main_store.uuid}/service-point-addresses    {"data": {"type": "service-point-addresses", "attributes": {"countryIso2Code": "DE", "address2": "Building №2", "zipCode": "30-221", "city": "Dreamtown"}}}
     Then Response status code should be:    400
-    
+
 Create_Service_Point_address_with_empty_address
     [Documentation]    https://spryker.atlassian.net/browse/FRW-1597
     [Tags]    skip-due-to-issue
@@ -57,7 +57,7 @@ Create_Service_Point_address_with_not_existing_region
     [Tags]    skip-due-to-issue
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
-    When I send a POST request:    /service-points    {"data": {"type": "service-points","attributes": {"name": "Some Service Point ${random}","key": "some-service-point-${random}","isActive": "true","stores": ["DE", "AT"]}}}
+    When I send a POST request:    /service-points    {"data": {"type": "service-points","attributes": {"name": "Some Service Point ${random}","key": "some-service-point-${random}","isActive": "true","stores": ["DE", "EU"]}}}
     Then Response status code should be:    201
     And Save value to a variable:    [data][attributes][key]    service_point_key
     And Save value to a variable:    [data][id]    service_point_id
@@ -73,7 +73,7 @@ Create_Service_Point_address_with_not_existing_country
     [Tags]    skip-due-to-issue
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
-    When I send a POST request:    /service-points    {"data": {"type": "service-points","attributes": {"name": "Some Service Point ${random}","key": "some-service-point-45${random}","isActive": "true","stores": ["DE", "AT"]}}}
+    When I send a POST request:    /service-points    {"data": {"type": "service-points","attributes": {"name": "Some Service Point ${random}","key": "some-service-point-45${random}","isActive": "true","stores": ["DE", "EU"]}}}
     Then Response status code should be:    201
     And Save value to a variable:    [data][attributes][key]    service_point_key
     And Save value to a variable:    [data][id]    service_point_id
@@ -89,7 +89,7 @@ Create_Service_Point_address_with_not_existing_country
     [Tags]    skip-due-to-issue
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
-    When I send a POST request:    /service-points    {"data": {"type": "service-points","attributes": {"name": "Some Service Point ${random}","key": "some-service-point-${random}","isActive": "true","stores": ["DE", "AT"]}}}
+    When I send a POST request:    /service-points    {"data": {"type": "service-points","attributes": {"name": "Some Service Point ${random}","key": "some-service-point-${random}","isActive": "true","stores": ["DE", "EU"]}}}
     Then Response status code should be:    201
     And Save value to a variable:    [data][attributes][key]    service_point_key
     And Save value to a variable:    [data][id]    service_point_id

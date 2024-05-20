@@ -13,7 +13,7 @@ ENABLER
 Create_shipment_type
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
-    When I send a POST request:    /shipment-types   {"data": {"type": "shipment-types","attributes": {"name": "Some Shipment Type ${random}","key": "some-shipment-type-${random}","isActive": "true","stores": ["DE", "AT"]}}}
+    When I send a POST request:    /shipment-types   {"data": {"type": "shipment-types","attributes": {"name": "Some Shipment Type ${random}","key": "some-shipment-type-${random}","isActive": "true","stores": ["DE", "EU"]}}}
     Then Response status code should be:    201
     And Response reason should be:    Created
     And Response body parameter should be:    [data][type]    shipment-types
@@ -30,13 +30,13 @@ Create_shipment_type
 Create_new_shipment_type_with_existing_name
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
-    When I send a POST request:    /shipment-types   {"data": {"type": "shipment-types","attributes": {"name": "not_unique_name","key": "new-shipment-type-${random}","isActive": "true","stores": ["AT"]}}}
+    When I send a POST request:    /shipment-types   {"data": {"type": "shipment-types","attributes": {"name": "not_unique_name","key": "new-shipment-type-${random}","isActive": "true","stores": ["EU"]}}}
     Then Response status code should be:    201
     And Save value to a variable:    [data][id]    new_shipment_type_uuid
     # Create new shipment type with existing name
-    When I send a POST request:    /shipment-types   {"data": {"type": "shipment-types","attributes": {"name": "not_unique_name","key": "second-shipment-type-${random}","isActive": "true","stores": ["DE", "AT"]}}}
+    When I send a POST request:    /shipment-types   {"data": {"type": "shipment-types","attributes": {"name": "not_unique_name","key": "second-shipment-type-${random}","isActive": "true","stores": ["DE", "EU"]}}}
     Then Response status code should be:    201
-    And Response reason should be:    Created 
+    And Response reason should be:    Created
     And Response body parameter should be:    [data][type]    shipment-types
     And Save value to a variable:    [data][id]    shipment_type_id
     And Response body parameter should not be EMPTY:    [data][id]
@@ -49,11 +49,11 @@ Create_new_shipment_type_with_existing_name
     # check that first shipment time still exist and not overrided
     And I send a GET request:    /shipment-types/
     And I send a GET request:    /shipment-types/${new_shipment_type_uuid}
-    And Response body parameter should be:    [data][attributes][key]    new-shipment-type-${random}   
+    And Response body parameter should be:    [data][attributes][key]    new-shipment-type-${random}
     And Response body parameter should be:    [data][attributes][name]    not_unique_name
     [Teardown]     Run Keywords    Delete shipment type in DB:    new-shipment-type-${random}
     ...    AND    Delete shipment type in DB:    second-shipment-type-${random}
-    
+
 Update_sipment_type_change_name_store_relation_and_deactivate
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
@@ -63,7 +63,7 @@ Update_sipment_type_change_name_store_relation_and_deactivate
     And Save value to a variable:    [data][id]    shipment_type_uuid
     # Update the Delivery Type with new attributes via PATCH request
     When I send a PATCH request:    /shipment-types/${shipment_type_uuid}
-    ...    {"data": {"type": "shipment-types","attributes": {"name": "updated_name${random}","isActive": "false","stores": ["AT"]}}} 
+    ...    {"data": {"type": "shipment-types","attributes": {"name": "updated_name${random}","isActive": "false","stores": ["EU"]}}}
     Then Response status code should be:    200
     And Response reason should be:    OK
     When I send a GET request:    /shipment-types/${shipment_type_uuid}
@@ -77,7 +77,7 @@ Retrive_single_shipment_type_with_valid_token
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
     When I send a POST request:    /shipment-types
-    ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type${random}","key": "shipment-key${random}","isActive": "true","stores": ["DE", "AT"]}}}
+    ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type${random}","key": "shipment-key${random}","isActive": "true","stores": ["DE", "EU"]}}}
     Then Response status code should be:    201
     And Save value to a variable:    [data][id]    delivery_type_uuid
     When I send a GET request:    /shipment-types/${delivery_type_uuid}
@@ -97,9 +97,9 @@ Retrive_list_of_shipment_types_with_valid_token_and_pagination
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
     #prepare test data
     When I send a POST request:    /shipment-types
-    ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type1${random}","key": "shipment-key1${random}","isActive": "true","stores": ["DE", "AT"]}}}
+    ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type1${random}","key": "shipment-key1${random}","isActive": "true","stores": ["DE", "EU"]}}}
     When I send a POST request:    /shipment-types
-    ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type2${random}","key": "shipment-key2${random}","isActive": "true","stores": ["AT"]}}}
+    ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type2${random}","key": "shipment-key2${random}","isActive": "true","stores": ["EU"]}}}
     # run get request
     When I send a GET request:    /shipment-types?page[offset]=0&page[limit]=2
     Then Response status code should be:    200
@@ -114,15 +114,15 @@ Retrive_list_of_shipment_types_with_valid_token_and_pagination
     And Each array element of the array in response should contain a nested array larger than a certain size:    [data]    [attributes][stores]    0
     [Teardown]     Run Keywords    Delete shipment type in DB:    shipment-key1${random}
     ...    AND    Delete shipment type in DB:    shipment-key2${random}
-    
+
 Retrive_list_of_shipment_types_with_filtering
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
     #prepare test data
     When I send a POST request:    /shipment-types
-    ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type1${random}","key": "shipment-key1${random}","isActive": "true","stores": ["DE", "AT"]}}}
+    ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type1${random}","key": "shipment-key1${random}","isActive": "true","stores": ["DE", "EU"]}}}
     When I send a POST request:    /shipment-types
-    ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type2${random}","key": "shipment-key2${random}","isActive": "true","stores": ["AT"]}}}
+    ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type2${random}","key": "shipment-key2${random}","isActive": "true","stores": ["EU"]}}}
     When I send a POST request:    /shipment-types
     ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type3${random}","key": "shipment-key3${random}","isActive": "true","stores": ["DE"]}}}
    # run get request
@@ -139,9 +139,9 @@ Retrive_list_of_shipment_types_with_sorting_by_key_ASC
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
     #prepare test data
     When I send a POST request:    /shipment-types
-    ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type1${random}","key": "aaa_shipment-key1","isActive": "true","stores": ["DE", "AT"]}}}
+    ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type1${random}","key": "aaa_shipment-key1","isActive": "true","stores": ["DE", "EU"]}}}
     When I send a POST request:    /shipment-types
-    ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type2${random}","key": "www_shipment-key2","isActive": "true","stores": ["AT"]}}}
+    ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type2${random}","key": "www_shipment-key2","isActive": "true","stores": ["EU"]}}}
     # run get request
     When I send a GET request:    /shipment-types?sort=key
     Then Response status code should be:    200
@@ -157,9 +157,9 @@ Retrive_list_of_shipment_types_with_sorting_by_key_DESC
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
     #prepare test data
     When I send a POST request:    /shipment-types
-    ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type1${random}","key": "aaa_shipment-key1","isActive": "true","stores": ["DE", "AT"]}}}
+    ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type1${random}","key": "aaa_shipment-key1","isActive": "true","stores": ["DE", "EU"]}}}
     When I send a POST request:    /shipment-types
-    ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type2${random}","key": "www_shipment-key2","isActive": "true","stores": ["AT"]}}}
+    ...    {"data": {"type": "shipment-types","attributes": {"name": "shipment-type2${random}","key": "www_shipment-key2","isActive": "true","stores": ["EU"]}}}
     # run get request
     When I send a GET request:    /shipment-types?sort=-key
     Then Response status code should be:    200

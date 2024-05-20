@@ -15,7 +15,7 @@ Create_shipment_type_with_incorrect_type_in_body
     [Tags]    skip-due-to-issue
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
-    When I send a POST request:    /shipment-types    {"data": {"type": "incorrect-type","attributes": {"name": "Some Shipment Type","key": "wrong-type${random}","isActive": "true","stores": ["DE", "AT"]}}}
+    When I send a POST request:    /shipment-types    {"data": {"type": "incorrect-type","attributes": {"name": "Some Shipment Type","key": "wrong-type${random}","isActive": "true","stores": ["DE", "EU"]}}}
     Then Response status code should be:    400
     And Response should return error code:    55020
     And Response should return error message:    Unknown error.
@@ -34,14 +34,14 @@ Create_shipment_type_with_empty_token
     [Documentation]    https://spryker.atlassian.net/browse/FRW-5850
     [Tags]    skip-due-to-issue
     [Setup]    I set Headers:    Authorization=
-    When I send a POST request:    /shipment-types    {"data": {"type": "shipment-types","attributes": {"name": "Some Shipment Type","key": "empty_token${random}","isActive": "true","stores": ["DE", "AT"]}}}
+    When I send a POST request:    /shipment-types    {"data": {"type": "shipment-types","attributes": {"name": "Some Shipment Type","key": "empty_token${random}","isActive": "true","stores": ["DE", "EU"]}}}
     Then Response status code should be:    403
     And Response reason should be:    Unauthorized
     And Response should return error message:    Invalid access token.
 
 Create_shipment_type_with_incorrect_token
     [Setup]    I set Headers:    Authorization=wrong_token
-    When I send a POST request:    /shipment-types    {"data": {"type": "shipment-types","attributes": {"name": "Some Shipment Type","key": "incorrect_token${random}","isActive": "true","stores": ["DE", "AT"]}}}
+    When I send a POST request:    /shipment-types    {"data": {"type": "shipment-types","attributes": {"name": "Some Shipment Type","key": "incorrect_token${random}","isActive": "true","stores": ["DE", "EU"]}}}
     Then Response status code should be:    403
     And Response reason should be:    Forbidden
 
@@ -50,7 +50,7 @@ Create_shipment_type_without_key_in_request
     [Tags]    skip-due-to-issue
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
-    When I send a POST request:    /shipment-types    {"data": {"type": "shipment-types","attributes": {"name": "Some Shipment Type","isActive": "true","stores": ["DE", "AT"]}}}
+    When I send a POST request:    /shipment-types    {"data": {"type": "shipment-types","attributes": {"name": "Some Shipment Type","isActive": "true","stores": ["DE", "EU"]}}}
     Then Response status code should be:    400
     And Response should return error code:    5501
     And Response should return error message:    A delivery type entity was not found.
@@ -58,7 +58,7 @@ Create_shipment_type_without_key_in_request
 Create_shipment_type_with_empty_key_in_request
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
-    When I send a POST request:    /shipment-types        {"data": {"type": "shipment-types","attributes": {"name": "Some Shipment Type ${random}","key": "","isActive": "true","stores": ["DE", "AT"]}}}
+    When I send a POST request:    /shipment-types        {"data": {"type": "shipment-types","attributes": {"name": "Some Shipment Type ${random}","key": "","isActive": "true","stores": ["DE", "EU"]}}}
     Then Response status code should be:    400
     And Response should return error code:    5503
     And Response should return error message:    A delivery type key must have a length from 1 to 255 characters.
@@ -66,8 +66,8 @@ Create_shipment_type_with_empty_key_in_request
 Create_shipment_type_with_already_used_key
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
-    ...    AND    I send a POST request:    /shipment-types    {"data": {"type": "shipment-types","attributes": {"name": "Some Shipment Type","key": "existing-shipment-type-key","isActive": "true","stores": ["DE", "AT"]}}}
-    When I send a POST request:    /shipment-types    {"data": {"type": "shipment-types","attributes": {"name": "Some Shipment Type","key": "existing-shipment-type-key","isActive": "true","stores": ["DE", "AT"]}}}
+    ...    AND    I send a POST request:    /shipment-types    {"data": {"type": "shipment-types","attributes": {"name": "Some Shipment Type","key": "existing-shipment-type-key","isActive": "true","stores": ["DE", "EU"]}}}
+    When I send a POST request:    /shipment-types    {"data": {"type": "shipment-types","attributes": {"name": "Some Shipment Type","key": "existing-shipment-type-key","isActive": "true","stores": ["DE", "EU"]}}}
     Then Response status code should be:    400
     And Response should return error code:    5502
     And Response should return error message:    A delivery type with the same key already exists.
@@ -77,7 +77,7 @@ Update_sipment_type_without_token
     [Documentation]    https://spryker.atlassian.net/browse/FRW-5850
     [Tags]    skip-due-to-issue
     When I send a PATCH request:    /shipment-types/${shipment_type_uuid}
-    ...    {"data": {"type": "shipment-types","attributes": {"name": "updated_name${random}","isActive": "false","stores": ["AT"]}}} 
+    ...    {"data": {"type": "shipment-types","attributes": {"name": "updated_name${random}","isActive": "false","stores": ["EU"]}}}
     Then Response status code should be:    403
     And Response reason should be:    Unauthorized
     And Response should return error message:    Invalid access token.
@@ -85,7 +85,7 @@ Update_sipment_type_without_token
 Update_sipment_type_with_incorrect_token
     [Setup]    I set Headers:    Authorization=wrong_token
     When I send a PATCH request:    /shipment-types/${shipment_type_uuid}
-    ...    {"data": {"type": "shipment-types","attributes": {"name": "updated_name${random}","isActive": "false","stores": ["AT"]}}} 
+    ...    {"data": {"type": "shipment-types","attributes": {"name": "updated_name${random}","isActive": "false","stores": ["EU"]}}}
      Then Response status code should be:    403
      And Response reason should be:    Forbidden
 
@@ -95,7 +95,7 @@ Update_sipment_type_without_key
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
     When I send a PATCH request:    /shipment-types
-    ...    {"data": {"type": "shipment-types","attributes": {"name": "updated_name${random}","isActive": "false","stores": ["AT"]}}} 
+    ...    {"data": {"type": "shipment-types","attributes": {"name": "updated_name${random}","isActive": "false","stores": ["EU"]}}}
     Then Response status code should be:    404
     And Response should return error code:    5501
     And Response should return error message:    A delivery type entity was not found.
@@ -115,7 +115,7 @@ Update_sipment_type_with_not_existing_key
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
     When I send a PATCH request:    /shipment-types/not-existing-key
-    ...    {"data": {"type": "shipment-types","attributes": {"name": "updated_name${random}","isActive": "false","stores": ["AT"]}}} 
+    ...    {"data": {"type": "shipment-types","attributes": {"name": "updated_name${random}","isActive": "false","stores": ["EU"]}}}
     Then Response status code should be:    404
     And Response should return error code:    5501
     And Response should return error message:    A delivery type entity was not found.
