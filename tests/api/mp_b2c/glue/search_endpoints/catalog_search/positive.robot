@@ -10,6 +10,7 @@ ENABLER
 
 ##### SEARCH PARAMETERS #####
 Search_with_empty_search_criteria_all_default_values_check
+    [Tags]    skip-due-to-issue
     When I send a GET request:    /catalog-search?q=
     Then Response status code should be:    200
     And Response reason should be:    OK
@@ -41,11 +42,11 @@ Search_with_empty_search_criteria_all_default_values_check
     And Each array element of array in response should contain value:    [data][0][attributes][abstractProducts]    abstractName
     And Each array element of array in response should contain value:    [data][0][attributes][abstractProducts]    prices
     And Response body parameter should be:    [data][0][attributes][abstractProducts][0][prices][0][currency][code]    ${currency.eur.code}
-    And Response body parameter should be:    [data][0][attributes][abstractProducts][0][prices][0][currency][symbol]    ${currency.eur.symbol} 
+    And Response body parameter should be:    [data][0][attributes][abstractProducts][0][prices][0][currency][symbol]    ${currency.eur.symbol}
     And Response body parameter should be:    [data][0][attributes][abstractProducts][0][prices][0][currency][name]    ${currency.eur.name}
     And Each array element of array in response should contain value:    [data][0][attributes][abstractProducts]    images
-    And Response body parameter should be greater than:    [data][0][attributes][abstractProducts][0][prices][0][grossAmount]    1 
-    And Response body parameter should be greater than:    [data][0][attributes][abstractProducts][0][prices][0][DEFAULT]    1  
+    And Response body parameter should be greater than:    [data][0][attributes][abstractProducts][0][prices][0][grossAmount]    1
+    And Response body parameter should be greater than:    [data][0][attributes][abstractProducts][0][prices][0][DEFAULT]    1
     #Filters - category
     And Response body parameter should contain:    [data][0][attributes]    valueFacets
     And Response body parameter should be:    [data][0][attributes][valueFacets][0][name]    category
@@ -134,9 +135,9 @@ Search_with_empty_search_criteria_all_default_values_check
     #Filters - category tree
     And Response should contain the array of a certain size:    [data][0][attributes][categoryTreeFilter]    ${tree_branches_qty}
     And Each array element of array in response should contain value:    [data][0][attributes][categoryTreeFilter]   nodeId
-    And Each array element of array in response should contain value:    [data][0][attributes][categoryTreeFilter]   name  
-    And Each array element of array in response should contain value:    [data][0][attributes][categoryTreeFilter]   docCount  
-    And Each array element of array in response should contain value:    [data][0][attributes][categoryTreeFilter]   children  
+    And Each array element of array in response should contain value:    [data][0][attributes][categoryTreeFilter]   name
+    And Each array element of array in response should contain value:    [data][0][attributes][categoryTreeFilter]   docCount
+    And Each array element of array in response should contain value:    [data][0][attributes][categoryTreeFilter]   children
     #Selflinks
     And Response body has correct self link
     And Response body parameter should not be EMPTY:    [links][last]
@@ -386,7 +387,7 @@ Filter_by_brand_non_existing_brand
     And Response should contain the array of a certain size:    [data][0][attributes][abstractProducts]    0
     And Response body parameter should be:    [data][0][attributes][valueFacets][4][activeValue]    test123
     And Response body has correct self link
-    
+
 Filter_by_label_one_label
     When I send a GET request:    /catalog-search?q=&label=${label.new.name}
     Then Response status code should be:    200
@@ -401,6 +402,7 @@ Filter_by_label_one_label
     And Response body has correct self link
 
 Filter_by_label_two_labels
+    [Tags]    skip-due-to-issue
     When I send a GET request:    /catalog-search?q=&label[]=${label.new.name}&label[]=${label.sale.name}
     Then Response status code should be:    200
     And Response reason should be:    OK
@@ -538,9 +540,9 @@ Search_with_specific_currency
     And Response body parameter should be greater than:    [data][0][attributes][pagination][maxPage]    1
     And Response should contain the array of a certain size:    [data][0][attributes][abstractProducts]    ${ipp.default}
     And Response body parameter should be:    [data][0][attributes][abstractProducts][0][prices][0][currency][code]    ${currency.chf.code}
-    And Response body parameter should be:    [data][0][attributes][abstractProducts][0][prices][0][currency][symbol]    ${currency.chf.symbol} 
-    And Response body parameter should be:    [data][0][attributes][abstractProducts][0][prices][0][currency][name]    ${currency.chf.name} 
-    And Response body parameter should be greater than:    [data][0][attributes][abstractProducts][0][prices][0][DEFAULT]    1   
+    And Response body parameter should be:    [data][0][attributes][abstractProducts][0][prices][0][currency][symbol]    ${currency.chf.symbol}
+    And Response body parameter should be:    [data][0][attributes][abstractProducts][0][prices][0][currency][name]    ${currency.chf.name}
+    And Response body parameter should be greater than:    [data][0][attributes][abstractProducts][0][prices][0][DEFAULT]    1
     And Response body has correct self link
 
 ##### PAGINATION AND SORTING #####

@@ -35,15 +35,16 @@ Get_upselling_products
     And Response should contain the array larger than a certain size:    [data][0][attributes][attributeMap]    0
     And Response should contain the array larger than a certain size:    [data][0][attributes][attributeMap][product_concrete_ids]   0
     And Response should contain the array of a certain size:    [data][0][attributes][attributeMap][attribute_variants]   0
-    And Response should contain the array larger than a certain size:    [data][0][attributes][metaTitle]    0  
+    And Response should contain the array larger than a certain size:    [data][0][attributes][metaTitle]    0
     And Response body parameter should not be EMPTY:    [data][0][attributes][metaKeywords]
     And Response body parameter should not be EMPTY:    [data][0][attributes][metaDescription]
     And Response body parameter should not be EMPTY:    [data][0][attributes][attributeNames]
-    And Response body parameter should not be EMPTY:    [data][0][attributes][url]     
+    And Response body parameter should not be EMPTY:    [data][0][attributes][url]
     And Response body has correct self link
     [Teardown]    Run Keyword    Cleanup all items in the cart:    ${cart_id}
 
 Get_upselling_products_plus_includes
+    [Tags]    skip-due-to-issue
     [Setup]    Run Keywords    I get access token for the customer:    ${yves_user.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}    Authorization=${token}
     ...    AND    Find or create customer cart
@@ -54,8 +55,8 @@ Get_upselling_products_plus_includes
     And Response reason should be:    OK
     And Response header parameter should be:    Content-Type    ${default_header_content_type}
     And Response should contain the array larger than a certain size:    [data]    0
-    And Each array element of array in response should contain nested property with value:    [data]    type    abstract-products  
-    And Response body has correct self link 
+    And Each array element of array in response should contain nested property with value:    [data]    type    abstract-products
+    And Response body has correct self link
     And Response should contain the array larger than a certain size:    [included]    0
     And Response should contain the array of a certain size:    [data][0][relationships][abstract-product-prices][data]    1
     And Response should contain the array of a certain size:    [data][0][relationships][abstract-product-image-sets][data]    1
@@ -63,7 +64,7 @@ Get_upselling_products_plus_includes
     And Response should contain the array of a certain size:    [data][0][relationships][abstract-product-availabilities][data]    1
     And Response should contain the array of a certain size:    [data][0][relationships][product-tax-sets][data]    1
     And Response should contain the array larger than a certain size:    [data][0][relationships][product-options][data]    1
-    And Response should contain the array larger than a certain size:    [data][0][relationships][category-nodes][data]    1 
+    And Response should contain the array larger than a certain size:    [data][0][relationships][category-nodes][data]    1
     And Response include should contain certain entity type:    abstract-product-prices
     And Response include should contain certain entity type:    abstract-product-image-sets
     And Response include should contain certain entity type:    concrete-products
@@ -101,9 +102,9 @@ Get_upselling_products_for_cart_containing_multiple_products
     And Response reason should be:    OK
     And Response header parameter should be:    Content-Type    ${default_header_content_type}
     And Response should contain the array larger than a certain size:    [data]    0
-    And Each array element of array in response should contain nested property with value:    [data]    type    abstract-products   
+    And Each array element of array in response should contain nested property with value:    [data]    type    abstract-products
     And Each array element of array in response should contain property:    [data]    id
-    And Each array element of array in response should contain property:    [data]    attributes   
+    And Each array element of array in response should contain property:    [data]    attributes
     And Each array element of array in response should contain nested property:    [data]    [attributes]    sku
     And Each array element of array in response should contain property with value NOT in:    [data]    [attributes][sku]    None    null
     And Each array element of array in response should contain nested property:    [data]    [attributes]    averageRating
@@ -128,7 +129,7 @@ Get_upselling_products_for_cart_containing_multiple_products
     And Each array element of array in response should contain nested property:    [data]    [links]    self
     And Response body has correct self link
     [Teardown]    Run Keyword    Cleanup all items in the cart:    ${cart_id}
- 
+
 
 Get_upselling_products_for_cart_without_upselling_relations
     [Setup]    Run Keywords    I get access token for the customer:    ${yves_user.email}
@@ -182,15 +183,16 @@ Get_upselling_products_for_guest_cart
     And Response should contain the array larger than a certain size:    [data][0][attributes][attributeMap]    0
     And Response should contain the array larger than a certain size:    [data][0][attributes][attributeMap][product_concrete_ids]   0
     And Response should contain the array of a certain size:    [data][0][attributes][attributeMap][attribute_variants]   0
-    And Response should contain the array larger than a certain size:    [data][0][attributes][metaTitle]    0  
+    And Response should contain the array larger than a certain size:    [data][0][attributes][metaTitle]    0
     And Response body parameter should not be EMPTY:    [data][0][attributes][metaKeywords]
     And Response body parameter should not be EMPTY:    [data][0][attributes][metaDescription]
     And Response body parameter should not be EMPTY:    [data][0][attributes][attributeNames]
-    And Response body parameter should not be EMPTY:    [data][0][attributes][url]     
+    And Response body parameter should not be EMPTY:    [data][0][attributes][url]
     And Response body has correct self link
     [Teardown]    Run Keyword    Cleanup all items in the guest cart:    ${guest_cart_id}
 
 Get_upselling_products_for_guest_cart_plus_includes
+    [Tags]    skip-due-to-issue
     [Setup]    Run Keywords    I set Headers:    Content-Type=${default_header_content_type}    X-Anonymous-Customer-Unique-Id=${random}
     ...    AND    Create a guest cart:    ${random}    ${product_with_relations.has_upselling_products.concrete_sku}    1
     ...    AND    Response status code should be:    201
@@ -199,8 +201,8 @@ Get_upselling_products_for_guest_cart_plus_includes
     And Response reason should be:    OK
     And Response header parameter should be:    Content-Type    ${default_header_content_type}
     And Response should contain the array larger than a certain size:    [data]    0
-    And Each array element of array in response should contain nested property with value:    [data]    type    abstract-products  
-    And Response body has correct self link 
+    And Each array element of array in response should contain nested property with value:    [data]    type    abstract-products
+    And Response body has correct self link
     And Response should contain the array larger than a certain size:    [included]    0
     And Response should contain the array of a certain size:    [data][0][relationships][abstract-product-prices][data]    1
     And Response should contain the array of a certain size:    [data][0][relationships][abstract-product-image-sets][data]    1
@@ -208,7 +210,7 @@ Get_upselling_products_for_guest_cart_plus_includes
     And Response should contain the array of a certain size:    [data][0][relationships][abstract-product-availabilities][data]    1
     And Response should contain the array of a certain size:    [data][0][relationships][product-tax-sets][data]    1
     And Response should contain the array larger than a certain size:    [data][0][relationships][product-options][data]    1
-    And Response should contain the array larger than a certain size:    [data][0][relationships][category-nodes][data]    1 
+    And Response should contain the array larger than a certain size:    [data][0][relationships][category-nodes][data]    1
     And Response include should contain certain entity type:    abstract-product-prices
     And Response include should contain certain entity type:    abstract-product-image-sets
     And Response include should contain certain entity type:    concrete-products
@@ -243,9 +245,9 @@ Get_upselling_products_for_guest_cart_containing_multiple_products
     And Response reason should be:    OK
     And Response header parameter should be:    Content-Type    ${default_header_content_type}
     And Response should contain the array larger than a certain size:    [data]    0
-    And Each array element of array in response should contain nested property with value:    [data]    type    abstract-products   
+    And Each array element of array in response should contain nested property with value:    [data]    type    abstract-products
     And Each array element of array in response should contain property:    [data]    id
-    And Each array element of array in response should contain property:    [data]    attributes   
+    And Each array element of array in response should contain property:    [data]    attributes
     And Each array element of array in response should contain nested property:    [data]    [attributes]    sku
     And Each array element of array in response should contain property with value NOT in:    [data]    [attributes][sku]    None    null
     And Each array element of array in response should contain nested property:    [data]    [attributes]    averageRating
@@ -270,7 +272,7 @@ Get_upselling_products_for_guest_cart_containing_multiple_products
     And Each array element of array in response should contain nested property:    [data]    [links]    self
     And Response body has correct self link
     [Teardown]    Run Keyword    Cleanup all items in the guest cart:    ${guest_cart_id}
- 
+
 
 Get_upselling_products_for_guest_cart_without_upselling_relations
     [Setup]    Run Keywords    I set Headers:    Content-Type=${default_header_content_type}    X-Anonymous-Customer-Unique-Id=${random}

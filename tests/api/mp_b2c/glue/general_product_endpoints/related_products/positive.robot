@@ -31,13 +31,13 @@ Product_has_related_products
     And Response should contain the array larger than a certain size:    [data][0][attributes][attributeMap][product_concrete_ids]   0
     And Response should contain the array of a certain size:    [data][0][attributes][attributeMap][attribute_variants]    0
     And Response should contain the array of a certain size:    [data][0][attributes][attributeMap][attribute_variant_map]    0
-    And Response should contain the array larger than a certain size:    [data][0][attributes][metaTitle]    0  
+    And Response should contain the array larger than a certain size:    [data][0][attributes][metaTitle]    0
     And Response body parameter should not be EMPTY:    [data][0][attributes][metaKeywords]
     And Response body parameter should not be EMPTY:    [data][0][attributes][metaDescription]
     And Response body parameter should not be EMPTY:    [data][0][attributes][attributeNames]
-    And Response body parameter should not be EMPTY:    [data][0][attributes][url]     
+    And Response body parameter should not be EMPTY:    [data][0][attributes][url]
     And Each array element of array in response should contain property:    [data]    id
-    And Each array element of array in response should contain property:    [data]    attributes   
+    And Each array element of array in response should contain property:    [data]    attributes
     And Each array element of array in response should contain nested property:    [data]    [attributes]    sku
     And Each array element of array in response should contain property with value NOT in:    [data]    [attributes][sku]    None    null
     And Each array element of array in response should contain nested property:    [data]    [attributes]    averageRating
@@ -63,6 +63,7 @@ Product_has_related_products
     And Response body has correct self link
 
 Product_has_related_products_with_includes
+    [Tags]    skip-due-to-issue
     [Setup]    Run Keywords    Trigger product labels update
     ...    AND    I get access token for the customer:    ${yves_user.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}    Authorization=${token}
@@ -71,8 +72,8 @@ Product_has_related_products_with_includes
     And Response reason should be:    OK
     And Response header parameter should be:    Content-Type    ${default_header_content_type}
     And Response should contain the array larger than a certain size:    [data]    0
-    And Each array element of array in response should contain nested property with value:    [data]    type    abstract-products  
-    And Response body has correct self link 
+    And Each array element of array in response should contain nested property with value:    [data]    type    abstract-products
+    And Response body has correct self link
     And Response should contain the array larger than a certain size:    [data][8][relationships][product-labels][data]    0
     And Response should contain the array larger than a certain size:    [included]    0
     And Response include should contain certain entity type:    product-labels

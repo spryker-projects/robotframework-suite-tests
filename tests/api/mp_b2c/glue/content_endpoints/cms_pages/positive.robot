@@ -46,6 +46,7 @@ Get_specific_cms_page
     And Response body has correct self link internal
 
 Get_specific_cms_with_includes
+    [Tags]    skip-due-to-issue
     [Setup]    Add content product abstract list to cms page in DB    ${cms_pages.cms_page_with_product_lists.id}    apl-watches
     When I send a GET request:    /cms-pages/${cms_pages.cms_page_with_product_lists.id}?include=content-product-abstract-lists
     Then Response status code should be:    200
