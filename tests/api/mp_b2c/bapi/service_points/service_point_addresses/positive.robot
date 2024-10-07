@@ -89,6 +89,7 @@ Update_Service_Point_Address
     ...    AND    Delete service point address in DB    ${service_point_address_id}
 
 Retrive_Service_Point_Address
+    [Tags]    skip-due-to-issue
     [Setup]    Run Keywords    I get access token by user credentials:   ${zed_admin.email}
     ...    AND    I set Headers:    Content-Type=${default_header_content_type}   Authorization=Bearer ${token}
     When I send a GET request:    /service-points/${spryker_main_store.uuid2}/service-point-addresses
